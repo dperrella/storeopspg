@@ -1,0 +1,1 @@
+${name}##@@${icon}##@@${address}##@@${phone}##@@${latitude}##@@${longitude}##@@${types}

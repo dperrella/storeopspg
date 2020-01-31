@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- 
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	-->
+	
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+	
+	<!-- Login-esegui -->
+	<bean name="/login-esegui.htm" class="pkg.controller.LoginEsegui"></bean>
+	<!-- Login-esegui redirect -->
+	<bean name="/login-esegui-redirect.htm" class="pkg.controller.LoginEsegui2"></bean>
+	
+	<!-- Auth MSAL -->
+	<bean name="/auth.htm" class="pkg.controller.Auth"></bean>
+	
+	<!-- Desk -->
+	<bean name="/app/main/index.htm" class="pkg.controller.Desk"></bean>
+	<bean name="/app/main/index2.htm" class="pkg.controller.Desk2"></bean>
+	<!-- Profilo -->
+	<bean name="/app/main/profilo.htm" class="pkg.controller.ProfiloDett"></bean>
+	
+	<!-- Funzioni -->
+	<bean name="/app/config/function-list.htm" class="pkg.controller.FunctionList"></bean>
+	<!-- Lista Notifiche -->
+	<bean name="/app/config/notification-list.htm" class="pkg.controller.NotificationList"></bean>
+	<!-- Lista Tabelle -->
+	<bean name="/app/config/tables-list.htm" class="pkg.controller.TablesList"></bean>
+	<!-- Gestione Utenti -->
+	<bean name="/app/config/users-list.htm" class="pkg.controller.UsersList"></bean>
+	<bean name="/app/config/users-dett.htm" class="pkg.controller.UsersDett"></bean>
+	<!-- Gestione Ruoli -->
+	<bean name="/app/anag/roles-list.htm" class="pkg.controller.RolesList"></bean>
+	<bean name="/app/anag/roles-dett.htm" class="pkg.controller.RolesDett"></bean>
+	<!-- Gestione Clienti -->
+	<bean name="/app/anag/customers-list.htm" class="pkg.controller.CustomersList"></bean>
+	<bean name="/app/anag/customers-dett.htm" class="pkg.controller.CustomersDett"></bean>
+	<!-- Gestione Negozi -->
+	<bean name="/app/anag/stores-list.htm" class="pkg.controller.StoresList"></bean>
+	<bean name="/app/anag/stores-dett.htm" class="pkg.controller.StoresDett"></bean>
+	<bean name="/app/anag/stores-google.htm" class="pkg.controller.StoresGoogle"></bean>
+	<bean name="/app/anag/stores-google-dett.htm" class="pkg.controller.StoresGoogleDett"></bean>
+	<!-- Gestione Devices -->
+	<bean name="/app/anag/devices-list.htm" class="pkg.controller.DevicesList"></bean>
+	<bean name="/app/anag/devices-dett.htm" class="pkg.controller.DevicesDett"></bean>
+	<bean name="/app/popup/device-lines.htm" class="pkg.controller.DeviceLines"></bean>
+	<!-- Lista Log -->
+	<bean name="/app/config/access-log.htm" class="pkg.controller.AccessLog"></bean>
+	<!-- Mobile Licence -->
+	<bean name="/app/licence/licence-list.htm" class="pkg.controller.LicenceList"></bean>
+	<bean name="/app/licence/licence-dett.htm" class="pkg.controller.LicenceDett"></bean>
+	
+	
+	
+	
+	<!-- ************* -->
+	<!-- Analytics     -->
+	<!-- Login-analytics -->
+	<bean name="/login-analytics.htm" class="pkg.controller.LoginAnalytics"></bean>
+	<!-- Desk -->
+	<bean name="/analytics/main/index.htm" class="pkg.analytics.Desk"></bean>
+	<!-- Inactive Alarms -->
+	<bean name="/app/report/inactive-alarms-list.htm" class="pkg.analytics.InactiveAlarmsList"></bean>
+	<!-- Report -->
+	<bean name="/app/report/report1-1.htm" class="pkg.analytics.Report1_1"></bean>
+	<bean name="/app/report/report1-3.htm" class="pkg.analytics.Report1_3"></bean>
+	<bean name="/app/report/report2-2.htm" class="pkg.analytics.Report2_2"></bean>
+	<bean name="/app/report/report2-4.htm" class="pkg.analytics.Report2_4"></bean>
+	<!-- Gestione Allarmi -->
+	<bean name="/app/anag/alarm-list.htm" class="pkg.analytics.AlarmList"></bean>
+	<bean name="/app/anag/alarm-dett.htm" class="pkg.analytics.AlarmDett"></bean>
+	<!-- Dettaglio Device -->
+	<bean name="/app/anag/device-detail-ric.htm" class="pkg.analytics.DeviceDetailRic"></bean>
+	<bean name="/app/anag/device-detail-list.htm" class="pkg.analytics.DeviceDetailList"></bean>
+	<!-- Lista Aree -->
+	<bean name="/app/anag/aree-stores-list.htm" class="pkg.analytics.AreeStoresList"></bean>
+	<bean name="/app/anag/aree-list.htm" class="pkg.analytics.AreeList"></bean>
+	<bean name="/app/anag/aree-dett.htm" class="pkg.analytics.AreeDett"></bean>
+	<!-- Relazione Clienti Allarmi -->
+	<bean name="/app/rel/rel_customer_alarms-list.htm" class="pkg.analytics.RelCustomerAlarmsList"></bean>
+	<!-- Relazione Device Allarmi -->
+	<bean name="/app/rel/rel_device_alarms-list.htm" class="pkg.analytics.RelDeviceAlarmsList"></bean>
+	<!-- Relazione Device Allarmi -->
+	<bean name="/app/rel/rel_report_user-list.htm" class="pkg.analytics.RelReportUserList"></bean>
+	<!-- Relazione Trigger Utente -->
+	<bean name="/app/rel/rel_trigger_user-list.htm" class="pkg.analytics.RelAlarmTriggerUserList"></bean>
+	<!-- Relazione Utente Clienti -->
+	<bean name="/app/rel/rel_user_customers-list.htm" class="pkg.analytics.RelUserCustomersList"></bean>
+	<!-- Relazione Utente Negozi-->
+	<bean name="/app/rel/rel_user_stores-list.htm" class="pkg.analytics.RelUserStoresList"></bean>
+	<!-- Alarm Triggers -->
+	<bean name="/app/report/alarm-trigger-list.htm" class="pkg.analytics.AlarmTriggerList"></bean>
+	<bean name="/app/report/alarm-trigger-dett.htm" class="pkg.analytics.AlarmTriggerDett"></bean>
+	<!-- Aree Report -->
+	<bean name="/app/report/aree-report.htm" class="pkg.analytics.AreeReport"></bean>
+	<bean name="/app/report/aree-report-esegui.htm" class="pkg.analytics.AreeReportEsegui"></bean>
+	<bean name="/app/report/aree-report-esegui2.htm" class="pkg.analytics.AreeReportEsegui2"></bean>
+	<bean name="/app/report/aree-report-esegui3.htm" class="pkg.analytics.AreeReportEsegui3"></bean>
+	<!-- Configuratore Report Statico -->
+	<bean name="/app/report/static-report-config.htm" class="pkg.analytics.StaticReportConfig"></bean>
+	<bean name="/app/report/static-report-config-list.htm" class="pkg.analytics.StaticReportConfigList"></bean>
+	<bean name="/app/report/static-report-config-dett.htm" class="pkg.analytics.StaticReportConfigDett"></bean>
+	<!-- Crea Report -->
+	<bean name="/app/report/report-create.htm" class="pkg.analytics.ReportCreate"></bean>
+	<bean name="/app/report/report-list.htm" class="pkg.analytics.ReportList"></bean>
+	
+	<!-- ************* -->
+	<!-- Counter     -->
+	<!-- Login-counter -->
+	<bean name="/login-counter.htm" class="pkg.controller.LoginCounter"></bean>
+	<!-- Desk -->
+	<bean name="/counter/main/index.htm" class="pkg.counter.Desk"></bean>
+	<bean name="/counter/main/index2.htm" class="pkg.counter.Desk2"></bean>
+	<!-- Adjustment Factor -->
+	<bean name="/counter/report/adjustment-factor-list.htm" class="pkg.counter.AdjustmentFactorList"></bean>
+	<!-- Relazione Utente Clienti -->
+	<bean name="/counter/rel/rel_user_customers-list.htm" class="pkg.counter.RelUserCustomersList"></bean>
+	<!-- Relazione Utente Negozi-->
+	<bean name="/counter/rel/rel_user_stores-list.htm" class="pkg.counter.RelUserStoresList"></bean>
+	<!-- Report -->
+	<bean name="/counter/report/report-counter.htm" class="pkg.counter.ReportCounter"></bean>
+	<bean name="/counter/report/report-counter2.htm" class="pkg.counter.ReportCounter2"></bean>
+	<!-- Template List -->
+	<bean name="/counter/anag/template-list.htm" class="pkg.counter.TemplateList"></bean>
+	<bean name="/counter/anag/template-dett.htm" class="pkg.counter.TemplateDett"></bean>
+	<!-- Hours List -->
+	<bean name="/counter/anag/hour-list.htm" class="pkg.counter.HourList"></bean>
+	<!-- Hours Dett -->
+	<bean name="/counter/anag/hour-dett.htm" class="pkg.counter.HourDett"></bean>
+	<!-- Devices List -->
+	<bean name="/counter/anag/devices-list.htm" class="pkg.counter.DevicesList"></bean>
+	<!-- Weekly Report -->
+	<bean name="/counter/report/weekly-report.htm" class="pkg.counter.WeeklyReport"></bean>
+	<bean name="/counter/report/weekly-report-counter.htm" class="pkg.counter.WeeklyReportCounter"></bean>
+	
+	<bean name="/counter/report/weekly-report2.htm" class="pkg.counter.WeeklyReport2"></bean>
+	<bean name="/counter/report/weekly-report-counter2.htm" class="pkg.counter.WeeklyReportCounter2"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- Control     -->
+	<!-- Login-control -->
+	<bean name="/login-control.htm" class="pkg.controller.LoginControl"></bean>
+	<!-- Desk -->
+	<bean name="/control/main/index.htm" class="pkg.control.Desk"></bean>
+	<!-- Router -->
+	<bean name="/app/anag/router-list.htm" class="pkg.control.RouterList"></bean>
+	<bean name="/app/anag/router-dett.htm" class="pkg.control.RouterDett"></bean>
+	<!-- Desk Beta-->
+	<bean name="/control/main/index2.htm" class="pkg.control.Desk2"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- RFID     -->
+	<!-- Login-rfid -->
+	<bean name="/login-rfid.htm" class="pkg.controller.LoginRfid"></bean>
+	<!-- Desk -->
+	<bean name="/rfid2/main/index.htm" class="pkg.rfid2.Desk"></bean>
+	<!-- Clients -->
+	<bean name="/rfid2/anag/clients-list.htm" class="pkg.rfid2.ClientsList"></bean>
+	<bean name="/rfid2/anag/clients-dett.htm" class="pkg.rfid2.ClientsDett"></bean>
+	<!-- Readers -->
+	<bean name="/rfid2/anag/readers-list.htm" class="pkg.rfid2.ReadersList"></bean>
+	<bean name="/rfid2/anag/readers-dett.htm" class="pkg.rfid2.ReadersDett"></bean>
+	<bean name="/rfid2/anag/readers-config.htm" class="pkg.rfid2.ReaderConfigList"></bean>
+	<bean name="/rfid2/anag/readers-config-dett.htm" class="pkg.rfid2.ReaderConfigDett"></bean>
+	<!-- Sites -->
+	<bean name="/rfid2/anag/sites-list.htm" class="pkg.rfid2.SitesList"></bean>
+	<bean name="/rfid2/anag/sites-dett.htm" class="pkg.rfid2.SitesDett"></bean>
+	<bean name="/rfid2/anag/sites-location-list.htm" class="pkg.rfid2.SitesLocationList"></bean>
+	<bean name="/rfid2/anag/sites-location-dett.htm" class="pkg.rfid2.SitesLocationDett"></bean>
+	
+	<!-- Flow -->
+	<bean name="/rfid2/anag/flow-list.htm" class="pkg.rfid2.FlowList"></bean>
+	<bean name="/rfid2/anag/flow-dett.htm" class="pkg.rfid2.FlowDett"></bean>
+	
+	<!-- Grouped_step -->
+	<bean name="/rfid2/anag/grouped-step-list.htm" class="pkg.rfid2.GroupedStepList"></bean>
+	<bean name="/rfid2/anag/grouped-step-dett.htm" class="pkg.rfid2.GroupedStepDett"></bean>
+	
+	<!-- Documents -->
+	<bean name="/rfid2/docs/documents-list.htm" class="pkg.rfid2.DocumentsList"></bean>
+	<bean name="/rfid2/docs/documents-dett.htm" class="pkg.rfid2.DocumentsDett"></bean>
+	<bean name="/rfid2/docs/documents-print.htm" class="pkg.rfid2.DocumentsPrint"></bean>
+	<bean name="/rfid2/docs/documents-print-sku.htm" class="pkg.rfid2.DocumentsPrintSku"></bean>
+	<bean name="/rfid2/docs/documents-new.htm" class="pkg.rfid2.DocumentsNew"></bean>
+	<bean name="/rfid2/docs/documents-create.htm" class="pkg.rfid2.DocumentsCreate"></bean>
+	
+	<!-- Customer Reason -->
+	<bean name="/rfid2/cus/customer-reason-list.htm" class="pkg.rfid2.CustomerReasonList"></bean>
+	<bean name="/rfid2/cus/customer-reason-dett.htm" class="pkg.rfid2.CustomerReasonDett"></bean>
+	<!-- Location Type -->
+	<bean name="/rfid2/config/loctype-list.htm" class="pkg.rfid2.LoctypeList"></bean>
+	<bean name="/rfid2/config/loctype-dett.htm" class="pkg.rfid2.LoctypeDett"></bean>
+	<!-- Step Type -->
+	<bean name="/rfid2/config/step-type-list.htm" class="pkg.rfid2.StepTypeList"></bean>
+	<bean name="/rfid2/config/step-type-dett.htm" class="pkg.rfid2.StepTypeDett"></bean>
+	<!-- Reason -->
+	<bean name="/rfid2/config/reason-list.htm" class="pkg.rfid2.ReasonList"></bean>
+	<bean name="/rfid2/config/reason-dett.htm" class="pkg.rfid2.ReasonDett"></bean>
+	<!-- Document Type -->
+	<bean name="/rfid2/config/doctype-list.htm" class="pkg.rfid2.DoctypeList"></bean>
+	<bean name="/rfid2/config/doctype-dett.htm" class="pkg.rfid2.DoctypeDett"></bean>
+	<!-- Printers -->
+	<bean name="/rfid2/printer/printers-list.htm" class="pkg.rfid2.PrintersList"></bean>
+	<bean name="/rfid2/printer/printers-dett.htm" class="pkg.rfid2.PrintersDett"></bean>
+	<!-- Printers Templates -->
+	<bean name="/rfid2/printer/templates-list.htm" class="pkg.rfid2.TemplatesList"></bean>
+	<bean name="/rfid2/printer/templates-dett.htm" class="pkg.rfid2.TemplatesDett"></bean>
+	
+	<!-- Transact -->
+	<bean name="/rfid2/transact/import-log.htm" class="pkg.rfid2.ImportLog"></bean>
+	<!-- Stock -->
+	<bean name="/rfid2/stock/stock-list.htm" class="pkg.rfid2.StockList"></bean>
+	<bean name="/rfid2/stock/stock-site.htm" class="pkg.rfid2.StockSite"></bean>
+	<bean name="/rfid2/stock/stock-search.htm" class="pkg.rfid2.StockSearch"></bean>
+	
+	<!-- Document Destination -->
+	<bean name="/rfid2/docs/docdest-list.htm" class="pkg.rfid2.DocDestList"></bean>
+	<bean name="/rfid2/docs/docdest-dett.htm" class="pkg.rfid2.DocDestDett"></bean>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- Desk -->
+	<bean name="/rfid/main/index.htm" class="pkg.rfid.Desk"></bean>
+	<!-- Rel User Devices -->
+	<bean name="/rfid/rel/rel_user_devices.htm" class="pkg.rfid.RelUserDevices"></bean>
+	<!-- Documents -->
+	<bean name="/rfid/docs/docs-list.htm" class="pkg.rfid.DocumentsList"></bean>
+	<bean name="/rfid/docs/docs-dett.htm" class="pkg.rfid.DocumentsDett"></bean>
+	<!-- Products -->
+	<bean name="/rfid/anag/products-list.htm" class="pkg.rfid.ProductsList"></bean>
+	<!-- Devices -->
+	<bean name="/rfid/anag/devices-list.htm" class="pkg.rfid.DevicesList"></bean>
+	<bean name="/rfid/anag/devices-dett.htm" class="pkg.rfid.DevicesDett"></bean>
+	<!-- Search Docs -->
+	<bean name="/rfid/docs/search-docs.htm" class="pkg.rfid.SearchDocs"></bean>
+	<!-- Document-list -->
+	<bean name="/rfid/main/document-list.htm" class="pkg.rfid.DocumentList"></bean>
+	<!-- Document-Dett -->
+	<bean name="/rfid/main/document-dett.htm" class="pkg.rfid.DocumentDett"></bean>
+	
+	
+	<!-- -->
+	<!-- Flow -->
+	<bean name="/rfid/anag/flow-list.htm" class="pkg.rfid.FlowList"></bean>
+	<bean name="/rfid/anag/flow-dett.htm" class="pkg.rfid.FlowDett"></bean>
+	<bean name="/rfid/anag/flow-step.htm" class="pkg.rfid.FlowStep"></bean>
+	<bean name="/rfid/anag/step-dett.htm" class="pkg.rfid.StepDett"></bean>
+	<!-- Device Type -->
+	<bean name="/rfid/anag/device_type-list.htm" class="pkg.rfid.DeviceTypeList"></bean>
+	<bean name="/rfid/anag/device_type-dett.htm" class="pkg.rfid.DeviceTypeDett"></bean>
+	<!-- Documents Type -->
+	<bean name="/rfid/anag/documents_type-list.htm" class="pkg.rfid.DocumentsTypeList"></bean>
+	<bean name="/rfid/anag/documents_type-dett.htm" class="pkg.rfid.DocumentsTypeDett"></bean>
+	<!-- Warehouse -->
+	<bean name="/rfid/anag/warehouse-list.htm" class="pkg.rfid.WarehouseList"></bean>
+	<bean name="/rfid/anag/warehouse-dett.htm" class="pkg.rfid.WarehouseDett"></bean>
+	<!-- Location -->
+	<bean name="/rfid/anag/location-list.htm" class="pkg.rfid.LocationList"></bean>
+	<bean name="/rfid/anag/location-dett.htm" class="pkg.rfid.LocationDett"></bean>
+	<!-- Location Type-->
+	<bean name="/rfid/anag/loctype-list.htm" class="pkg.rfid.LoctypeList"></bean>
+	<bean name="/rfid/anag/loctype-dett.htm" class="pkg.rfid.LoctypeDett"></bean>
+	<!-- Step Type -->
+	<bean name="/rfid/anag/step_type-list.htm" class="pkg.rfid.StepTypeList"></bean>
+	<bean name="/rfid/anag/step_type-dett.htm" class="pkg.rfid.StepTypeDett"></bean>
+	<!-- Rel Device Step -->
+	<bean name="/rfid/rel/rel_dev_step.htm" class="pkg.rfid.RelDevtypeStep"></bean>
+	<bean name="/rfid/rel/devtype-step-config.htm" class="pkg.rfid.DevtypeStepConfig"></bean>
+	<!-- Function Type -->
+	<bean name="/rfid/anag/funtype-list.htm" class="pkg.rfid.FuntypeList"></bean>
+	<bean name="/rfid/anag/funtype-dett.htm" class="pkg.rfid.FuntypeDett"></bean>
+	<!-- Functions -->
+	<bean name="/rfid/anag/functions-list.htm" class="pkg.rfid.FunctionsList"></bean>
+	<bean name="/rfid/anag/functions-dett.htm" class="pkg.rfid.FunctionsDett"></bean>
+    <!-- TestTransact -->
+    <bean name="/rfid/test/testTransact.htm" class="pkg.rfid.TestTransact"></bean>
+	
+	<!-- ************* -->
+	<!-- DISPATCHER     -->
+	<!-- Login-dispatcher -->
+	<bean name="/login-dispatcher.htm" class="pkg.controller.LoginDispatcher"></bean>
+	<!-- Desk -->
+	<bean name="/disp/main/index.htm" class="pkg.disp.Desk"></bean>
+	<bean name="/disp/main/folder-list.htm" class="pkg.disp.FolderList"></bean>
+	<bean name="/disp/main/folder-dett.htm" class="pkg.disp.FolderDett"></bean>
+	<bean name="/disp/main/visit-list.htm" class="pkg.disp.VisitList"></bean>
+	<bean name="/disp/main/visit-dett.htm" class="pkg.disp.VisitDett"></bean>
+	<!-- Events List -->
+	<bean name="/disp/main/events-list.htm" class="pkg.disp.EventsList"></bean>
+	<bean name="/disp/main/events-dett.htm" class="pkg.disp.EventsDett"></bean>
+	
+	<!-- Drivers List -->
+	<bean name="/disp/main/drivers-list.htm" class="pkg.disp.DriversList"></bean>
+	<bean name="/disp/main/drivers-dett.htm" class="pkg.disp.DriversDett"></bean>
+	
+	<!-- Rel Drivers Events -->
+	<bean name="/disp/rel/rel-drivers-events.htm" class="pkg.disp.RelDriversEvents"></bean>
+	<bean name="/disp/rel/rel-events-kpi.htm" class="pkg.disp.RelEventsKpi"></bean>
+	
+
+	<!-- Properties -->
+    <bean name="/disp/config/properties.htm" class="pkg.disp.Properties"></bean>
+    <!-- Proxy Rules -->
+    <bean name="/disp/config/proxyrules.htm" class="pkg.disp.ProxyRules"></bean>
+    <!-- Proxy Rules -->
+    <bean name="/disp/config/dispatcherrules.htm" class="pkg.disp.DispatcherRules"></bean>
+    <!-- Doors -->
+    <bean name="/disp/config/doors-list.htm" class="pkg.disp.DoorsList"></bean>
+    
+
+	<!-- white/black List -->
+	<bean name="/disp/main/white-list.htm" class="pkg.disp.WhiteList"></bean>
+	<bean name="/disp/main/white-dett.htm" class="pkg.disp.whiteDett"></bean> 
+	<bean name="/disp/main/black-list.htm" class="pkg.disp.BlackList"></bean>
+	<bean name="/disp/main/black-dett.htm" class="pkg.disp.blackDett"></bean>    
+
+	<!-- Import File Type -->
+	<bean name="/disp/main/import-file-type.htm" class="pkg.disp.ImportFileType"></bean>
+	<bean name="/disp/main/import-file-type-dett.htm" class="pkg.disp.ImportFileTypeDett"></bean>
+	   
+    
+    <!-- ************* -->
+	<!-- SMARTDATA (Analytics 2.0)     -->
+	<!-- Login-analytics2 -->
+	<bean name="/login-analytics2.htm" class="pkg.controller.LoginAnalytics2"></bean>
+	<!-- Desk -->
+	<bean name="/analytics2/main/index.htm" class="pkg.analytics2.Desk"></bean>
+    <bean name="/analytics2/main/index-report.htm" class="pkg.analytics2.DeskReport"></bean>
+    <bean name="/analytics2/main/index-report-comparison.htm" class="pkg.analytics2.DeskReportComparison"></bean>
+    <bean name="/analytics2/main/index-report-advanced.htm" class="pkg.analytics2.DeskReportAdvanced"></bean>
+    <bean name="/analytics2/main/index-report-devices.htm" class="pkg.analytics2.DeskReportDevices"></bean>
+    <bean name="/analytics2/main/index-report-devices-modal.htm" class="pkg.analytics2.DeskReportDevicesModal"></bean>
+    
+    <!-- Data Export -->
+    <bean name="/analytics2/main/data-export.htm" class="pkg.analytics2.DataExport"></bean>
+    
+    <!-- Financial Calendar -->
+	<bean name="/analytics2/config/financial-calendar.htm" class="pkg.analytics2.FinancialCalendarList"></bean>
+    <bean name="/analytics2/config/financial-calendar-dett.htm" class="pkg.analytics2.FinancialCalendarDett"></bean>
+    <bean name="/analytics2/config/financial-calendar-month.htm" class="pkg.analytics2.FinancialCalendarMonth"></bean>
+    <bean name="/analytics2/config/financial-calendar-week.htm" class="pkg.analytics2.FinancialCalendarWeek"></bean>
+    
+    <!-- Rel User KPI -->
+	<bean name="/analytics2/rel/rel_user_kpi-list.htm" class="pkg.analytics2.RelUserKpiList"></bean>
+    <!-- Rel Customer KPI -->
+	<bean name="/analytics2/rel/rel_cus_kpi-list.htm" class="pkg.analytics2.RelCusKpiList"></bean>
+    <!-- KPI List / Dett -->
+    <bean name="/analytics2/anag/kpi-list.htm" class="pkg.analytics2.KpiList"></bean>
+    <bean name="/analytics2/anag/kpi-dett.htm" class="pkg.analytics2.KpiDett"></bean>
+    <!-- Alarm Triggers -->
+	<bean name="/analytics2/config/alarm-trigger-list.htm" class="pkg.analytics2.AlarmTriggerList"></bean>
+	<bean name="/analytics2/config/alarm-trigger-dett.htm" class="pkg.analytics2.AlarmTriggerDett"></bean>
+	<!-- Active Alarms -->
+	<bean name="/analytics2/main/active-alarms-list.htm" class="pkg.analytics2.ActiveAlarmsList"></bean>
+    <bean name="/analytics2/main/silenced-alarms-list.htm" class="pkg.analytics2.SilencedAlarmsList"></bean>
+    
+	
+	<!-- ************* -->
+	<!-- HEB (Analytics 2.0 per Holland & Barret)     -->
+	<!-- Login-hb -->
+	<bean name="/login-hb.htm" class="pkg.controller.LoginHb"></bean>
+	<!-- Desk -->
+	<bean name="/hb/main/index.htm" class="pkg.hb.Desk"></bean>
+    <bean name="/hb/main/index-report.htm" class="pkg.hb.DeskReport"></bean>
+    <bean name="/hb/main/index-report-comparison.htm" class="pkg.hb.DeskReportComparison"></bean>
+    <bean name="/hb/main/index-report-advanced.htm" class="pkg.hb.DeskReportAdvanced"></bean>
+    <bean name="/hb/main/index-report-devices.htm" class="pkg.hb.DeskReportDevices"></bean>
+    <bean name="/hb/main/index-report-devices-modal.htm" class="pkg.hb.DeskReportDevicesModal"></bean>
+    
+    <!-- Data Export -->
+    <bean name="/hb/main/data-export.htm" class="pkg.hb.DataExport"></bean>
+    
+    <!-- Financial Calendar -->
+	<bean name="/hb/config/financial-calendar.htm" class="pkg.hb.FinancialCalendarList"></bean>
+    <bean name="/hb/config/financial-calendar-dett.htm" class="pkg.hb.FinancialCalendarDett"></bean>
+    <bean name="/hb/config/financial-calendar-month.htm" class="pkg.hb.FinancialCalendarMonth"></bean>
+    <bean name="/hb/config/financial-calendar-week.htm" class="pkg.hb.FinancialCalendarWeek"></bean>
+    
+    <!-- Rel User KPI -->
+	<bean name="/hb/rel/rel_user_kpi-list.htm" class="pkg.hb.RelUserKpiList"></bean>
+    <!-- Rel Customer KPI -->
+	<bean name="/hb/rel/rel_cus_kpi-list.htm" class="pkg.hb.RelCusKpiList"></bean>
+    <!-- KPI List / Dett -->
+    <bean name="/hb/anag/kpi-list.htm" class="pkg.hb.KpiList"></bean>
+    <bean name="/hb/anag/kpi-dett.htm" class="pkg.hb.KpiDett"></bean>
+    <!-- Alarm Triggers -->
+	<bean name="/hb/config/alarm-trigger-list.htm" class="pkg.hb.AlarmTriggerList"></bean>
+	<bean name="/hb/config/alarm-trigger-dett.htm" class="pkg.hb.AlarmTriggerDett"></bean>
+	<!-- Active Alarms -->
+	<bean name="/hb/main/active-alarms-list.htm" class="pkg.hb.ActiveAlarmsList"></bean>
+    <bean name="/hb/main/silenced-alarms-list.htm" class="pkg.hb.SilencedAlarmsList"></bean>
+    
+	
+	
+	<!-- ************* -->
+	<!-- HR     -->
+	<!-- Login-hr -->
+	<bean name="/login-hr.htm" class="pkg.controller.LoginHR"></bean>
+	<!-- Desk -->
+	<bean name="/hr/main/index.htm" class="pkg.HR.Desk"></bean>
+	
+	
+	<!-- Config -->
+	<bean name="/hr/config/function-list.htm" class="pkg.HR.FunctionList"></bean>
+	<bean name="/hr/config/tables-list.htm" class="pkg.HR.TablesList"></bean>
+	<bean name="/hr/config/notification-list.htm" class="pkg.HR.NotificationList"></bean>
+	<bean name="/hr/config/users-list.htm" class="pkg.HR.UsersList"></bean>
+	<bean name="/hr/config/users-dett.htm" class="pkg.HR.UsersDett"></bean>
+	<bean name="/hr/config/reluseremp-list.htm" class="pkg.HR.RelUserEmpList"></bean>
+	<bean name="/hr/config/reluseremp-dett.htm" class="pkg.HR.RelUserEmpDett"></bean>
+	
+	<!-- Contract -->
+	<bean name="/hr/contract/contract-list.htm" class="pkg.HR.ContractList"></bean>
+	<bean name="/hr/contract/contract-dett.htm" class="pkg.HR.ContractDett"></bean>
+
+	<!-- Employee -->
+	<bean name="/hr/employee/emp-list.htm" class="pkg.HR.EmployeeList"></bean>
+	<bean name="/hr/employee/emp-dett.htm" class="pkg.HR.EmployeeDett"></bean>
+	
+	<!-- HR Roles -->
+	<bean name="/hr/employee/roles-list.htm" class="pkg.HR.RolesList"></bean>
+	<bean name="/hr/employee/roles-dett.htm" class="pkg.HR.RolesDett"></bean>
+	 
+	<!-- Department -->
+	<bean name="/hr/department/dep-list.htm" class="pkg.HR.DepartmentList"></bean>
+	<bean name="/hr/department/dep-dett.htm" class="pkg.HR.DepartmentDett"></bean>
+	
+	<!-- Badges -->
+	<bean name="/hr/employee/badges-list.htm" class="pkg.HR.BadgesList"></bean>
+	<bean name="/hr/employee/badges-dett.htm" class="pkg.HR.BadgesDett"></bean>
+	
+	<!-- RelDepEmp -->
+	<bean name="/hr/employee/reldepemp-list.htm" class="pkg.HR.RelDepEmpList"></bean>
+	<bean name="/hr/employee/reldepemp-dett.htm" class="pkg.HR.RelDepEmpDett"></bean>
+	
+	<!-- RelEmpBad -->
+	<bean name="/hr/employee/relempbad-list.htm" class="pkg.HR.RelEmpBadList"></bean>
+	<bean name="/hr/employee/relempbad-dett.htm" class="pkg.HR.RelEmpBadDett"></bean>
+	
+	<!-- Planner -->
+	<bean name="/hr/planner/planner-ric.htm" class="pkg.HR.PlannerRic"></bean>
+	<bean name="/hr/planner/planner-ric-test.htm" class="pkg.HR.PlannerRicTest"></bean>
+	
+	<bean name="/hr/planner/planner-list.htm" class="pkg.HR.PlannerList"></bean>
+	
+	<bean name="/hr/planner/planner-list2.htm" class="pkg.HR.PlannerList2"></bean>
+	
+	<!-- Planification-type -->
+	<bean name="/hr/planner/planification-type-list.htm" class="pkg.HR.PlanificationTypeList"></bean>
+	<bean name="/hr/planner/planification-type-dett.htm" class="pkg.HR.PlanificationTypeDett"></bean>
+	
+	<!-- Planification -->
+	<bean name="/hr/planner/planification-ric.htm" class="pkg.HR.PlanificationRic"></bean>
+	<bean name="/hr/planner/planification-list.htm" class="pkg.HR.PlanificationList"></bean>
+	<bean name="/hr/planner/planification-dett.htm" class="pkg.HR.PlanificationDett"></bean>
+	
+	<!-- Minnum_employee -->
+	<bean name="/hr/planner/minnum_employee-list.htm" class="pkg.HR.Minnum_employeeList"></bean>
+	<bean name="/hr/planner/minnum_employee-dett.htm" class="pkg.HR.Minnum_employeeDett"></bean>
+	
+	<!-- Clocking -->
+	<bean name="/hr/control/clocking-ric.htm" class="pkg.HR.ClockingRic"></bean>
+	<bean name="/hr/control/clocking-list.htm" class="pkg.HR.ClockingList"></bean>
+	<bean name="/hr/control/clocking-daapp-ric.htm" class="pkg.HR.ClockingDaAppRic"></bean>
+	<bean name="/hr/control/clocking-daapp-list.htm" class="pkg.HR.ClockingDaAppList"></bean>
+	
+	<!-- Control -->
+	<bean name="/hr/control/control-ric.htm" class="pkg.HR.ControlRic"></bean>
+	<bean name="/hr/control/control-list.htm" class="pkg.HR.ControlList"></bean>
+	<bean name="/hr/control/control-day-list.htm" class="pkg.HR.ControlDayList"></bean>
+	
+	<!-- Control Planification -->
+	<bean name="/hr/control/control-plan-ric.htm" class="pkg.HR.ControlPlanRic"></bean>
+	<bean name="/hr/control/control-plan-list.htm" class="pkg.HR.ControlPlanList"></bean>
+	
+	<!-- Stampa Planification -->
+	<bean name="/hr/planner/planner-stampa.htm" class="pkg.HR.PlannerStampa"></bean>
+	
+	<!-- PlannerList2Day -->
+	<bean name="/hr/planner/planner-list2Day.htm" class="pkg.HR.PlannerList2Day"></bean>
+	
+	<!-- PlannerList2Day -->
+	<bean name="/hr/main/notifiche.htm" class="pkg.HR.Notifiche"></bean>
+	
+	<!-- PlanerRedirect -->
+	<bean name="/plannerRedirect.htm" class="pkg.HR.PlannerRedirect"></bean>
+	
+	<!-- PlannerListTab -->
+	<bean name="/hr/planner/planner-list-tab.htm" class="pkg.HR.PlannerListTab"></bean>
+	<bean name="/hr/planner/planner-list-tabDay.htm" class="pkg.HR.PlannerListTabDay"></bean>
+	
+	<!-- PlannerListTab2 -->
+	<bean name="/hr/planner/planner-list-tab2.htm" class="pkg.HR.PlannerListTab2"></bean>
+	<bean name="/hr/planner/planner-list-tab2Day.htm" class="pkg.HR.PlannerListTab2Day"></bean>
+	
+	<!-- PlannerListTab3 -->
+	<bean name="/hr/planner/planner-list-tab3.htm" class="pkg.HR.PlannerListTab3"></bean>
+	<bean name="/hr/planner/planner-list-tab3Day.htm" class="pkg.HR.PlannerListTab3Day"></bean>
+	<bean name="/hr/planner/planner-list-tab3Tot.htm" class="pkg.HR.PlannerListTab3Tot"></bean>
+	
+	
+	
+	<bean name="/hr/planner2/planner.htm" class="pkg.HR.Planner"></bean>
+	<bean name="/hr/planner2/plannerDay.htm" class="pkg.HR.PlannerDay"></bean>
+	<bean name="/hr/planner2/plannerTot.htm" class="pkg.HR.PlannerTot"></bean>
+	<bean name="/hr/planner2/plannerTotStampa.htm" class="pkg.HR.PlannerTotStampa"></bean>
+	<bean name="/hr/planner2/plannerEmployee.htm" class="pkg.HR.PlannerEmployee"></bean>
+	<bean name="/hr/planner2/planner-stampa.htm" class="pkg.HR.PlannerStampa2"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- SmartPOS    -->
+	<!-- Login-pos -->
+	<bean name="/login-pos.htm" class="pkg.controller.LoginPos"></bean>
+	<!-- Desk -->
+	<bean name="/pos/main/index.htm" class="pkg.pos.Desk"></bean>
+	
+		<!-- ZPL  -->
+	<bean name="/pos/main/printer.htm" class="pkg.pos.printer"></bean>
+    <bean name="/pos/main/printerlist.htm" class="pkg.pos.printerlist"></bean>	
+    <bean name="/pos/main/giftcard.htm" class="pkg.pos.giftcard"></bean>
+    <bean name="/pos/main/transfer.htm" class="pkg.pos.transfer"></bean>	
+	<bean name="/pos/main/store-list.htm" class="pkg.pos.storelist"></bean>
+	<bean name="/pos/main/store-list-add.htm" class="pkg.pos.storelistadd"></bean>
+	<bean name="/pos/main/report-list.htm" class="pkg.pos.reportlist"></bean>
+	<bean name="/pos/main/report-list-add.htm" class="pkg.pos.reportlistadd"></bean>
+	<bean name="/pos/main/store-list-dett.htm" class="pkg.pos.storelistdett"></bean>
+	<bean name="/pos/main/store-mess-send.htm" class="pkg.pos.storemesssend"></bean>
+	<bean name="/pos/main/status.htm" class="pkg.pos.Status"></bean>
+	<bean name="/pos/main/stock.htm" class="pkg.pos.Stock"></bean>
+	<bean name="/pos/main/salessituation.htm" class="pkg.pos.salessituation"></bean>
+	<bean name="/pos/main/closecash.htm" class="pkg.pos.closecash"></bean>
+	<bean name="/pos/main/documents.htm" class="pkg.pos.documents"></bean>
+	<bean name="/pos/main/fidelity-card.htm" class="pkg.pos.Fidelitycard"></bean>
+	<bean name="/pos/main/fidelity-card-new.htm" class="pkg.pos.Fidelitycardnew"></bean>
+	<bean name="/pos/main/fidelity-card-upd.htm" class="pkg.pos.Fidelitycardupd"></bean>
+	<bean name="/pos/main/vendite.htm" class="pkg.pos.Vendite"></bean>
+	<bean name="/pos/main/importexcel.htm" class="pkg.pos.Importexcel"></bean>
+	<bean name="/pos/main/view-import.htm" class="pkg.pos.Viewimport"></bean>
+	<bean name="/pos/main/caricopunti.htm" class="pkg.pos.Caricopunti"></bean>
+	<bean name="/pos/main/scaricopunti.htm" class="pkg.pos.Scaricopunti"></bean>
+	<bean name="/pos/main/saldo.htm" class="pkg.pos.Saldo"></bean>
+	<bean name="/pos/main/settingspunti.htm" class="pkg.pos.Settingspunti"></bean>
+	<bean name="/pos/main/view-price.htm" class="pkg.pos.Viewprice"></bean>
+	<bean name="/pos/main/view-category.htm" class="pkg.pos.Viewcategory"></bean>
+	<bean name="/pos/main/ws.htm" class="pkg.pos.ws"></bean>
+
+	<!-- Billing -->
+	<!-- Payment Type -->
+	<bean name="/app/billing/payment_type-list.htm" class="pkg.billing.PaymentTypeList"></bean>
+	<bean name="/app/billing/payment_type-dett.htm" class="pkg.billing.PaymentTypeDett"></bean>
+	
+	<!-- Card Circuits -->
+	<bean name="/app/billing/card_circuits-list.htm" class="pkg.billing.CardCircuitsList"></bean>
+	<bean name="/app/billing/card_circuits-dett.htm" class="pkg.billing.CardCircuitsDett"></bean>	
+
+	<!-- Currency -->
+	<bean name="/app/billing/currency-list.htm" class="pkg.billing.CurrencyList"></bean>
+	<bean name="/app/billing/currency-dett.htm" class="pkg.billing.CurrencyDett"></bean>	
+
+	<!-- Price Type -->
+	<bean name="/app/billing/price_list_type.htm" class="pkg.billing.PriceListType"></bean>
+	<bean name="/app/billing/price_dett_type.htm" class="pkg.billing.PriceDettType"></bean>	
+
+	<!-- Product Type -->
+	<bean name="/app/billing/products-list.htm" class="pkg.billing.ProductsList"></bean>
+	<bean name="/app/billing/products-dett.htm" class="pkg.billing.ProductsDett"></bean>
+	
+	<!-- Price List -->
+	<bean name="/app/billing/price_list.htm" class="pkg.billing.PriceList"></bean>
+	<bean name="/app/billing/price-dett.htm" class="pkg.billing.PriceDett"></bean>
+	
+	<!-- Customer Card Data -->
+	<bean name="/app/billing/customer_card_data.htm" class="pkg.billing.CustomerCardData"></bean>
+	<bean name="/app/billing/customer_card_data-dett.htm" class="pkg.billing.CustomerCardDataDett"></bean>
+	
+	<!-- Price Product List Detail -->
+	<bean name="/app/billing/price_list_detail.htm" class="pkg.billing.PriceListDetail"></bean>
+	<bean name="/app/billing/price_list_detail-dett.htm" class="pkg.billing.PriceListDetailDett"></bean>	
+    
+    
+    
+    <!-- ************* -->
+	<!-- Counter 2     -->
+	<!-- Login-counter -->
+	<bean name="/login-counter2.htm" class="pkg.controller.LoginCounter2"></bean>
+	<!-- Desk -->
+	<bean name="/counter2/main/index.htm" class="pkg.counter2.Desk"></bean>
+	<!-- Adjustment Factor -->
+	<bean name="/counter2/anag/adjustment-factor-list.htm" class="pkg.counter2.AdjustmentFactorList"></bean>
+	<!-- Report Counter -->
+	<bean name="/counter2/report/report-counter.htm" class="pkg.counter2.ReportCounter"></bean>
+	<!-- Template List -->
+	<bean name="/counter2/anag/template-list.htm" class="pkg.counter2.TemplateList"></bean>
+	<bean name="/counter2/anag/template-dett.htm" class="pkg.counter2.TemplateDett"></bean>
+	<!-- Hours List -->
+	<bean name="/counter2/anag/hour-list.htm" class="pkg.counter2.HourList"></bean>
+	<bean name="/counter2/anag/hour-dett.htm" class="pkg.counter2.HourDett"></bean>
+	<!-- Weekly Report -->
+	<bean name="/counter2/report/weekly-report.htm" class="pkg.counter2.WeeklyReport"></bean>
+	<bean name="/counter2/report/weekly-report-counter.htm" class="pkg.counter2.WeeklyReportCounter"></bean>
+	<!-- rel stores doors -->
+	<bean name="/counter2/anag/stores-list.htm" class="pkg.counter2.StoresList"></bean>
+	<bean name="/counter2/anag/doors-list.htm" class="pkg.counter2.DoorsList"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- Customer Control     -->
+	<!-- Login-customerControl -->
+	<bean name="/login-customerControl.htm" class="pkg.controller.LoginCustomerControl"></bean>
+	<!-- Desk -->
+	<bean name="/customercontrol/main/index.htm" class="pkg.customercontrol.Desk"></bean>
+	<bean name="/customercontrol/main/index-detail.htm" class="pkg.customercontrol.DeskDetail"></bean>
+	
+	
+	
+	
+	<!-- ************* -->
+	<!-- @Source     -->
+	<!-- Login-customerControl -->
+	<bean name="/login-source.htm" class="pkg.controller.LoginSource"></bean>
+	<!-- Desk -->
+	<bean name="/source/main/index.htm" class="pkg.source.Desk"></bean>
+	
+	<bean name="/source/anag/audit-list.htm" class="eu.mcsistemi.controller.AuditsController"></bean>
+	<bean name="/source/anag/items-list.htm" class="eu.mcsistemi.controller.ItemsController"></bean>
+	<bean name="/source/anag/items-dett.htm" class="eu.mcsistemi.controller.ItemsDettController"></bean>
+	<bean name="/source/anag/request-dett.htm" class="eu.mcsistemi.controller.ItemRequestDettController"></bean>
+	<bean name="/source/anag/audits-dett.htm" class="eu.mcsistemi.controller.AuditsDettController"></bean>
+	<bean name="/source/anag/audit-items.htm" class="eu.mcsistemi.controller.AuditItemsController"></bean>
+	<bean name="/source/anag/item-barcodes.htm" class="eu.mcsistemi.controller.ItemBarcodesController"></bean>
+	<bean name="/source/anag/item-photos.htm" class="eu.mcsistemi.controller.ItemPhotosController"></bean>
+	<bean name="/source/anag/request-list.htm" class="eu.mcsistemi.controller.ItemsRequestController"></bean>
+	
+	<bean name="/source/anag/vendor-list.htm" class="eu.mcsistemi.controller.VendorController"></bean>
+	<bean name="/source/anag/brand-list.htm" class="eu.mcsistemi.controller.BrandController"></bean>
+	<bean name="/source/anag/category-list.htm" class="eu.mcsistemi.controller.CategoryController"></bean>
+	
+	<bean name="/source/anag/filters.htm" class="eu.mcsistemi.controller.FiltersController"></bean>
+	
+	<!-- ************* -->
+	<!-- MSAL -->
+	<bean name="/signinV2.htm" class="eu.mcsistemi.aad.controller.SigninController"></bean>
+	<bean name="/secure/auth.htm" class="eu.mcsistemi.aad.controller.AuthController"></bean>
+	<bean name="/msal/auth.htm" class="eu.mcsistemi.aad.controller.MsalController"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- NRF     -->
+	<!-- Login-nrf -->
+	<bean name="/login-nrf.htm" class="pkg.controller.LoginNRF"></bean>
+	<!-- Desk -->
+	<bean name="/nrf/main/index.htm" class="pkg.nrf.Desk"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- POS2    -->
+	<!-- Login-pos2 -->
+	<bean name="/login-pos2.htm" class="pkg.controller.LoginPos2"></bean>
+	<!-- Desk -->
+	<bean name="/pos2/main/index.htm" class="pkg.pos2.Desk"></bean>
+	
+	<!-- Tickets -->
+	<bean name="/pos2/sales/tickets.htm" class="pkg.pos2.Tickets"></bean>
+	<!-- Sales -->
+	<bean name="/pos2/sales/sales.htm" class="pkg.pos2.Sales"></bean>
+	<!-- Fidelity -->
+	<bean name="/pos2/anag/fidelity.htm" class="pkg.pos2.Fidelity"></bean>
+	<!-- Closedcash -->
+	<bean name="/pos2/sales/closedcash.htm" class="pkg.pos2.ClosedCash"></bean>
+	<!-- Stock -->
+	<bean name="/pos2/anag/stock.htm" class="pkg.pos2.Stock"></bean>
+	<bean name="/pos2/anag/stock-detail.htm" class="pkg.pos2.StockDetail"></bean>
+	
+	
+	<!-- ************* -->
+	<!-- TMP    -->
+	<!-- Login-temperature -->
+	<bean name="/login-temperature.htm" class="pkg.controller.LoginTemperature"></bean>
+	<!-- Desk -->
+	<bean name="/temperature/main/index.htm" class="pkg.temperature.Desk"></bean>
+	
+	<!-- ************* -->
+	<!-- CNP    -->
+	<!-- Login-counterPlus -->
+	<bean name="/login-counterPlus.htm" class="pkg.controller.LoginCounterPlus"></bean>
+	<!-- Desk -->
+	<bean name="/counterPlus/main/index.htm" class="pkg.counterPlus.Desk"></bean>
+	<bean name="/counterPlus/report/report-counter.htm" class="pkg.counterPlus.ReportCounter"></bean>
+	
+	
+</beans>

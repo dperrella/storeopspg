@@ -1,0 +1,16 @@
+{
+    "dir": "ltr",
+    "lang": "it",
+    "name": "Smart Occupancy",
+    "scope": "/occupancy/main/index.jsp",
+    "display": "fullscreen",
+    "start_url": "http://suite.smartretail.it/occupancy/main/index.jsp",
+    "short_name": "Smart Occupancy",
+    "theme_color": "transparent",
+    "description": "Smart Occupancy",
+    "orientation": "landscape",
+    "background_color": "transparent",
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "icons": []
+}

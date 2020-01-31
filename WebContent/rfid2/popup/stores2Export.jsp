@@ -1,0 +1,116 @@
+<%@ page 
+language="java"
+import="pkg.properties.ReadProperties"
+import="pkg.utility.Utility"
+import="java.sql.*"
+import="java.util.ArrayList"
+import="java.util.HashMap"
+import="java.util.List"
+import="java.util.Map"
+import="pkg.beans.rfid.DocumentDetail"
+contentType="text/html; charset=ISO-8859-1"
+pageEncoding="ISO-8859-1"
+%>
+
+<% 
+//Legge il file di properties associato alla lingua sul profilo
+ReadProperties propLang = new ReadProperties(session.getAttribute("language").toString()+".properties");
+String table="";
+%>
+
+<div class="modal-dialog">
+  <div class="modal-content">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();">&times;</a>
+		<h3 class="font-thin">Stores2 Export</h3>
+	</div>
+	<div class="modal-body">
+
+<%	
+	// **********************************************************
+	// Connessione al DATABASE
+	Connection conn = null;
+	List<DocumentDetail> doc = new ArrayList<DocumentDetail>();
+	doc.clear();
+	try
+	{
+		conn = Utility.getConnRfid();
+		
+		int iddoc = Integer.parseInt(request.getParameter("iddoc"));
+		String doc_ref = request.getParameter("doc_ref");
+		
+		boolean diff = false;
+		
+		doc = DocumentDetail.getDocumentsDetailByIdDocument(conn, iddoc, diff, "SKU");
+		
+		String $sku="";
+		int $read=0;
+		
+		table="<table><caption>"+doc_ref+"</caption><tbody>";
+		
+		for(int i=0;i<doc.size();i++) {
+			$sku = doc.get(i).getSku();
+			$read = doc.get(i).getQty_read();
+			
+			table+="<tr>"+
+					"<td>"+$sku+"</td>"+
+					"<td>"+$read+"</td>"+
+					"</tr>";	
+		}
+		
+		table+=	"</tbody>"+
+				"</table>";
+		
+			
+		if(table.length()>0) {
+%>
+			<div class="alert alert-success">
+              <i class="icon-check"></i> <strong><%=propLang.get("msgSuccess") %></strong>.
+            </div>
+<%
+		}
+		else {
+%>
+			<div class="alert alert-danger">
+              <i class="fa fa-warning"></i> <strong><%=propLang.get("msgError") %></strong>.
+            </div>
+<%
+		}
+
+	}
+	catch(Exception e) {
+		e.printStackTrace();
+	}
+	finally {
+		if(conn!=null)
+			conn.close();
+	}
+%>
+	</div>
+	<div class="modal-footer">
+		<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_cancel") %></a>
+	</div>
+  </div>
+</div>
+
+<div id="table_wrapper2" style="visibility:hidden">
+<%=table %>
+</div>
+
+<script>
+			
+	/*
+	function doit(type, fn, dl) {
+		var elt = document.getElementById('table_wrapper2');
+		var wb = XLSX.utils.table_to_book(elt, {sheet:"Sheet JS"});
+		return dl ?
+			XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+			XLSX.writeFile(wb, fn || ('download.' + (type || 'csv')));
+	}
+	doit('csv');
+	*/
+	$("#table_wrapper2").tableToCSV();
+	$('#table_wrapper2').hide();
+	
+	
+</script>

@@ -1,0 +1,355 @@
+package pkg.controller;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
+import pkg.beans.Tables;
+import pkg.beans.DeviceSlaves;
+import pkg.properties.ReadProperties;
+import pkg.utility.Utility;
+
+public class DevicesDett_BKP extends AbstractController {
+	
+	@Override
+	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		Map<String, Object> obj = new HashMap<String, Object>();
+		
+		HttpSession session = req.getSession();
+		//Legge il file di properties associato alla lingua sul profilo
+		ReadProperties propLang = new ReadProperties(session.getAttribute("language").toString()+".properties");
+
+		List<Tables> tmz = new ArrayList<Tables>();
+		List<Tables> typ = new ArrayList<Tables>();
+		List<DeviceSlaves> sla = new ArrayList<DeviceSlaves>();
+		tmz.clear();
+		typ.clear();
+		sla.clear();
+		
+		Connection conn = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		int count = 0;
+		String msg = "";
+		
+		String tipoForm = req.getParameter("tipoForm");
+		String azione = ""+req.getParameter("azione");
+		azione = Utility.noNull(azione);
+		
+		String btnActive = "";
+		String key = "";
+		
+		try {
+			
+			// Campi database
+			String $ip="";
+			String $port="";
+			String $readevery="";
+			String $fromdate="";
+			String $enabled="true";
+			String $accountid="";
+			String $storeid="";
+			String $timezone="";
+			String $device_type="";
+			String $minute_not_update="";
+			String $updating="false";
+			String $doorid="";
+			String $notes="";
+			
+			String $id_store = ""+req.getParameter("id_store");
+			$id_store = Utility.noNull($id_store);
+			
+			String $id_device = ""+req.getParameter("id");
+			$id_device = Utility.noNull($id_device);
+			
+			$accountid = ""+req.getParameter("accountid");
+			$accountid = Utility.noNull($accountid);
+			
+			$storeid = ""+req.getParameter("storeid");
+			$storeid = Utility.noNull($storeid);
+			
+			$doorid = ""+req.getParameter("doorid");
+			$doorid = Utility.noNull($doorid);
+			
+			// Apre la connessione
+			conn = Utility.getConnAdmin();
+			st=conn.createStatement();
+			
+			if(azione.length()>0) {
+				
+				if(tipoForm.equals("I")) {
+					// Inserimento
+					System.out.println("INS...");
+					
+					
+					$ip=req.getParameter("ip");
+					$port=req.getParameter("port");
+					$readevery=req.getParameter("readevery");
+					$fromdate=req.getParameter("fromdate");
+					$enabled=req.getParameter("enabled");
+					$accountid=req.getParameter("accountid");
+					$storeid=req.getParameter("storeid");
+					$timezone=req.getParameter("timezone");
+					$device_type=req.getParameter("device_type");
+					$minute_not_update=req.getParameter("minute_not_update");
+					$updating=req.getParameter("updating");
+					$doorid=req.getParameter("doorid");
+					$notes=req.getParameter("notes");
+					
+					/*
+					Date date = new Date(millis);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+					String formattedDate = sdf.format(date);
+					System.out.println(formattedDate);
+					*/
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					Date date = sdf.parse($fromdate);
+					
+					$id_device = Utility.getNewProgr(conn, "devices", "id", "");
+					
+					sql   = "insert into devices ( "
+							+ "id, id_store, ip, port, readevery, fromdate, enabled, accountid, storeid, timezone, "
+							+ "device_type, minute_not_update, updating, doorid, notes, log, lin, lout, logenabled ) "
+							+ "values ( "
+							+ $id_device+" , "+$id_store+" , '"+$ip.replaceAll("'", "''")+"' , '"+$port.replaceAll("'", "''")+"' , "
+							+ $readevery+" , "+date.getTime()/1000+" , "+$enabled+" , '"+$accountid.replaceAll("'", "''")+"' , "
+							+ "'"+$storeid.replaceAll("'", "''")+"' , '"+$timezone+"' , "+$device_type+" , "+$minute_not_update+" , "
+							+ $updating+" , '"+$doorid.replaceAll("'", "''")+"' , '"+$notes.replaceAll("'", "''")+"' , false, 0 , 0, false) ";
+					System.out.println(sql);
+					st.executeUpdate(sql);
+					
+					msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
+						"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
+					tipoForm = "M";
+				}
+				else if(tipoForm.equals("M")) {
+					// Modifica
+					System.out.println("MOD...");
+					
+					$ip=req.getParameter("ip");
+					$port=req.getParameter("port");
+					$readevery=req.getParameter("readevery");
+					$fromdate=req.getParameter("fromdate");
+					$enabled=req.getParameter("enabled");
+					$accountid=req.getParameter("accountid");
+					$storeid=req.getParameter("storeid");
+					$timezone=req.getParameter("timezone");
+					$device_type=req.getParameter("device_type");
+					$minute_not_update=req.getParameter("minute_not_update");
+					$updating=req.getParameter("updating");
+					$doorid=req.getParameter("doorid");
+					$notes=req.getParameter("notes");
+					
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					Date date = sdf.parse($fromdate);
+					
+					sql   = "update devices set "
+							+ "ip = '"+$ip.replaceAll("'", "''")+"' , "
+							+ "port = '"+$port.replaceAll("'", "''")+"' , "
+							+ "readevery = "+$readevery+" , "
+							+ "fromdate = "+date.getTime()/1000+" , "
+							+ "enabled = "+$enabled+" , "
+							+ "accountid = '"+$accountid.replaceAll("'", "''")+"' , "
+							+ "storeid = '"+$storeid.replaceAll("'", "''")+"' , "
+							+ "timezone = '"+$timezone.replaceAll("'", "''")+"' , "
+							+ "device_type = "+$device_type+" , "
+							+ "minute_not_update = "+$minute_not_update+" , "
+							+ "updating = "+$updating+" , "
+							+ "doorid = '"+$doorid.replaceAll("'", "''")+"' , "
+							+ "notes = '"+$notes.replaceAll("'", "''")+"' "
+							+ "where id = "+$id_device+" ";
+					System.out.println(sql);
+					st.executeUpdate(sql);
+							
+					
+					msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
+						"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
+						
+				}
+				else if(tipoForm.equals("E")) {
+					// Cancellazione
+					System.out.println("ELI...");
+									
+					sql   = "delete from devices where id = "+$id_device+" ";
+					st.executeUpdate(sql);
+					
+					msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
+						"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
+					tipoForm = "I";
+				}
+			}
+			
+			if(tipoForm.equals("V")||tipoForm.equals("M")||tipoForm.equals("E")) {
+				
+				// Messaggio conferma cancellazione record
+				if(tipoForm.equals("E")) {
+					msg = "<div class=\"alert alert-warning\"><strong>"+propLang.get("msgDelete")+"</strong></div>";	
+				}
+				// Bottone non attivo in visualizzazione
+				if(tipoForm.equals("V")) {
+					btnActive = "disabled";	
+				}
+				
+				if(tipoForm.equals("V")||tipoForm.equals("M")||tipoForm.equals("E")) {
+					key = "readonly";	
+				}
+				
+				
+				sql   = "select * from devices where id = "+$id_device;
+				rs=st.executeQuery(sql);
+				if(rs.next()) {
+					
+					$ip=rs.getString("ip");
+					$port=rs.getString("port");
+					$readevery=rs.getString("readevery");
+					$fromdate=rs.getString("fromdate");
+					$enabled=rs.getString("enabled");
+					$accountid=rs.getString("accountid");
+					$storeid=rs.getString("storeid");
+					$timezone=rs.getString("timezone");
+					$device_type=rs.getString("device_type");
+					$minute_not_update=rs.getString("minute_not_update");
+					$updating=rs.getString("updating");
+					$doorid=rs.getString("doorid");
+					$notes=rs.getString("notes");
+					$id_store=rs.getString("id_store");
+					
+				}
+				rs.close();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+				Date date = new Date((Long.parseLong($fromdate)*1000));
+				$fromdate = sdf.format(date);
+				
+				// Device Slaves
+				sql = "select * from deviceslaves where id_device = "+$id_device;
+				rs=st.executeQuery(sql);
+				
+				String enab = "";
+				while(rs.next()) {
+					enab = rs.getString("enabled");
+					if(enab.equals("t"))
+						enab = "<i class=\"text-success icon-check\"></i>";
+					else
+						enab = "<i class=\"text-danger icon-ban\"></i>";
+					
+					/*
+					System.out.println(rs.getString("id_slave")+" "+
+							rs.getString("enabled")+" "+
+							rs.getString("id_device")+" "+
+							rs.getString("slavename")+" "+
+							rs.getString("parent_serial_no")+" "+
+							rs.getString("device_type_id")+" "+
+							rs.getString("address")+" "+
+							rs.getString("door_description")+" "+
+							rs.getString("serial_no")+" "+
+							rs.getString("door_type_id")+" "+
+							rs.getString("id_slave_char")+" "+
+							rs.getString("ip"));
+					*/
+					
+					sla.add(new DeviceSlaves(rs.getString("id_slave"),
+							rs.getString("enabled"),
+							rs.getString("id_device"),
+							rs.getString("slavename"),
+							rs.getString("parent_serial_no"),
+							rs.getString("device_type_id"),
+							rs.getString("address"),
+							rs.getString("door_description"),
+							rs.getString("serial_no"),
+							rs.getString("door_type_id"),
+							rs.getString("id_slave_char"),
+							rs.getString("ip"),"",enab,"","",""));
+				}
+				rs.close();
+				
+			}
+			
+			sql = "select * from timezone ";
+			rs = st.executeQuery(sql);
+			while(rs.next()) {
+				tmz.add(new Tables("TMZ",rs.getString("code"),rs.getString("descrizione"),rs.getString("reltoutc"),"","",""));
+			}
+			rs.close();
+			
+			sql = "select * from devicetype ";
+			rs = st.executeQuery(sql);
+			while(rs.next()) {
+				typ.add(new Tables("TYP",rs.getString("id"),rs.getString("description"),"","","",""));
+			}
+			rs.close();
+			
+			obj.put("ip", $ip);
+			obj.put("port", $port);
+			obj.put("readevery", $readevery);
+			obj.put("fromdate", $fromdate);
+			if($enabled.equals("t"))
+				$enabled = "true";
+			else
+				$enabled = "false";
+			obj.put("enabled", $enabled);
+			obj.put("accountid", $accountid);
+			obj.put("storeid", $storeid);
+			obj.put("timezone", $timezone);
+			obj.put("device_type", $device_type);
+			obj.put("minute_not_update", $minute_not_update);
+			if($updating.equals("t"))
+				$updating = "true";
+			else
+				$updating = "false";
+			obj.put("updating", $updating);
+			obj.put("doorid", $doorid);
+			obj.put("notes", $notes);
+			
+			obj.put("id_device", $id_device);
+			obj.put("id_store", $id_store);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			
+			// Messaggio
+			msg = "<div class=\"alert alert-danger\"><strong>Attenzione</strong><br/>Si e&grave; verificato un errore!<br/><br/>Errore:<br/>"+e+"</div>";			
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+				if(conn!=null)
+					conn.close();
+			}
+			catch(Exception e) {}
+		}
+		
+		obj.put("dsfun", "Dettaglio Devices");
+		obj.put("tipoForm", tipoForm);
+		obj.put("count", count);
+		obj.put("msg", msg);
+		obj.put("btnActive", btnActive);
+		obj.put("key", key);
+		
+		obj.put("tmz", tmz);
+		obj.put("typ", typ);
+		obj.put("sla", sla);
+		
+		
+		return new ModelAndView("/app/anag/devices-dett", obj);
+	}
+	
+}
