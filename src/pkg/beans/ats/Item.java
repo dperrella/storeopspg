@@ -29,13 +29,15 @@ public class Item implements CRUD {
 	private String barcodes;
 	private String retailers;
 	
+	private String photos;
+	private int editable;
 	
 	public Item() {	}
 
 	public Item(int idItem, String name, String description, int idVendor, int idBrand,
 			int idCategory, int country, int itemProtected, String evReportLink,
 			String vendorName, String brandName, String categoryName, String countryName, 
-			String idusr, String barcodes, String retailers) {
+			String idusr, String barcodes, String retailers, String photos, int editable) {
 		this.idItem = idItem;
 		this.name = name;
 		this.description = description;
@@ -54,6 +56,10 @@ public class Item implements CRUD {
 		this.idusr = idusr;
 		this.barcodes = barcodes;
 		this.retailers = retailers;
+		
+		this.photos = photos;
+		
+		this.editable = editable;
 	}
 	
 	
@@ -185,6 +191,22 @@ public class Item implements CRUD {
 	public void setRetailers(String retailers) {
 		this.retailers = retailers;
 	}
+	
+	public String getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(String photos) {
+		this.photos = photos;
+	}
+	
+	public int getEditable() {
+		return editable;
+	}
+
+	public void setEditable(int editable) {
+		this.editable = editable;
+	}
 
 	public void selectRow(Connection conn) {
 		
@@ -247,10 +269,12 @@ public class Item implements CRUD {
 			sql = "select i.*, v.name as vendorname, " 
 					+ "b.name as brandname, c.name as categoryname, n.name as countryname, "
 					+ "json_agg((x.barcode)) AS barcodes, "
-					+ "json_agg((y.description)) AS customers "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
 					+ "from ats.items i "
 					+ "left JOIN ats.barcode x ON x.iditem = i.id "
 					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
 					+ "left join ats.vendor v on v.id = i.idvendor " 
 					+ "left join ats.brand b on b.id = i.idbrand " 
 					+ "left join ats.category c on c.id = i.idcategory " 
@@ -280,11 +304,26 @@ public class Item implements CRUD {
 					bbb = bbb.substring(0,bbb.length()-1);
 				
 				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
+				
 				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
 						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
 						rs.getInt("protected"),rs.getString("evolution_report_link"),
 						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
-						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers")));
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, 1));
 			}
 			rs.close();
 		}
@@ -300,6 +339,94 @@ public class Item implements CRUD {
 		}	
 		return itemsList;
 	}
+	
+	public static ArrayList<Item> getUserRoleItems(Connection conn, int isProtected, String username, String role){
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		ArrayList<Item> itemsList = null;
+		
+		String cond = "";
+		if(role.trim().equals("3")||role.trim().equals("8")) {
+			cond = " and i.idusr = '"+username.replaceAll("'", "''")+"' ";
+		}
+		
+		try {
+			itemsList = new ArrayList<>();
+			sql = "select i.*, v.name as vendorname, " 
+					+ "b.name as brandname, c.name as categoryname, n.name as countryname, "
+					+ "json_agg((x.barcode)) AS barcodes, "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
+					+ "from ats.items i "
+					+ "left JOIN ats.barcode x ON x.iditem = i.id "
+					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
+					+ "left join ats.vendor v on v.id = i.idvendor " 
+					+ "left join ats.brand b on b.id = i.idbrand " 
+					+ "left join ats.category c on c.id = i.idcategory " 
+					+ "left join ats.country n on n.id = i.country "
+					+ "where protected = "+isProtected+" "+cond+" "
+					+ "group by i.id, i.name, i.description, i.idvendor, i.idbrand, "  
+					+ "i.idcategory, i.country, i.protected, i.evolution_report_link, "
+					+ "i.color, i.idusr, v.name, b.name, c.name, n.name "
+					+ "order by id desc ";
+			System.out.println(sql);
+			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				
+				String bb = rs.getString("barcodes").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String b[] = bb.split(",");
+				ArrayList<String> b2 = new ArrayList<String>();
+				String bbb = "";
+				for(int i=0;i<b.length;i++) {
+					if(!b2.contains(b[i].trim())) {
+						b2.add(b[i].trim());
+						bbb+=b[i]+",";
+					}
+				}
+				
+				if(bbb.length()>0)
+					bbb = bbb.substring(0,bbb.length()-1);
+				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
+				
+				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
+						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
+						rs.getInt("protected"),rs.getString("evolution_report_link"),
+						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, 1));
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}	
+		return itemsList;
+	}
+	
+	
 	
 	public static ArrayList<Item> getItemsByUser(Connection conn, int isProtected, String idusr){
 		PreparedStatement st = null;
@@ -334,10 +461,12 @@ public class Item implements CRUD {
 			sql = "select i.*, v.name as vendorname, " 
 					+ "b.name as brandname, c.name as categoryname, n.name as countryname, "
 					+ "json_agg((x.barcode)) AS barcodes, "
-					+ "json_agg((y.description)) AS customers "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
 					+ "from ats.items i "
 					+ "left JOIN ats.barcode x ON x.iditem = i.id "
 					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
 					+ "left join ats.vendor v on v.id = i.idvendor " 
 					+ "left join ats.brand b on b.id = i.idbrand " 
 					+ "left join ats.category c on c.id = i.idcategory " 
@@ -370,12 +499,293 @@ public class Item implements CRUD {
 				if(bbb.length()>0)
 					bbb = bbb.substring(0,bbb.length()-1);
 				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
 				
 				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
 						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
 						rs.getInt("protected"),rs.getString("evolution_report_link"),
 						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
-						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers")));
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, 1));
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}	
+		return itemsList;
+	}
+	
+	public static ArrayList<Item> getItemsByUserRole(Connection conn, int isProtected, String idusr, String role){
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		ArrayList<Item> itemsList = null;
+		try {
+			
+			// read prefs
+			sql = "select idcustomer from pref_user_customers where idusr = ? ";
+			st = conn.prepareStatement(sql);
+			st.setString(1, idusr);
+			rs = st.executeQuery();
+			int count=0;
+			String cus = "";
+			String cond = "";
+			while(rs.next()) {
+				count++;
+				cus+=rs.getString("idcustomer")+",";
+			}
+			rs.close();
+			st.close();
+			if(cus.length()>0)
+				cus = cus.substring(0,cus.length()-1);
+			
+			if(cus.length()>0)
+				cond = "and r1.idcustomer in ("+cus+") ";
+			
+			System.out.println(cond);
+			
+			String roleCond =  "";
+			if(role.trim().equals("3")) {
+				roleCond = "join rel_user_customers r2 on r1.idcustomer = r2.idcustomer where r2.idusr = '"+idusr+"' "+cond;
+			}
+			else {
+				roleCond = cond.replaceAll("and", "where");
+			}
+			
+			String sqlEditable = "";
+			if(role.trim().equals("3")) {
+				sqlEditable = " , 0 as editable ";
+			}
+			else if(role.trim().equals("8")) {
+				sqlEditable = " , 0 as editable ";
+			}
+			else if(role.trim().equals("5")) {
+				sqlEditable = ",(select case when count(iditem) > 0 then 1 else 0 end from rel_user_customers r2 " + 
+						"join ats.rel_item_customer r1 on r1.idcustomer = r2.idcustomer " + 
+						" where r2.idusr = '"+idusr+"' and iditem = i.id) enabled ";
+			}
+			else {
+				sqlEditable = " , 1 as editable ";
+			}
+			
+				
+			itemsList = new ArrayList<>();
+			sql = "select i.*, v.name as vendorname, " 
+					+ "b.name as brandname, c.name as categoryname, n.name as countryname, "
+					+ "json_agg((x.barcode)) AS barcodes, "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
+					+ sqlEditable
+					+ "from ats.items i "
+					+ "left JOIN ats.barcode x ON x.iditem = i.id "
+					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
+					+ "left join ats.vendor v on v.id = i.idvendor " 
+					+ "left join ats.brand b on b.id = i.idbrand " 
+					+ "left join ats.category c on c.id = i.idcategory " 
+					+ "left join ats.country n on n.id = i.country "
+					+ "where protected = "+isProtected+" "
+					+ "and i.id in(select iditem from ats.rel_item_customer r1 " 
+					+ roleCond+" ) "
+					+ "group by i.id, i.name, i.description, i.idvendor, i.idbrand, "  
+					+ "i.idcategory, i.country, i.protected, i.evolution_report_link, "
+					+ "i.color, i.idusr, v.name, b.name, c.name, n.name "
+					+ "order by id desc ";
+			
+			System.out.println(sql);
+			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				
+				String bb = rs.getString("barcodes").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String b[] = bb.split(",");
+				ArrayList<String> b2 = new ArrayList<String>();
+				String bbb = "";
+				for(int i=0;i<b.length;i++) {
+					if(!b2.contains(b[i].trim())) {
+						b2.add(b[i].trim());
+						bbb+=b[i]+",";
+					}
+				}
+				
+				if(bbb.length()>0)
+					bbb = bbb.substring(0,bbb.length()-1);
+				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
+				
+				
+				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
+						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
+						rs.getInt("protected"),rs.getString("evolution_report_link"),
+						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, rs.getInt("editable")));
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}	
+		return itemsList;
+	}
+	
+	
+	public static ArrayList<Item> getItemsByUserRole2(Connection conn, String isProtected, String idusr, String role){
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		ArrayList<Item> itemsList = null;
+		try {
+			
+			// read prefs
+			sql = "select idcustomer from pref_user_customers where idusr = ? ";
+			st = conn.prepareStatement(sql);
+			st.setString(1, idusr);
+			rs = st.executeQuery();
+			int count=0;
+			String cus = "";
+			String cond = "";
+			while(rs.next()) {
+				count++;
+				cus+=rs.getString("idcustomer")+",";
+			}
+			rs.close();
+			st.close();
+			if(cus.length()>0)
+				cus = cus.substring(0,cus.length()-1);
+			
+			if(cus.length()>0)
+				cond = "and r1.idcustomer in ("+cus+") ";
+			
+			System.out.println(cond);
+			
+			String roleCond =  "";
+			if(role.trim().equals("3")) {
+				roleCond = "join rel_user_customers r2 on r1.idcustomer = r2.idcustomer where r2.idusr = '"+idusr+"' "+cond;
+			}
+			else {
+				roleCond = cond.replaceAll("and", "where");
+			}
+			
+			String sqlEditable = "";
+			if(role.trim().equals("3")) {
+				sqlEditable = " , 0 as editable ";
+			}
+			else if(role.trim().equals("8")) {
+				sqlEditable = " , 0 as editable ";
+			}
+			else if(role.trim().equals("5")) {
+				sqlEditable = ",(select case when count(iditem) > 0 then 1 else 0 end from rel_user_customers r2 " + 
+						"join ats.rel_item_customer r1 on r1.idcustomer = r2.idcustomer " + 
+						" where r2.idusr = '"+idusr+"' and iditem = i.id) enabled ";
+			}
+			else {
+				sqlEditable = " , 1 as editable ";
+			}
+			
+				
+			itemsList = new ArrayList<>();
+			sql = "select i.*, v.name as vendorname, " 
+					+ "b.name as brandname, c.name as categoryname, n.name as countryname, "
+					+ "json_agg((x.barcode)) AS barcodes, "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
+					+ sqlEditable
+					+ "from ats.items i "
+					+ "left JOIN ats.barcode x ON x.iditem = i.id "
+					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
+					+ "left join ats.vendor v on v.id = i.idvendor " 
+					+ "left join ats.brand b on b.id = i.idbrand " 
+					+ "left join ats.category c on c.id = i.idcategory " 
+					+ "left join ats.country n on n.id = i.country "
+					+ "where protected in( "+isProtected+" ) "
+					+ "and i.id in(select iditem from ats.rel_item_customer r1 " 
+					+ roleCond+" ) "
+					+ "group by i.id, i.name, i.description, i.idvendor, i.idbrand, "  
+					+ "i.idcategory, i.country, i.protected, i.evolution_report_link, "
+					+ "i.color, i.idusr, v.name, b.name, c.name, n.name "
+					+ "order by id desc ";
+			
+			System.out.println(sql);
+			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				
+				String bb = rs.getString("barcodes").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String b[] = bb.split(",");
+				ArrayList<String> b2 = new ArrayList<String>();
+				String bbb = "";
+				for(int i=0;i<b.length;i++) {
+					if(!b2.contains(b[i].trim())) {
+						b2.add(b[i].trim());
+						bbb+=b[i]+",";
+					}
+				}
+				
+				if(bbb.length()>0)
+					bbb = bbb.substring(0,bbb.length()-1);
+				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
+				
+				
+				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
+						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
+						rs.getInt("protected"),rs.getString("evolution_report_link"),
+						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, rs.getInt("editable")));
 			}
 			rs.close();
 		}
@@ -405,10 +815,12 @@ public class Item implements CRUD {
 					+ "c.name as categoryname, "
 					+ "n.name as countryname, "
 					+ "json_agg((x.barcode)) AS barcodes, "
-					+ "json_agg((y.description)) AS customers "
+					+ "json_agg((y.description)) AS customers, "
+					+ "json_agg((p.url)) AS photos "
 					+ "from ats.items i "
 					+ "left JOIN ats.barcode x ON x.iditem = i.id "
 					+ "left JOIN ats.vw_rel_item_customer y ON y.iditem = i.id "
+					+ "left JOIN ats.photo p ON p.iditem = i.id "
 					+ "left join ats.vendor v on v.id = i.idvendor " 
 					+ "left join ats.brand b on b.id = i.idbrand " 
 					+ "left join ats.category c on c.id = i.idcategory " 
@@ -439,12 +851,27 @@ public class Item implements CRUD {
 				if(bbb.length()>0)
 					bbb = bbb.substring(0,bbb.length()-1);
 				
+				String pp = rs.getString("photos").replaceAll("\\[", "").replaceAll("\"", "").replaceAll("\\]", "").replaceAll("null", "");
+				String p[] = pp.split(",");
+				ArrayList<String> p2 = new ArrayList<String>();
+				String ppp = "";
+				for(int i=0;i<p.length;i++) {
+					if(!p2.contains(p[i].trim())) {
+						p2.add(p[i].trim());
+						ppp+=p[i]+",";
+					}
+				}
+				
+				if(ppp.length()>0)
+					ppp = ppp.substring(0,ppp.length()-1);
+				
+				
 				
 				itemsList.add(new Item(rs.getInt("id"), rs.getString("name"),rs.getString("description"),
 						rs.getInt("idvendor"),rs.getInt("idbrand"),rs.getInt("idcategory"),rs.getInt("country"),
 						rs.getInt("protected"),rs.getString("evolution_report_link"),
 						rs.getString("vendorname"),rs.getString("brandname"),rs.getString("categoryname"),
-						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers")));
+						rs.getString("countryname"), rs.getString("idusr"),bbb,rs.getString("customers"),ppp, 1));
 			}
 			rs.close();
 		}
@@ -478,6 +905,29 @@ public class Item implements CRUD {
 	      st.setInt(7, this.itemProtected);
 	      st.setString(8, this.evReportLink);
 	      st.setInt(9, this.idItem);
+	      // execute the java preparedstatement
+	      st.executeUpdate();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}
+	}
+	
+	public void updateStatus(Connection conn) {
+		PreparedStatement st = null;
+		try{
+		  String sql = "update ats.items set protected = ? where id = ?";
+		  System.out.println(sql);
+	      st = conn.prepareStatement(sql);
+	      st.setInt(1, this.itemProtected);
+	      st.setInt(2, this.idItem);
 	      // execute the java preparedstatement
 	      st.executeUpdate();
 		}

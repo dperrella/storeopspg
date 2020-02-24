@@ -44,9 +44,12 @@ public class GetItems extends HttpServlet {
 		
 		String idusr = ""+request.getParameter("idusr");
 		idusr = Utility.noNull(idusr);
+		String role = ""+request.getParameter("role");
+		role = Utility.noNull(role);
 		
 		System.out.println("idcustomer: "+idcustomer);
 		System.out.println("idusr: "+idusr);
+		System.out.println("role: "+role);
 		
 		List<Item> item = new ArrayList<Item>();
 		item.clear();
@@ -62,7 +65,10 @@ public class GetItems extends HttpServlet {
 					item = Item.getItems(conn, 1);
 				}
 				else {
-					item = Item.getItemsByUser(conn, 1, idusr);
+					//item = Item.getItemsByUser(conn, 1, idusr);
+					//item = Item.getItemsByUserRole(conn, 1, idusr, role);
+					
+					item = Item.getItemsByUserRole2(conn, "1,2", idusr, role);
 				}
 			}
 			else {
@@ -87,6 +93,8 @@ public class GetItems extends HttpServlet {
 				jsonObj.put("countryname", item.get(i).getCountryName());
 				jsonObj.put("barcodes", item.get(i).getBarcodes());
 				jsonObj.put("retailers", item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", ""));
+				jsonObj.put("photos", item.get(i).getPhotos().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", ""));
+				jsonObj.put("editable", item.get(i).getEditable());
 				
 				
 				jsonArray.add(jsonObj);

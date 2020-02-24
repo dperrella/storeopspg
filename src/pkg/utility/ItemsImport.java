@@ -28,7 +28,7 @@ public class ItemsImport {
 				
 				Item i = new Item();
 				i.setName(rs.getString("name"));
-				i.setDescription(rs.getString("description"));
+				i.setDescription(Utility.noNull(rs.getString("description")));
 				i.setIdVendor(Integer.parseInt(rs.getString("idvendor")));
 				i.setIdBrand(Integer.parseInt(rs.getString("idbrand")));
 				i.setIdCategory(Integer.parseInt(rs.getString("idcategory")));

@@ -31,7 +31,7 @@ public class SetPhoto2 extends HttpServlet {
 	// location to store file uploaded
     private static final String UPLOAD_DIRECTORY = "C:\\Program Files (x86)\\Apache Software Foundation\\Tomcat 9.0\\webapps\\SmartSuiteNew\\source\\images\\";
     
-    private static final String URL = "http://pc.smart-control.it/SmartSuiteNew/source/images/";
+    private static final String URL = "http://pc.smart-control.it/SmartSuiteNew2/source/images/";
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
  
     public static String randomAlphaNumeric(int count) {

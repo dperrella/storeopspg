@@ -261,12 +261,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			            <section class="panel panel-default">
 			            	<header class="panel-heading font-bold">Data</header>
 			               	
+			               	<!-- 
 			               	<div class="panel-body">
 			               		<button id="btnExport" class="btn btn-default"><%=propLang.get("xls_export") %></button>
 			               	</div>
+			               	-->
 			               	
 			               	<div id="table_wrapper" class="table-responsive horizontal">
-			               		<table class="table table-striped b-t b-light">
+			               		<table id="example" class="table table-striped b-light">
 			               		<thead>
 			               			<tr>
 			               				<th>Period</th>
@@ -397,16 +399,19 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/slimscroll/jquery.slimscroll.min.js"></script>
   <script src="../../js/app.plugin.js"></script>
   
+  <script type="text/javascript"  src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript"  src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript"  src="https://cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.html5.min.js"></script>	
+  
     <!-- datepicker -->
   <script src="../../js/datepicker/bootstrap-datepicker.js"></script>
   
   <script src="../../js/bootstrap-modal.js"></script>
   
-  <script type="text/javascript" src="../../analytics2/main/xlsx/shim.min.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/xlsx.full.min.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/Blob.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/FileSaver.js"></script>
-  
+
   <script src="../../js/jquery.tabletoCSV.js"></script>
   
   
@@ -434,6 +439,27 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  jQuery('#loading-image2').hide();
 	}
 	
+	$(document).ready(function() {
+	  var table = $('#example').DataTable({
+	    dom: 'Bfrtip',
+	    "bPaginate": false,
+	    "searching": false,
+	    buttons: [
+	    {
+	      extend: 'excel',
+	      text: 'Export excel',
+	      className: 'btn btn-default m-t m-l m-b',
+	      filename: 'Export Excel',
+	      exportOptions: {
+	        modifier: {
+	          page: 'all'
+	        }
+	      }
+	    }]
+	  });
+
+	});
+
 	$('#ttt').html('${ttt}');
 
 	//MODAL

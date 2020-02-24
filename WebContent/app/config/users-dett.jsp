@@ -506,7 +506,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		
 		var tipoForm = '${tipoForm}';
 		
-		if(idrole==""||idrole=="2") {
+		if(idrole==""||idrole=="2"||idrole=="8") {
 			$('#aut').hide();
 		}
 		else {

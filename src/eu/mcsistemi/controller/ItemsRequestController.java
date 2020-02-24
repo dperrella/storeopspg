@@ -18,9 +18,11 @@ public class ItemsRequestController extends AbstractController {
 	        HttpSession session = req.getSession();
 	        
 	        String username = session.getAttribute("username").toString();
-	        
-	        
 	        obj.put("userId",username);
+	        
+	        String role = session.getAttribute("tipo").toString();
+	        obj.put("role",role);
+	        
 	        return new ModelAndView("/source/anag/request-list", obj);
 	    }
 }

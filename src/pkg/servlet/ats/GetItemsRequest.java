@@ -42,6 +42,11 @@ public class GetItemsRequest extends HttpServlet {
 		// TODO Auto-generated method stub
 		Connection conn = null;
 		
+		String idusr = ""+request.getParameter("idusr");
+		idusr = Utility.noNull(idusr);
+		String role = ""+request.getParameter("role");
+		role = Utility.noNull(role);
+		
 		List<Item> item = new ArrayList<Item>();
 		item.clear();
 		
@@ -51,7 +56,11 @@ public class GetItemsRequest extends HttpServlet {
 			JSONObject responseJson = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			
-			item = Item.getItems(conn, 0);
+			if(idusr.length()==0)
+				item = Item.getItems(conn, 0);
+			else
+				item = Item.getUserRoleItems(conn, 0, idusr, role);
+			
 			for(int i=0;i<item.size();i++) {
 				JSONObject jsonObj = new JSONObject();
 				

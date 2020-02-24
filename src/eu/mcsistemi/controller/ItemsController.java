@@ -21,6 +21,9 @@ public class ItemsController extends AbstractController {
 	        String username = session.getAttribute("username").toString();
 	        obj.put("idusr",username);
 	        
+	        String role = session.getAttribute("tipo").toString();
+	        obj.put("role",role);
+	        
 	        return new ModelAndView("/source/anag/items-list", obj);
 	    }
 }

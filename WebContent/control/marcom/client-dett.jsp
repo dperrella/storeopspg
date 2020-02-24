@@ -24,9 +24,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	          <select name="devType" id="devType"
               	class="form-control ss" onchange="checkIP4(this.value)">
                 <option value="0" selected>Router</option>
-                <option value="1">Checkpoint Device</option>
+                <option value="1">Neo, HIGD, Hella, EAS Server</option>
                 <option value="2">Router NAT</option>
+                <!-- 
                 <option value="3">User</option>
+                -->
 			  </select>
               </div>
 	    </div>
@@ -71,8 +73,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
               </div>
 	    </div>
 	    
+	    <div id="ips">
+	    
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
-	   
 	   
 	    <div class="form-group pull-in clearfix">
 	        <div class="col-sm-4">
@@ -101,6 +104,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	        </div>
 	    </div>
 	    
+	    </div>
 	    
 	    
 	</div>

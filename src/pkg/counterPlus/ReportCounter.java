@@ -376,7 +376,15 @@ public class ReportCounter extends AbstractController {
 					String temp[] = array.split(",");
 					intest = array;
 					for(int i=0;i<temp.length;i++) {
-						th+="<th colspan=\""+colspan+"\">"+temp[i]+"</th>";
+						
+						if(colspan==1) {
+							th+="<th>"+temp[i]+"</th>";
+						}
+						else {
+							th+="<th></th><th>"+temp[i]+"</th>";
+						}
+						
+						//th+="<th colspan=\""+colspan+"\">"+temp[i]+"</th>";
 						xAxis+="'"+temp[i]+"',";
 					}
 				}
@@ -488,9 +496,9 @@ public class ReportCounter extends AbstractController {
 					String temp[] = array.split(",");
 					for(int i=0;i<temp.length;i++) {
 						if(nrstores>1)
-							td+="<td style=\"width:30px\"><a href=\"#\" class=\"pull-left thumb-xs avatar\" id=\"ico_"+(i+1)+"_"+d2+"\">" + 
+							td+="<td style=\"width:30px\"><span class=\"pull-left thumb-xs avatar\" id=\"ico_"+(i+1)+"_"+d2+"\">" + 
 								"<img src=\"../../images/loader_xs.gif\" style=\"width:24px\"/>" + 
-								"</a></td>";
+								"</span></td>";
 						td+="<td>"+temp[i]+"</td>";
 					}
 					

@@ -47,6 +47,7 @@
 	<!-- Gestione Clienti -->
 	<bean name="/app/anag/customers-list.htm" class="pkg.controller.CustomersList"></bean>
 	<bean name="/app/anag/customers-dett.htm" class="pkg.controller.CustomersDett"></bean>
+	<bean name="/app/anag/customers-category.htm" class="pkg.controller.CustomersCategoryList"></bean>
 	<!-- Gestione Negozi -->
 	<bean name="/app/anag/stores-list.htm" class="pkg.controller.StoresList"></bean>
 	<bean name="/app/anag/stores-dett.htm" class="pkg.controller.StoresDett"></bean>

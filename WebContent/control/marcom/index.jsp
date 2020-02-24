@@ -147,7 +147,7 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 					                <table class="table table-striped m-b-none" id="clients_data_table" data-ride="datatables">
 					                  <thead>
 										  <tr>
-									        <th>Client</th>
+									        <th>Customer</th>
 		                                    <th>Store</th>
 		                                    <th>Device</th>
 		                                    <th>Device Type</th>
@@ -722,6 +722,12 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	    var _ip3rd = $('#iP3rd').val();
 	    var _ip4th = $('#iP4th').val();
 	    
+	    if(_devType==1) {
+	    	min1 = '10';
+	    	_ip2nd = '91';
+	    }
+	    	
+	    
 	    var _ip  = min1+"."+_ip2nd+"."+_ip3rd+"."+_ip4th;
 	    
 	    console.log(_ip);
@@ -842,6 +848,8 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		
 		if(devType==0) {
 			
+			$('#ips').show();
+			
 			$('#actionForm').parsley('destroy');
 			
 			$('#iP4th')
@@ -857,18 +865,32 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		}
 		else {
 				
-			$('#actionForm').parsley('destroy');
 			
-			$('#iP4th')
-			    .find('option')
-			    .remove()
-			    .end();
-			    
-			for(i=min4;i<=max4;i++) {
-				$('#iP4th').append('<option value="'+i+'">'+i+'</option>'); 
+			if(devType==1) {
+				
+				$('#ips').hide();
+				
 			}
+			else {
+				
+				$('#ips').show();
+				
+				$('#actionForm').parsley('destroy');
+				
+				$('#iP4th')
+				    .find('option')
+				    .remove()
+				    .end();
+				    
+				for(i=min4;i<=max4;i++) {
+					$('#iP4th').append('<option value="'+i+'">'+i+'</option>'); 
+				}
+				
+				$('#actionForm').parsley();
+			}
+				
+			//////////////
 			
-			$('#actionForm').parsley();
 			
 			
 		}

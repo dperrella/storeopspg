@@ -113,6 +113,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			              	<div class="subnav">
 								<ul class="nav nav-pills">
 									<li><a href="customers-list.htm"><%=propLang.get("torna") %></a></li>
+									<li><a href="customers-category.htm?idcus=${id_customers}&description=${description}">Category Settings</a></li>
 								</ul>
 							</div>
 						  </section>
@@ -493,6 +494,27 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			
 		}
 		*/
+		
+	}
+	
+	
+	
+	
+	
+	function openModal() {
+  		$( 'div.modal-backdrop').remove();
+		$( '.modal' ).remove();
+		
+		var href = "../../app/popup/customers_category.jsp?id_customer=${id}";
+		
+		$.get(href, function(data) {
+			$('<div class="modal" >' + data + '</div>').modal();
+		});
+  	}
+	
+	function setCustomerCategory() {
+		
+		alert('todo');
 		
 	}
 	

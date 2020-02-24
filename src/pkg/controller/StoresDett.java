@@ -41,6 +41,9 @@ public class StoresDett extends AbstractController {
 		
 		List<Tables> tmz = new ArrayList<Tables>();
 		
+		
+		List<Tables> cat = new ArrayList<Tables>();
+		
 		// Pulisce la lista
 		naz.clear();
 		reg.clear();
@@ -50,6 +53,9 @@ public class StoresDett extends AbstractController {
 		cus.clear();
 		
 		tmz.clear();
+		
+		
+		cat.clear();
 		
 		Connection conn = null;
 		Statement st = null;
@@ -242,6 +248,15 @@ public class StoresDett extends AbstractController {
 						// ****************************
 						
 						
+						
+						// ****************************
+						// Inserisce stores_category
+						setCat(conn, $id, req);
+						
+						// ****************************
+						
+						
+						
 											
 						msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
 							"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
@@ -373,6 +388,18 @@ public class StoresDett extends AbstractController {
 						
 						
 						
+						
+						
+						// ****************************
+						// Modifica stores_category
+						setCat(conn, $storeid, req);
+						
+						// ****************************
+						
+						
+						
+						
+						
 						msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
 							"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
 					}
@@ -398,6 +425,15 @@ public class StoresDett extends AbstractController {
 						e.printStackTrace();
 					}
 					// ****************************
+					
+					
+					
+					// ****************************
+					// Cancella stores_category
+					
+					// ****************************
+					
+					
 					
 					msg="<div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
 						"<div class=\"line line-dashed b-b line-lg pull-in\"></div>";
@@ -501,9 +537,27 @@ public class StoresDett extends AbstractController {
 				}
 				rs.close();
 				
-				
 				if($adjustment_factor.trim().length()==0)
 					$adjustment_factor = "0";
+				
+				
+				
+				
+				////////////////////////////////////////
+				// read category from customers_category
+				sql  = "select * from stores_category where id_store = "+$storeid;
+				System.out.println(sql);
+				rs=st.executeQuery(sql);
+				while(rs.next()) {
+					obj.put(rs.getString("category"), rs.getString("value"));
+					
+					cat.add(new Tables("CAT",rs.getString("category"),rs.getString("value"),"","","",""));
+				}
+				rs.close();
+				// end read category from customers_category
+				////////////////////////////////////////
+
+				obj.put("cat", cat);
 			}
 			
 			// Negozi del cliente
@@ -549,7 +603,7 @@ public class StoresDett extends AbstractController {
 			// ====================
 			// Lista comuni
 			try {
-				if($country.equals("3")) {
+				if($country.equals("3")||$country.equals("230")) {
 					sql = "select * from comuni where id_pro = "+$province;
 				}
 				else {
@@ -668,6 +722,54 @@ public class StoresDett extends AbstractController {
 		obj.put("tmz", tmz);
 		
 		return new ModelAndView("/app/anag/stores-dett", obj);
+	}
+	
+	
+	private static void setCat(Connection conn, String idstore, HttpServletRequest request) {
+		
+		Statement st = null;
+		String sql = "";
+		
+		try {
+			
+			st = conn.createStatement();
+			sql = "delete from stores_category where id_store = "+idstore;
+			st.executeUpdate(sql);
+			
+			sql = "insert into stores_category (id_store, category, value) values ";
+			String sqlval = "";
+			String[] values=request.getParameterValues("_cat");
+			for(int i=0; i<values.length; i++)
+			{
+				
+				//System.out.println(values[i]);
+				String val = request.getParameter("_cat_"+values[i]);
+				//System.out.println(val);
+				//System.out.println("***");
+				sqlval+="("+idstore+", '"+values[i].replaceAll("'", "''")+"', '"+val.replaceAll("'", "''")+"'),";
+				
+			}
+			
+			if(sqlval.length()>0)
+				sqlval=sqlval.substring(0,sqlval.length()-1);
+			
+			sql = sql+sqlval;
+			
+			System.out.println(sql);
+			st.executeUpdate(sql);
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}
+		
 	}
 	
 }

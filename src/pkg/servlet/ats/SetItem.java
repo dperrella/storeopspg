@@ -50,6 +50,9 @@ public class SetItem extends HttpServlet {
 		String msg = "OK";
 		
 		String idusr = request.getParameter("idusr");
+		String role = ""+request.getParameter("role");
+		role =  Utility.noNull(role);
+		
 		String type = request.getParameter("type");
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
@@ -70,6 +73,8 @@ public class SetItem extends HttpServlet {
 		
 		
 		System.out.println(idusr);
+		System.out.println(role);
+		
 		System.out.println(type);
 		System.out.println(id);
 		System.out.println(name);
@@ -143,7 +148,15 @@ public class SetItem extends HttpServlet {
             	item.update(conn);
             	
             	break;
+            
+            case "S": 
             	
+            	item.setIdItem(Integer.parseInt(id));
+            	item.setItemProtected(Integer.parseInt(isProtected));
+            	item.updateStatus(conn);
+            	
+            	break;
+            
             case "D": 
             	
             	item.setIdItem(Integer.parseInt(id));
@@ -194,9 +207,15 @@ public class SetItem extends HttpServlet {
 			
 
 			
-			if(type.equals("D")) {
+			if(type.equals("D")||type.equals("S")) {
 				JSONArray jsonArray = new JSONArray();
-				ArrayList<Item> itemm = Item.getItemsByUser(conn, Integer.parseInt(isProtected), idusr);
+				
+				ArrayList<Item> itemm = new ArrayList<Item>();
+				
+				if(Integer.parseInt(isProtected)==0)
+					itemm = Item.getUserRoleItems(conn, 0, idusr, role);
+				else
+					itemm = Item.getItemsByUserRole2(conn, "1,2", idusr, role);
 				
 				for(int i=0;i<itemm.size();i++) {
 					JSONObject jsonObj = new JSONObject();

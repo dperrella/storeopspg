@@ -284,6 +284,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     
   <script>
   var username = "${idusr}";
+  var role = "${role}";
   jQuery(window).load(function() {
 		jQuery('#loading-image').hide();
 	});
@@ -308,7 +309,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	      "url": "../../ats/GetItems",
 	      "type": 'POST',
 	      "dataSrc": 'listings',
-	      "data": {idusr:username}
+	      "data": {idusr:username, role: role}
 	 },
 	"columns": [
 			      { data: 'id' },

@@ -30,7 +30,6 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     <script src="../../js/ie/excanvas.js"></script>
   <![endif]-->
 <style>
-
      #loading-image {
 		background-color: #333;
 		width: 100%;
@@ -38,6 +37,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		position: fixed;
 		z-index: 1;
 	}	
+	#loading-image2 {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		z-index: 10000;
+	}
   </style>
 </head>
 <div id="loading-image">
@@ -49,6 +54,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				   height: 13px;
 				   margin-top: -8px;
 				   margin-left: -104px;" />
+  </div>
+  <div id="loading-image2" style="display:none">
+		<img src="../../images/spinner.gif" alt="Loading..." 
+			style="position: absolute;
+				   top: 50%;
+				   left: 50%;
+				   width: 200px;
+				   height: 200px;
+				   margin-top: -100px;
+				   margin-left: -100px;" />
   </div>
   <section class="vbox">
     <header class="bg-white-only header header-md navbar navbar-fixed-top-xs">
@@ -187,7 +202,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          <label>Customer</label>
 						          
 						          <c:if test = "${tipoForm=='I'}">
-						          <select id="id_customer" name="id_customer" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this)">
+						          <select id="id_customer" name="id_customer" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this); loadCategory(this.value)">
 						          	<option value="">-</option>
 						          	<c:forEach items="${cus}" var="cus" varStatus="status">
 						          	<option value="${cus.xcdel}">${cus.xdtab} - ${cus.cmp1}</option>
@@ -196,7 +211,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          </c:if>
 						          
 						          <c:if test = "${tipoForm=='M'}">
-						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this)">
+						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this);loadCategory(this.value)">
 						          	<option value="">-</option>
 						          	<c:forEach items="${cus}" var="cus" varStatus="status">
 						          	<option value="${cus.xcdel}">${cus.xdtab} - ${cus.cmp1}</option>
@@ -206,7 +221,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          </c:if>
 						          
 						          <c:if test = "${tipoForm=='V'}">
-						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this)">
+						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this);loadCategory(this.value)">
 						          	<option value="">-</option>
 						          	<c:forEach items="${cus}" var="cus" varStatus="status">
 						          	<option value="${cus.xcdel}">${cus.xdtab} - ${cus.cmp1}</option>
@@ -216,7 +231,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          </c:if>
 						          
 						          <c:if test = "${tipoForm=='E'}">
-						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this)">
+						          <select id="id_customer_vid" name="id_customer_vid" class="form-control ss" ${readonly} onchange="SelCodeCustomers(this);loadCategory(this.value)">
 						          	<option value="">-</option>
 						          	<c:forEach items="${cus}" var="cus" varStatus="status">
 						          	<option value="${cus.xcdel}">${cus.xdtab} - ${cus.cmp1}</option>
@@ -409,6 +424,21 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                        </div>
 			                    </div>
 			                    
+						    </div>
+						    
+						    <div id="_cat">
+						    	
+						    	<div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+							    <div class="panel-footer bg-light">
+			                      <div class="padder">
+		                            <span class="h4 block">Category</span>
+		                          </div>
+			                    </div>
+						        <br/>
+						        
+						        <div id="_catsel"></div>
+						        
 						    </div>
 						    
 						    <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -614,6 +644,13 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	function hideLoader() {
 	  jQuery('#loading-image').hide();
 	}
+	function showLoader2() {
+	  jQuery('#loading-image2').show();
+	}
+	function hideLoader2() {
+	  jQuery('#loading-image2').hide();
+	}
+	
   	
 	function selpick() {
 		$('.ss').selectpicker({
@@ -877,6 +914,165 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	if ($("#tipoForm").val() == "M" || $("#tipoForm").val() == "V" || $("#tipoForm").val() == "E" ){
 		$("#id_customer_vid").prop("disabled", true); 
 	}	
+	
+	
+	
+	
+	
+	
+	$('#_cat').hide();
+	
+	$(document).ready(function(){
+		
+		loadCategory('${id_customer}')
+	 
+	});
+	
+	function loadCategory(idcus) {
+		
+		if(idcus!='') {
+			console.log("../../servlet/ws/GetCustomersCategory?idcus="+idcus);
+			
+			$.ajax({ 
+				url: "../../servlet/ws/GetCustomersCategory?idcus="+idcus,
+			   	method:"POST",
+			   	dataType: "json",       
+			   	beforeSend: function( xhr ) {
+			   	    showLoader2();
+			   	},
+			   	success: function(data)  
+		   		{
+			   		hideLoader2();
+		  			
+			   		if(data.length>0) {
+			   			$('#_cat').show();
+			   			//console.log(JSON.stringify(data))
+			   			var cat = data;
+			   			$.each(cat, function(index, cat) {
+			   				parseCategory(cat, idcus, '_catsel');
+			   			});
+			   			
+			   		}
+			   		
+		   		}   
+		 	});
+		}
+	}
+	
+	function parseCategory(cat, idcus, _div) {
+		
+		var markup = '';
+		var callfun = false;
+		if(cat.value.length==0) {
+			
+			if(cat.nodes.length==0) {
+				console.log("no value for "+cat.name+" in nodes");
+			}
+			else {
+				
+				markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control" onchange="checkNodes(this.value, \''+cat.name+'\',  \''+idcus+'\')">'
+					+'<option value=""></option>';
+				
+				//var val = [];
+				$.each(cat.nodes, function(index, node) {
+					//val.push(node.name);
+					markup+= '<option value="'+node.name+'">'+node.name+'</option>';
+				});
+				//console.log("value for "+cat.name+": "+JSON.stringify(val));
+				markup+= '</select>';
+				
+				callfun = true;
+			}
+		}
+		else {
+			
+			markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control">'
+				+'<option value=""></option>';
+			
+			$.each(cat.value, function(index, value) {
+				markup+= '<option value="'+value+'">'+value+'</option>';
+			});
+			//console.log("value for "+cat.name+": "+JSON.stringify(val));
+			markup+= '</select>';
+			
+			callfun = false;
+			
+			//console.log("value for "+cat.name+": "+JSON.stringify(cat.value));
+		}
+		
+		markup='<div class="form-group pull-in clearfix"><div class="col-sm-12"><label>'+cat.name+'</label>'+markup+'</div></div>'
+			+'<div id="_'+cat.name+'_parent"></div>';
+		
+		//$('#'+_div).html('');
+		$('#'+_div).append(markup);
+		
+		
+		if(callfun==true) {
+			//alert("callfun");
+			$("[id='_cat_"+cat.name+"']").on('change', function () {
+		        var val = this.options[this.selectedIndex].value;
+				//alert(val);
+				
+			});
+		}	
+		
+		
+		
+		
+		
+		<c:forEach items="${cat}" var="cat" varStatus="status">
+	  	
+			if(cat.name=='${cat.xcdel}') {
+				console.log('*** ${cat.xcdel}:${cat.xdtab}');
+				$("[id='_cat_${cat.xcdel}']").val('${cat.xdtab}').trigger("change");
+				//$('#_cat_${cat.xcdel} option[value="${cat.xdtab}"]').attr('selected','selected');
+			}
+		
+		</c:forEach>
+		selpick();
+		
+		
+		
+	}
+	
+	function checkNodes(_category, _parent_category, _idcus) {
+		//alert(_category+' '+_parent_category);
+		
+		$.ajax({ 
+			url: "../../servlet/ws/GetCustomersCategory2?idcus="+_idcus+"&category="+_category+"&parent_category="+_parent_category,
+		   	method:"POST",
+		   	dataType: "json",       
+		   	beforeSend: function( xhr ) {
+		   	    showLoader2();
+		   	},
+		   	success: function(data)  
+	   		{
+		   		hideLoader2();
+	  			
+		   		if(data.length>0) {
+		   			$('#_cat').show();
+		   			//console.log(JSON.stringify(data))
+		   			var cat = data;
+		   			$.each(cat, function(index, cat) {
+		   				//parseCategory(cat);
+		   				
+		   				//alert(JSON.stringify(cat));
+		   				
+		   				$('#_'+_parent_category+'_parent').html('');
+		   				//$('#_'+_parent_category+'_parent').append(JSON.stringify(cat));
+		   				
+		   				parseCategory(cat, _idcus, '_'+_parent_category+'_parent');
+		   				
+		   			});
+		   			
+		   		}
+		   		
+	   		}   
+	 	});
+	}
+	
+	
+	
   </script>
   
   <%@ include file="../../inc/autorized.jsp" %>

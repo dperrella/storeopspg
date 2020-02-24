@@ -18,6 +18,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 String table="";
 
 String idusr = session.getAttribute("username").toString();
+String role = session.getAttribute("tipo").toString();
+
 %>
 
 <div class="modal-dialog">
@@ -38,7 +40,7 @@ String idusr = session.getAttribute("username").toString();
 	try
 	{
 		conn = Utility.getConnData();
-		item = Item.getItemsByUser(conn, 1, idusr);
+		item = Item.getItemsByUserRole(conn, 1, idusr, role);
 		
 		table+= "<table class=\"table table-striped\">"+
 				"<thead>"+

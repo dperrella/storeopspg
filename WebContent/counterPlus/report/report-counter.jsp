@@ -26,6 +26,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <link rel="stylesheet" href="../../js/datepicker/bootstrap-datepicker.css" type="text/css" />
   <link rel="stylesheet" href="../../js/chosen/chosen.css" type="text/css" />
   <link rel="stylesheet" href="../../js/datatables/datatables.css" type="text/css"/>
+  
+  <!--
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+  -->
+  
   <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
   
   
@@ -302,20 +307,21 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			            <section class="panel panel-default">
 			            	<header class="panel-heading font-bold">Data</header>
 			               	
+			               	<!-- 
 			               	<div class="panel-body">
 			               		<button id="btnExport" class="btn btn-default"><%=propLang.get("xls_export") %></button>
 			               	</div>
+			               	-->
 			               	
 			               	<div id="table_wrapper" class="table-responsive horizontal">
-			               		<table class="table table-striped b-t b-light">
+			               		<table id="example" class="table table-striped b-light">
 			               		<thead>
 			               			<tr>
 			               				<c:if test = "${nrstores == 1}">
 							    		<th></th>
 			              				</c:if>
 			              				<th>Period</th>
-			              				
-			               				${th}
+			              				${th}
 			               			</tr>
 			               		</thead>
 			               		<tbody>
@@ -328,13 +334,13 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				                            </a>
 				                        </td>
 										</c:if>
-										<td>${period.xcdel}
-										<input type="hidden" name="period" value="${period.cmp4}"/>
-										</td>
+										<td>${period.xcdel}</td>
 										${period.cmp1}
 									</tr>
 								</c:forEach>
 				           	    </tbody>
+				           	    
+				           	    
 				           		<tfoot>
 				           	    	<tr>
 				           	    		<c:if test = "${nrstores == 1}">
@@ -351,6 +357,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					           	    	</c:forEach>
 				           	    	</tr>
 				           	    </tfoot>
+				           	    
 			           			</table>
 			           			
 			           			
@@ -378,7 +385,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			               	
 			               	<div id="collapseOne" class="panel-collapse collapse">
 			               	<div id="table_wrapper2" class="table-responsive horizontal">
-			               		<table class="table table-striped b-t b-light">
+			               		<table id="example2"class="table table-striped b-t b-light">
 			               		<thead>
 			               			<tr>
 			               				<th>Store</th>
@@ -447,7 +454,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	</div>
   
     
+   
+  <!-- 
   <script src="../../js/jquery.min.js"></script>
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  
   <!-- Bootstrap -->
   <script src="../../js/bootstrap.js"></script>
   <!-- App -->
@@ -455,19 +467,19 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/slimscroll/jquery.slimscroll.min.js"></script>
   <script src="../../js/app.plugin.js"></script>
   
-    <!-- datepicker -->
+  <!-- datepicker -->
   <script src="../../js/datepicker/bootstrap-datepicker.js"></script>
   
+  <script type="text/javascript"  src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript"  src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript"  src="https://cdn.datatables.net/1.10.9/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.html5.min.js"></script>	
   <script src="../../js/bootstrap-select/js/bootstrap-select.js?v=2"></script>
-  
   <script src="../../js/bootstrap-modal.js"></script>
   
-  <script type="text/javascript" src="../../analytics2/main/xlsx/shim.min.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/xlsx.full.min.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/Blob.js"></script>
-  <script type="text/javascript" src="../../analytics2/main/xlsx/FileSaver.js"></script>
   
-  <script src="../../js/jquery.tabletoCSV.js"></script>
   
   <!-- Echarts -->
   <script src="../../js/echarts/echarts.min.js?v=2"></script>
@@ -493,7 +505,28 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	}
 	
 	$('#ttt').html('${ttt}');
+	
+	
+	$(document).ready(function() {
+		  var table = $('#example').DataTable({
+		    dom: 'Bfrtip',
+		    "bPaginate": false,
+		    "searching": false,
+		    buttons: [
+		    {
+		      extend: 'excel',
+		      text: 'Export excel',
+		      className: 'btn btn-default m-t m-l m-b',
+		      filename: 'Export Excel',
+		      exportOptions: {
+		        modifier: {
+		          page: 'all'
+		        }
+		      }
+		    }]
+		  });
 
+		});
 	//MODAL
 	$('.getModal').click(function(e) {
 	

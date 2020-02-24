@@ -64,6 +64,7 @@ try
 		"left join error_type on eventcode = errorcode "+
 		"left join deviceslavestype on deviceslaves.device_type_id = deviceslavestype.id "+
 		"where id_device = "+iddevice+" order by door_description, device_type_id ";
+	System.out.println(sql);
 	rs=st.executeQuery(sql);
 	
 	String enab = "";
