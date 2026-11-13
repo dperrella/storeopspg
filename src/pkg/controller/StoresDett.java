@@ -112,6 +112,9 @@ public class StoresDett extends AbstractController {
 			// PTF
 			String $under_construction="";
 			
+			// PTF
+			String $under_construction_date="";
+						
 			$id_customer = ""+req.getParameter("id_customer");
 			$id_customer=Utility.noNull($id_customer);
 			
@@ -120,6 +123,8 @@ public class StoresDett extends AbstractController {
 			
 			String $customerid = ""+req.getParameter("customerid");
 			$customerid=Utility.noNull($customerid);
+			
+			boolean $clicksoftware_integration = false;
 			
 			obj.put("customerid", $customerid);
 			
@@ -184,7 +189,12 @@ public class StoresDett extends AbstractController {
 					$under_construction=""+req.getParameter("under_construction");
 					if($under_construction.equals("null"))
 						$under_construction = "false";
-										
+					
+					$under_construction_date=""+req.getParameter("under_construction_date");
+					if($under_construction_date.equals("null"))
+						$under_construction_date = "";
+					
+					
 					boolean esiste = false;
 					sql   = "select account_code from customers where id = "+$id_customer;
 					String $ac="";
@@ -206,13 +216,19 @@ public class StoresDett extends AbstractController {
 						tipoForm = "I";
 					}
 					else {
-					
+						String ucd_field="";
+						String ucd_data="";
+						
+						if($under_construction_date.length()>0) {
+							ucd_field = ", under_construction_date ";
+							ucd_data = ", '"+$under_construction_date+"' ";
+						}
 						// Non lo scrive in inserimento perché non ha ancora il devices...
 						
 						sql   = "INSERT INTO f_stores( "
 								+ "id, description, store_code, id_customer, country, region, province, "
 								+ "city, address, postalcode, sphone, smail, id_optempl, sapid, customeridstore,"
-								+ "brandname, brandlogo, notes, contact, cphone, cmobile, cmail, flagclose, flag_analytics, timezone, under_costruction ) "
+								+ "brandname, brandlogo, notes, contact, cphone, cmobile, cmail, flagclose, flag_analytics, timezone, under_costruction "+ucd_field+" ) "
 								+ "values ("
 								+ $id+" , '"+$description.replaceAll("'", "''")+"' , "
 								+ "'"+$store_code.replaceAll("'", "''")+"', "+$id_customer+" , "
@@ -223,7 +239,7 @@ public class StoresDett extends AbstractController {
 								+ "'"+$brandname.replaceAll("'", "''")+"', '"+$brandlogo.replaceAll("'", "''")+"' , "
 								+ "'"+$notes.replaceAll("'", "''")+"', '"+$contact.replaceAll("'", "''")+"' , "
 								+ "'"+$cphone.replaceAll("'", "''")+"', '"+$cmobile.replaceAll("'", "''")+"' , "
-								+ "'"+$cmail.replaceAll("'", "''")+"' , "+$flagclose+", false, '"+$timezone+"', "+$under_construction+" ) ";
+								+ "'"+$cmail.replaceAll("'", "''")+"' , "+$flagclose+", false, '"+$timezone+"', "+$under_construction+" "+ucd_data+" ) ";
 						System.out.println(sql);
 						st.executeUpdate(sql);
 						
@@ -243,7 +259,7 @@ public class StoresDett extends AbstractController {
 							dep.insert();
 						}
 						catch(Exception e) {
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 						// ****************************
 						
@@ -314,6 +330,11 @@ public class StoresDett extends AbstractController {
 					if($under_construction.equals("null"))
 						$under_construction = "false";
 					
+					$under_construction_date=""+req.getParameter("under_construction_date");
+					if($under_construction_date.equals("null"))
+						$under_construction_date = "";
+					
+					
 					boolean esiste = false;
 					sql   = "select account_code from customers where id = "+$id_customer;
 					String $ac="";
@@ -336,6 +357,13 @@ public class StoresDett extends AbstractController {
 						tipoForm = "M";
 					}
 					else {
+						
+						String ucd_field="";
+						
+						if($under_construction_date.length()>0) {
+							ucd_field = ", under_construction_date = '"+$under_construction_date+"' ";
+						}
+						
 						sql   = "update f_stores set "
 								+ "description = '"+$description.replaceAll("'", "''")+"' , "
 								+ "store_code = '"+$store_code.replaceAll("'", "''")+"' , "
@@ -361,6 +389,7 @@ public class StoresDett extends AbstractController {
 								+ "flagclose = "+$flagclose+", "
 								+ "timezone = '"+$timezone+"', "
 								+ "under_costruction = "+$under_construction+" "
+								+ ucd_field
 								+ "where id = "+$storeid+" ";
 						System.out.println(sql);
 						st.executeUpdate(sql);
@@ -457,7 +486,8 @@ public class StoresDett extends AbstractController {
 				}
 				
 				
-				sql   = "select * from f_stores where id = "+$storeid;
+				sql   = "select (select * from can_open_ticket("+$storeid+")) as clicksoftware_integration , * "
+						+ "from f_stores where id = "+$storeid;
 				rs=st.executeQuery(sql);
 				if(rs.next()) {
 					
@@ -487,8 +517,10 @@ public class StoresDett extends AbstractController {
 					$flagclose=rs.getString("flagclose");
 					$timezone=Utility.noNull(rs.getString("timezone"));
 					$under_construction=rs.getString("under_costruction");
+					$under_construction_date=rs.getString("under_construction_date");
 					
 					$google_uid=Utility.noNull(rs.getString("google_uid"));
+					$clicksoftware_integration = rs.getBoolean("clicksoftware_integration");
 					
 				}
 				rs.close();
@@ -685,9 +717,16 @@ public class StoresDett extends AbstractController {
 			obj.put("AccountCode", accountCode);
 			obj.put("timezone", $timezone);
 			obj.put("under_construction", $under_construction);
+			obj.put("under_construction_date", $under_construction_date);
 			
 			obj.put("google_uid", $google_uid);
 			
+			if($clicksoftware_integration==false) {
+				obj.put("cs", false);
+			}
+			else {
+				obj.put("cs", true);
+			}
 		}
 		catch(Exception e) {
 			e.printStackTrace();

@@ -65,6 +65,7 @@ public class GetStores extends HttpServlet {
 			while(rs.next()) {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("value", rs.getInt("id"));
+				jsonObj.put("key", rs.getInt("id"));
 				jsonObj.put("label", rs.getString("description"));
 				jsonArray.add(jsonObj);
 			}

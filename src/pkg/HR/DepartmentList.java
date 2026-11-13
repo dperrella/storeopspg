@@ -119,7 +119,7 @@ public class DepartmentList extends AbstractController {
 				$agency_code=rs.getString("agency_code");
 				
 				dep.add(new Departments($id,$description,$parentid,$address,$locality,$province,$zipcode,
-						$state,$phone,$email,$department_code,"","","",0,0,0,$company_code,$agency_code,$cmp3,$cmp4));
+						$state,$phone,$email,$department_code,"","","",0,0,0,false,$company_code,$agency_code,$cmp3,$cmp4));
 				
 			}
 			rs.close();

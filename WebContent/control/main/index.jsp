@@ -335,13 +335,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					                <table class="table table-striped m-b-none" id="ul" data-ride="datatables">
 					                  <thead>
 										  <tr>
-									        <th width="25%"><%=propLang.get("sm_cont_cl") %></th>
-									        <th width="10%">Store Id</th>
-									        <th width="30%"><%=propLang.get("sm_cont_ne") %></th>
-									        <th width="25%"><%=propLang.get("sm_cont_ip") %></th>
-									        <th width="10%">Account Id</th>
-									        <th width="10%">Store Id</th>
-									        <th width="10%">Door Id</th>
+									        <th width="20%"><%=propLang.get("sm_cont_cl") %></th>
+									        <th width="20%"><%=propLang.get("sm_cont_ne") %></th>
+									        <th width="20%"><%=propLang.get("sm_cont_ip") %></th>
+									        <th width="5%">Attempts</th>
+									        <th width="10%">Updating From</th>
+									        <th width="10%">Status</th>
+									        <th width="5%">Account Id</th>
+									        <th width="5%">Store Id</th>
+									        <th width="5%">Door Id</th>
 									        <th></th>
 									      </tr>
 									  </thead>
@@ -350,7 +352,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			      					  </tbody>
 			      					  <tfoot>
 			      					  	  <tr>
-			      					  	  	<td colspan="7"><div id="ul_total" style="margin-left:5px"></div></td>
+			      					  	  	<td colspan="10"><div id="ul_total" style="margin-left:5px"></div></td>
 			      					  	  </tr>
 			      					  </tfoot>
 			      					</table>
@@ -545,14 +547,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	      "processing": true,
 	      //"serverSide": true,
 	      "ajax": {
-            "url": "../../servlet/ws/GetUpdating",
+            "url": "../../servlet/ws/GetUpdating2",
             //"dataType": "jsonp"
           },
           "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-              $('td:eq(7)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[1] + '" class="btn btn-default">Edit</a>');
-              $('td:eq(4)', nRow).html('<span class="label bg-light">' + aData[4] + '</span>');
-              $('td:eq(5)', nRow).html('<span class="label bg-light">' + aData[5] + '</span>');
-              $('td:eq(6)', nRow).html('<span class="label bg-light">' + aData[6] + '</span>');
+              $('td:eq(9)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[1] + '" class="btn btn-default">Edit</a>');
+              $('td:eq(6)', nRow).html('<span class="label bg-light">' + aData[4] + '</span>');
+              $('td:eq(7)', nRow).html('<span class="label bg-light">' + aData[5] + '</span>');
+              $('td:eq(8)', nRow).html('<span class="label bg-light">' + aData[6] + '</span>');
               return nRow;
           },
           "fnInitComplete": function (settings,json) {

@@ -53,6 +53,8 @@
 	<bean name="/app/anag/stores-dett.htm" class="pkg.controller.StoresDett"></bean>
 	<bean name="/app/anag/stores-google.htm" class="pkg.controller.StoresGoogle"></bean>
 	<bean name="/app/anag/stores-google-dett.htm" class="pkg.controller.StoresGoogleDett"></bean>
+	<bean name="/app/anag/stores-ticket.htm" class="pkg.controller.StoresTicket"></bean>
+	
 	<!-- Gestione Devices -->
 	<bean name="/app/anag/devices-list.htm" class="pkg.controller.DevicesList"></bean>
 	<bean name="/app/anag/devices-dett.htm" class="pkg.controller.DevicesDett"></bean>
@@ -529,6 +531,8 @@
 	<bean name="/hr/planner2/plannerEmployee.htm" class="pkg.HR.PlannerEmployee"></bean>
 	<bean name="/hr/planner2/planner-stampa.htm" class="pkg.HR.PlannerStampa2"></bean>
 	
+	<bean name="/hr/control/employee-control.htm" class="pkg.HR.EmployeeControl"></bean>
+	
 	
 	<!-- ************* -->
 	<!-- SmartPOS    -->
@@ -701,6 +705,8 @@
 	<bean name="/login-temperature.htm" class="pkg.controller.LoginTemperature"></bean>
 	<!-- Desk -->
 	<bean name="/temperature/main/index.htm" class="pkg.temperature.Desk"></bean>
+	<bean name="/temperature/main/index-report-devices.htm" class="pkg.temperature.DeskReportDevices"></bean>
+    
 	
 	<!-- ************* -->
 	<!-- CNP    -->
@@ -711,4 +717,45 @@
 	<bean name="/counterPlus/report/report-counter.htm" class="pkg.counterPlus.ReportCounter"></bean>
 	
 	
+	<!-- ************* -->
+	<!-- OCC    -->
+	<!-- Login-occupancy -->
+	<bean name="/login-occupancy.htm" class="pkg.controller.LoginOccupancy"></bean>
+	<!-- Desk -->
+	<bean name="/occupancy/main/index.htm" class="pkg.occupancy.Desk"></bean>
+	<bean name="/occupancy/main/indexFirebase.htm" class="pkg.occupancy.DeskFirebase"></bean>
+	<bean name="/occupancy/report/report-occupancy.htm" class="pkg.occupancy.ReportOccupancy"></bean>
+	<bean name="/occupancy/config/properties.htm" class="pkg.occupancy.PropertiesController	"></bean>
+	<bean name="/occupancy/report/received-data.htm" class="pkg.occupancy.ReceivedData"></bean>
+	
+	<bean name="/occupancy/anag/aree-list.htm" class="pkg.occupancy.AreeListController"></bean>
+	<bean name="/occupancy/anag/aree-dett.htm" class="pkg.occupancy.AreeDettController"></bean>
+	<bean name="/occupancy/anag/doors-list.htm" class="pkg.occupancy.DoorsListController"></bean>
+	<bean name="/occupancy/rel/rel-door_aree.htm" class="pkg.occupancy.RelDoorAreaController"></bean>
+	<bean name="/occupancy/config/stores-list.htm" class="pkg.occupancy.StoresList"></bean>
+	<bean name="/occupancy/config/stores-hours.htm" class="pkg.occupancy.StoresHours"></bean>
+	<bean name="/occupancy/config/stores-area-list.htm" class="pkg.occupancy.StoresAreaList"></bean>
+	<bean name="/occupancy/config/stores-area-detail.htm" class="pkg.occupancy.StoresAreaDetail"></bean>
+	<bean name="/occupancy/config/change-area-detail.htm" class="pkg.occupancy.ChangeAreaDetail"></bean>
+	<bean name="/occupancy/popup/labels-dett.htm" class="pkg.occupancy.LabelsDettController"></bean>
+	
+	<!-- ************* -->
+	<!-- CNA    -->
+	<!-- Login-counterSAAS -->
+	<bean name="/login-counterAS.htm" class="pkg.controller.LoginCounterAS"></bean>
+	<!-- Desk -->
+	<bean name="/counterAS/main/index.htm" class="pkg.counterAS.Desk"></bean>
+	<bean name="/counterAS/report/report-counter.htm" class="pkg.counterAS.ReportCounter"></bean>
+	
+	
+	
+	<!-- ************* -->
+	<!-- SMARTDATA (Analytics SSAS)     -->
+	<!-- Login-analyticsAS -->
+	<bean name="/login-analyticsAS.htm" class="pkg.controller.LoginAnalyticsAS"></bean>
+	<!-- Desk -->
+	<bean name="/analyticsAS/main/index.htm" class="pkg.analyticsAS.Desk"></bean>
+	<bean name="/analyticsAS/main/index-report.htm" class="pkg.analyticsAS.DeskReport"></bean>
+    <bean name="/analyticsAS/main/index-report-devices.htm" class="pkg.analyticsAS.DeskReportDevices"></bean>
+    
 </beans>

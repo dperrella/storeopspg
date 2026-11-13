@@ -52,7 +52,7 @@ public class DeviceLines extends AbstractController {
 		String account_id = req.getParameter("account_id");
 		String linNum = req.getParameter("linNum");
 		String device_type = req.getParameter("device_type");
-		
+		String ids = req.getParameter("ids");
 		
 		obj.put("id_device", id_device);
 		obj.put("id_customer", id_customer);
@@ -150,6 +150,14 @@ public class DeviceLines extends AbstractController {
 			// Lista Doors per device
 			sql  =  "select door_type_id, door_description "
 					+ "from doors where id_customer = "+id_customer;
+			
+			sql  = "select door_type_id, door_description \r\n" + 
+					", case when (select door_id from f_stores\r\n" + 
+					"join devices on devices.id_store = f_stores.id\r\n" + 
+					"join device_lines on device_lines.id_device = devices.id and status != 'A'\r\n" + 
+					"where f_stores.id = "+ids+" and door_id = door_type_id LIMIT 1) is null then false else true end used\r\n" + 
+					"from doors \r\n" + 
+					"where id_customer = "+id_customer;
 			// Prepara il cursore
 			st = conn.prepareStatement(sql);
 			
@@ -171,7 +179,16 @@ public class DeviceLines extends AbstractController {
 				
 				$door_type_id=rs.getString("door_type_id");
 				$door_description=rs.getString("door_description");
-				door.add(new Tables("",$door_type_id,$door_description,
+				
+				if(rs.getBoolean("used")) {
+					$door_description+=" - Already Used";
+					$cmp4 = "disabled";
+				}
+				else {
+					$cmp4 = "";
+				}
+				
+				door.add(new Tables("",$door_type_id,$door_description+" ",
 						$cmp1,$cmp2,$cmp3,$cmp4));
 				
 			}

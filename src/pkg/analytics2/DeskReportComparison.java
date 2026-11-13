@@ -754,7 +754,9 @@ public class DeskReportComparison extends AbstractController {
 	         		long startTime = startDate.getTime();
 	         		long endTime = endDate.getTime();
 	         		long diffTime = endTime - startTime;
-	         		long diffDays = diffTime / (1000 * 60 * 60 * 24);
+	         		double abc = diffTime / (1000.0 * 60.0 * 60.0 * 24.0);
+	        		long diffDays = (long) Math.round(abc);                  
+	        		
 	         		DateFormat dateFormat = DateFormat.getDateInstance();
 	         		System.out.println("The difference between "+
 	         		  dateFormat.format(startDate)+" and "+
@@ -786,7 +788,9 @@ public class DeskReportComparison extends AbstractController {
 	         		startTime = startDate.getTime();
 	         		endTime = endDate.getTime();
 	         		diffTime = endTime - startTime;
-	         		diffDays = diffTime / (1000 * 60 * 60 * 24);
+	         		abc = diffTime / (1000.0 * 60.0 * 60.0 * 24.0);
+	        		diffDays = (long) Math.round(abc);                  
+	        		
 	         		dateFormat = DateFormat.getDateInstance();
 	         		//System.out.println("The difference between "+
 	         		//  dateFormat.format(startDate)+" and "+

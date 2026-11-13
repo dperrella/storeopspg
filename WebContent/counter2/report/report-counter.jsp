@@ -442,6 +442,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	$(document).ready(function() {
 	  var table = $('#example').DataTable({
 	    dom: 'Bfrtip',
+	    "bSortable" : false,
+	    "ordering": false,
 	    "bPaginate": false,
 	    "searching": false,
 	    buttons: [
@@ -545,6 +547,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				        right: '10%',
 				        bottom: '10%',
 				        containLabel: true
+				    },
+				    toolbox: {
+				        feature: {
+				            saveAsImage: {}
+				        }
 				    },
 				    xAxis: {
 				        type: 'category',

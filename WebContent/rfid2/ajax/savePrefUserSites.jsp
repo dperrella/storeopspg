@@ -15,8 +15,10 @@ String output 	= "";
 Connection conn = null;
 Statement st 	= null;
 String sql 		= "";
-String idstores = request.getParameter("idstores");
-String group = request.getParameter("group");
+String idsites = ""+request.getParameter("idsites");
+
+System.out.println(idsites);
+
 
 try {
 	conn=Utility.getConnRfid();
@@ -25,7 +27,7 @@ try {
 	sql   = "delete from pref_user_sites where idusr = '"+username+"' ";
 	st.executeUpdate(sql);
 	
-	String temp[] = idstores.split(",");
+	String temp[] = idsites.split(",");
 	for(int i=0;i<temp.length;i++) {
 		
 		sql   = "insert into pref_user_sites "+

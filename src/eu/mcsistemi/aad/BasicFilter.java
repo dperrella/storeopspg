@@ -71,9 +71,7 @@ public class BasicFilter implements Filter {
     private String authority;
 
     public void destroy() {
-
     }
-    
 
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
@@ -90,6 +88,7 @@ public class BasicFilter implements Filter {
             String currentUri = httpRequest.getRequestURL().toString();
             String queryStr = httpRequest.getQueryString();
             String fullUrl = currentUri + (queryStr != null ? "?" + queryStr : "");
+            
             
         	if(currentUri.contains("localhost")) {
 	    		currentUri = currentUri.replaceAll("https://", "http://");

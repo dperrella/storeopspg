@@ -290,6 +290,9 @@ public class PlannerEmployee extends AbstractController {
 					"and plan_year = '"+year+"' \r\n" + 
 					"and plan_week = '"+week+"' \r\n" + 
 					"and id_employee = '"+id_employee+"'\r\n";
+			
+			System.out.println("----- ----- "+sql);
+			
 			rs=st.executeQuery(sql);
 			
 			double lun = 0;
@@ -386,6 +389,20 @@ public class PlannerEmployee extends AbstractController {
 			}
 			
 			obj.put("col", col);
+			
+			
+			
+			// banca ore
+			sql = "select * from antressbancaore where id = '"+id_employee+"'";
+			System.out.println(sql);
+			rs=st.executeQuery(sql);
+			if(rs.next()) {
+				obj.put("bancaore", rs.getString(2));
+			}
+			else {
+				obj.put("bancaore", "00:00:00");
+			}
+			rs.close();
 			
 		}
 		catch(Exception e) {

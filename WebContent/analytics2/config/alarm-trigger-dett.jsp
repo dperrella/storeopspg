@@ -602,6 +602,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   		var idtri = $('#id_trigger').val();
   		var idcus = $('#idcus').val();
   		var idsto = $('#idsto').val();
+  		var send_mail = '';
+  		if($('#send_mail').is(":checked"))
+  			send_mail = true;
+  		else
+  			send_mail = false;
+  		
   		var sto = idsto.join();
   		var err = '';
   		if(idcus=='') {
@@ -622,7 +628,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   		      type: 'POST',
   		      dataType: 'html',
   		      async: true,
-  		      data: 'idtri='+idtri+'&idcus='+idcus+'&idsto='+idsto,
+  		      data: 'idtri='+idtri+'&idcus='+idcus+'&idsto='+idsto+'&send_mail='+send_mail,
   		      success: function (data) {
   		    	$( 'div.modal-backdrop').remove();
   				$( '.modal' ).remove();

@@ -448,6 +448,52 @@ public class AuditItem implements CRUD {
 		
 	}
 	
+	public void addAllDummy(Connection conn, int idCustomer) {
+		
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try{
+			
+			String sql = "select customer_country_id from customers where id = "+idCustomer+" ";
+			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			int country = -1;
+			if(rs.next()) {
+				country = rs.getInt("customer_country_id");
+			}
+			rs.close();
+			st.close();
+			
+			sql = "delete from ats.audit_item where idaudit = "+this.idAudit+" "
+					+ "and iditem in (select iditem from ats.rel_item_customer \n" + 
+					"where idcustomer in (select c.id from customers c \n" + 
+					"where ats_dummy_customer = true and customer_country_id = "+country+")) ";
+			st = conn.prepareStatement(sql);
+			System.out.println(st.toString());
+			st.executeUpdate();
+			
+			
+			st.close();
+			
+			sql = " insert into ats.audit_item (idaudit, iditem) " 
+					+ "select "+this.idAudit+",iditem from ats.rel_item_customer \n" 
+					+ "where idcustomer in (select c.id from customers c \n" 
+					+ "where ats_dummy_customer = true and customer_country_id = 3) ";
+			st = conn.prepareStatement(sql);
+			
+	        // execute the java preparedstatement
+			System.out.println(st.toString());
+			st.executeUpdate();
+			st.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	public void updateUrl(Connection conn) {
 		
 		PreparedStatement st = null;

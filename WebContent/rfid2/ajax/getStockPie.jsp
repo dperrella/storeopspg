@@ -57,6 +57,19 @@ try {
 			"where s.id in("+idsites+") "+
 			"group by s.id, s.description "+
 			"order by s.id";
+	
+	sql   = "select id, description, count(distinct(epc)) units from ( "
+			+"select coalesce(sum(units) , null, 0) units, epc, s.id, s.description "
+			+"from sites s "
+			+"left join stockdiary on ts::date <= now()::date "
+			+"and id_site = s.id "
+			+"where s.id in("+idsites+") "
+			+"group by s.id, s.description, epc "
+			+"having sum(units) >= 1 "
+			+"order by s.id "
+			+") a "
+			+"group by id, description "
+			+"order by id";
 	st = conn.prepareStatement(sql);
 	rs = st.executeQuery();
 	while(rs.next()) {

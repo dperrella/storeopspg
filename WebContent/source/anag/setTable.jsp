@@ -26,6 +26,9 @@ value=value.replaceAll("\\?cd=undefined","");
 
 //Legge il file di properties associato alla lingua sul profilo
 ReadProperties propLang = new ReadProperties(session.getAttribute("language").toString()+".properties");
+
+Connection conn = null;
+Statement st = null;
 %>
 
 <div class="modal-dialog">
@@ -56,6 +59,60 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	          <input type="text" id="value" name="value" class="form-control" value="<%=value %>"/>
 	        </div>
 	    </div>
+	        
+	        <%
+	        int count = 0;
+        	
+	        try {
+	        	conn = Utility.getConnData();
+	        	st = conn.createStatement();
+	        	ResultSet rs = null;
+	        	
+	        	String sql = "";
+	        	String fld = "";
+	        	
+	        	if(tipo.equals("V")) {
+	        		fld = "idvendor";
+	        	}
+	        	else if(tipo.equals("B")) {
+	        		fld = "idbrand";
+		        }
+	        	else if(tipo.equals("C")) {
+	        		fld = "idcategory";
+		        }
+				
+				sql = "select count(0) num from ats.items where "+fld+" = "+key+" ";
+				rs = st.executeQuery(sql);
+				if(rs.next()) {
+					count = rs.getInt("num");
+				}
+				rs.close();
+				
+				if(count>0&&tipoForm.equals("D")) {
+			%>
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+	    	
+	    	<div class="form-group pull-in clearfix">
+		        <div class="col-sm-12">
+		          <label>Warning!</label>
+				  <%=count %> Items found with this Vendor. 
+		        </div>
+		    </div>
+			    
+			
+			<%
+				}
+			}
+	        catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+	        finally {
+	        	if(st!=null)
+	        		st.close();
+	        	if(conn!=null)
+	        		conn.close();
+	        }
+	        %>
 	   
 	</div>
 	<div class="modal-footer">

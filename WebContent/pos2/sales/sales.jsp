@@ -207,9 +207,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									<th style="width:10%">Code</th>
 									<th style="width:10%">Alternative Code</th>
 									<th style="width:10%">Size</th>
-									<th style="width:10%">Part</th>
+									<th style="width:10%">Season</th>
 									<th style="width:10%">Colour Code</th>
-									<th style="width:10%">Variant</th>
+									<th style="width:10%">Progressive</th>
 									<th style="width:10%">Pieces</th>
 									<th style="width:10%">Value</th>
 									
@@ -296,7 +296,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	
 	$('.datepicker-input2').datepicker({
 	    format: 'yyyy-mm-dd',
-	    orientation: 'top',
+	    orientation: 'bottom',
 	    autoclose: true
 	});  
 	
@@ -426,6 +426,53 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		var tickettyp = res[3];
 		var ticketid = res[4];
 		
+		
+	}
+	
+	function excelExport() {
+		
+		var store = $('#store').val();
+		var from = $('#from').val();
+		var to = $('#to').val();
+	
+		var href = '../popup/excelExport.jsp';
+    	
+        $('div.modal-backdrop ').remove();
+        $('#ajaxModal').remove();
+        $("div.modal").remove();
+        
+        showLoader2();
+		
+        var data = '';
+        $.ajax({
+          type: "POST",
+    	  url: href,
+    	  async: true,
+    	  data: "store="+store+"&from="+from+"&to="+to,
+    	  dataType: 'html',
+    	  beforeSend: function () {
+    		  
+    	  },
+    	  success: function(html) {
+    	      
+    		  var $modal = $('<div class="modal fade" id="ajaxModal"><div class="modal-body"></div></div>');
+    	      $('body').append($modal);
+    	      $modal.modal();
+    	        
+    		  //alert(html);
+    		  $modal.append(html);
+    		  
+    		  hideLoader2();
+    		  
+    	  },
+    	  error: function (xhr, ajaxOptions, thrownError) {
+   	        alert(xhr.status);
+   	        alert(thrownError);
+   	        
+   	        hideLoader2();
+   	        
+   	      }
+    	});
 		
 	}
 	

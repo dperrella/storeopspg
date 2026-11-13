@@ -103,6 +103,29 @@ public class getDocs extends HttpServlet {
 		try {
 			conn=Utility.getConnRfid();
 			st=conn.createStatement();
+			
+			/*
+			if(idsite.length()==0) {
+				System.out.println("idsite non passato, cotrollo...");
+				rs=st.executeQuery("select count(0) num from pref_user_sites where idusr = '"+session.getAttribute("username")+"'");
+				int _num = 0;
+				if(rs.next()) {
+					_num = rs.getInt("num");
+				}
+				rs.close();
+				
+				if(_num==1) {
+					System.out.println("pref_idsite esiste, qual'e'?");
+					rs=st.executeQuery("select idsite from pref_user_sites where idusr = '"+session.getAttribute("username")+"'");
+					if(rs.next()) {
+						idsite = rs.getString("idsite");
+					}
+					rs.close();
+					System.out.println("pref_idsite = "+idsite);
+					
+				}
+			}
+			*/
 		
 			JSONObject responseJson = new JSONObject();
 			JSONArray jsonArray = new JSONArray();

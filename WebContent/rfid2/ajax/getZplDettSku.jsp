@@ -57,6 +57,7 @@ String sku = request.getParameter("sku");
 String qty = request.getParameter("qty");
 String zplfile = request.getParameter("zplfile");  
 
+String idcus = session.getAttribute("idcus").toString();
 
 try {
 	conn=Utility.getConnRfid();
@@ -93,7 +94,7 @@ try {
 		"where iddoc = "+iddoc+" and p.sku = '"+sku+"' limit 1";
 	
 	
-	
+	/*
 	sql = "select "+
 			"replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace( "+
 			"zpl, "+
@@ -123,6 +124,40 @@ try {
 			"left join printers x on x.id = "+idprinter+" "+
 			"left join printers_templates t on t.id = "+idtemplate+" "+
 			"where iddoc = "+iddoc+" and p.sku = '"+sku+"' limit 1";
+	*/
+	sql = "select "+
+			"replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace( "+
+			"zpl, "+
+			"'##art1##', coalesce(p.art1, null, '')) , "+
+			"'##art2##',  coalesce(p.art2, null, '')) , "+
+			"'##art3##' ,  coalesce(p.art3, null, '')) , "+
+			"'##codfor##' ,  coalesce(p.codfor, null, '')) , "+
+			"'##artfor##' ,  coalesce(p.artfor, null, '')) , "+
+			"'##name##' ,  coalesce(p.name, null, '')) , "+
+			"'##size##' ,  coalesce(p.size, null, '')) , "+
+			"'##colordesc##' ,  coalesce(p.colordesc, null, '')) , "+
+			"'##nas##' ,  coalesce(p.nas, null, '')) , "+
+			"'##nas1##' ,  coalesce(p.nas1, null, '')) , "+
+			"'##sku##' ,  coalesce(p.sku, null, '')) , "+
+			"'##bcode1##' ,  coalesce(p.bcode1, null, '')) , "+
+			"'##bcode2##' ,  coalesce(p.bcode2, null, '')) , "+
+			
+			"'##code##' ,  coalesce(p.code, null, '')) , "+
+			"'##itemcode##' ,  coalesce(p.itemcode, null, '')) , "+
+			"'##colourcode##' ,  coalesce(p.colourcode, null, '')) , "+
+ 			"'##variant##' ,  coalesce(p.variant, null, '')) , "+
+		 	"'##part##' ,  coalesce(p.part, null, '')) ,  "+
+ 			"'##docref##' ,  coalesce(z.doc_ref, null, '')) ,  "+
+		 	"'##docorigin##' ,  coalesce(z.doc_origin, null, '')) "+
+		 			
+ 			
+			"zpl, x.ip, x.port, p.itemcode, p.colourcode, p.sizecod, p.art1, p.art2, p.art3, p.codfor, p.artfor, p.name, p.colordesc "+
+			"from documents_detail d "+
+			"left join products p on p.sku = d.sku and p.id_customer = "+idcus+" "+
+			"left join printers x on x.id = "+idprinter+" "+
+			"left join printers_templates t on t.id = "+idtemplate+" "+
+			"left join documents z on d.iddoc = z.id "+
+			"where d.iddoc = "+iddoc+" and p.sku = '"+sku+"' limit 1";
 	
 	System.out.println(sql);
 	rs=st.executeQuery(sql);

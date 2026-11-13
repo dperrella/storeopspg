@@ -488,7 +488,7 @@ public class PlannerListTab extends AbstractController {
 				$tollerance=rs.getString("tollerance");
 				
 				dep.add(new Departments($id,$description,$parentid,$address,$locality,$province,$zipcode,
-						$state,$phone,$email,$department_code,$minnum_intervals,$tollerance,"",0,0,0,$cmp1,$cmp2,$cmp3,$cmp4));
+						$state,$phone,$email,$department_code,$minnum_intervals,$tollerance,"",0,0,0,false,$cmp1,$cmp2,$cmp3,$cmp4));
 				
 			}
 			rs.close();

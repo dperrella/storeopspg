@@ -27,6 +27,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <link rel="stylesheet" href="../../js/datepicker/bootstrap-datepicker.css" type="text/css" />
   <link rel="stylesheet" href="../../js/chosen/chosen.css" type="text/css" />
   <link rel="stylesheet" href="../../js/datatables/datatables.css" type="text/css"/>
+  <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
+  
   <!--[if lt IE 9]>
     <script src="../../js/ie/html5shiv.js"></script>
     <script src="../../js/ie/respond.min.js"></script>
@@ -599,10 +601,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <!-- Sparkline Chart -->
   <script src="../../js/charts/sparkline/jquery.sparkline.min.js"></script>
   
-  <script src="../../js/app.plugin.js"></script>
+  <script src="../../js/app.plugin.js?v=2"></script>
   
   <!-- Treeview -->
   <script src="../../js/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+  
+  <script src="../../js/bootstrap-select/js/bootstrap-select.js?v=2"></script>
   
   <!-- Echarts -->
   <script src="../../js/echarts/echarts.min.js?v=2"></script>
@@ -921,6 +925,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		         
 		    },
 		    toolbox: {
+		    	show : true,
+		        showTitle: false,
 		        feature: {
 		            saveAsImage: {}
 		        }
@@ -1108,12 +1114,17 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    return childrenNodes;
 	}
 	
+	var $searchableTree;
+	
+	
 	function getStores() {
 		
 		var num = 0;
-		var $searchableTree;
+		//var $searchableTree;
 		
-		$('#tree').html('<div align="center">Please wait...<br/><img src="../../images/loading_2.gif"/></div>');
+		//$('#tree').html('<div align="center">Please wait...<br/><img src="../../images/loader_xs.gif"/></div>');
+		
+		console.log('${idstores}');
 		
 		$.ajax({
 		      type: "POST",
@@ -1159,6 +1170,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					});
 					
 					$('#btn-uncheck').prop("disabled", false);
+					
+					getCategory();
 		    	  
 		      },
 		      error: function()
@@ -1552,6 +1565,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					    
 					    },
 					    toolbox: {
+					    	show : true,
+					        showTitle: false,
+					        
 					        feature: {
 					            saveAsImage: {}
 					        }
@@ -1647,6 +1663,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					         
 					    },
 					    toolbox: {
+					    	show : true,
+					        showTitle: false,
+					        
 					        feature: {
 					            saveAsImage: {}
 					        }
@@ -1720,6 +1739,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						        data:['Highest Store','Top 10','All Stores']
 						    },
 						    toolbox: {
+						    	show : true,
+						        showTitle: false,
+						        
 						        feature: {
 						            saveAsImage: {}
 						        }
@@ -1829,6 +1851,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				    grid: {
 				        height: '70%',
 				        y: '10%'
+				    },
+				    toolbox: {
+				    	show : true,
+				        showTitle: false,
+				        
+				        feature: {
+				            saveAsImage: {}
+				        }
 				    },
 				    xAxis: {
 				        type: 'category',
@@ -2127,6 +2157,270 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	
 	
 	
+	
+	
+	
+	
+	
+//////////////////////////////////////////
+  	
+  	function selpick() {
+		$('.ss').selectpicker({
+		    liveSearch: true,
+		    tickIcon: 'fa fa-check'
+		 });
+	}
+  	
+  	function getCategory() {
+  		loadCategory('${idcus}');
+  	}
+  	
+  	
+	function loadCategory(idcus) {
+		
+		if(idcus!='') {
+			console.log('idcus: '+idcus);
+			console.log("../../servlet/ws/GetCustomersCategory?idcus="+idcus);
+			
+			$.ajax({ 
+				url: "../../servlet/ws/GetCustomersCategory?idcus="+idcus,
+			   	method:"POST",
+			   	dataType: "json",       
+			   	beforeSend: function( xhr ) {
+			   	    showLoader2();
+			   	},
+			   	success: function(data)  
+		   		{
+			   		hideLoader2();
+			   		$('#_catloader').hide();
+		   			
+			   		if(data.length>0) {
+			   			$('#_cat').show();
+			   			//console.log(JSON.stringify(data))
+			   			var cat = data;
+			   			$.each(cat, function(index, cat) {
+			   				parseCategory(cat, idcus, '_catsel');
+			   			});
+			   			
+			   		}
+			   		
+		   		}   
+		 	});
+		}
+		else {
+			console.log('idcus: '+idcus);
+		}
+	}
+	
+	function parseCategory(cat, idcus, _div) {
+		
+		var markup = '';
+		var callfun = false;
+		if(cat.value.length==0) {
+			
+			if(cat.nodes.length==0) {
+				console.log("no value for "+cat.name+" in nodes");
+			}
+			else {
+				
+				console.log("aaaaa");
+				markup = '<input type="hidden" name="_catt" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control" onchange="checkNodes(this.value, \''+cat.name+'\',  \''+idcus+'\')">'
+					+'<option value=""></option>';
+					
+				//var val = [];
+				$.each(cat.nodes, function(index, node) {
+					//val.push(node.name);
+					markup+= '<option value="'+node.name+'">'+node.name+'</option>';
+				});
+				//console.log("value for "+cat.name+": "+JSON.stringify(val));
+				markup+= '</select>';
+				
+				callfun = true;
+			}
+		}
+		else {
+			
+			markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control" multiple onchange="selectStore(\'_cat_'+cat.name+'\',\''+cat.name+'\')">'
+				//+'<option value="">-- All --</option>';
+				'';
+			
+			$.each(cat.value, function(index, value) {
+				markup+= '<option value="'+value+'">'+value+'</option>';
+			});
+			//console.log("value for "+cat.name+": "+JSON.stringify(val));
+			markup+= '</select>';
+			
+			callfun = false;
+			
+			//console.log("value for "+cat.name+": "+JSON.stringify(cat.value));
+		}
+		
+		markup='<div class="form-group pull-in clearfix"><div class="col-sm-12"><label>'+cat.name+'</label>'+markup+'</div></div>'
+			+'<div id="_'+cat.name+'_parent"></div>';
+		
+		//$('#'+_div).html('');
+		$('#'+_div).append(markup);
+		
+		
+		if(callfun==true) {
+			//alert("callfun");
+			$("[id='_cat_"+cat.name+"']").on('change', function () {
+		        var val = this.options[this.selectedIndex].value;
+				//alert(val);
+				
+			});
+		}	
+		
+		selpick();
+		
+		
+		
+	}
+	
+	function checkNodes(_category, _parent_category, _idcus) {
+		
+		//alert(_category+' '+_parent_category);
+		
+		if(_category=='') {
+			
+			//alert('a');
+			
+			$('#_'+_parent_category+'_parent').html('');
+			
+		}
+		else {
+		
+		
+		
+		
+			$.ajax({ 
+				url: "../../servlet/ws/GetCustomersCategory2?idcus="+_idcus+"&category="+_category+"&parent_category="+_parent_category,
+			   	method:"POST",
+			   	dataType: "json",       
+			   	beforeSend: function( xhr ) {
+			   	    showLoader2();
+			   	},
+			   	success: function(data)  
+		   		{
+			   		hideLoader2();
+		  			
+			   		if(data.length>0) {
+			   			$('#_cat').show();
+			   			//console.log(JSON.stringify(data))
+			   			var cat = data;
+			   			$.each(cat, function(index, cat) {
+			   				//parseCategory(cat);
+			   				
+			   				//alert(JSON.stringify(cat));
+			   				
+			   				$('#_'+_parent_category+'_parent').html('');
+			   				//$('#_'+_parent_category+'_parent').append(JSON.stringify(cat));
+			   				
+			   				parseCategory(cat, _idcus, '_'+_parent_category+'_parent');
+			   				
+			   			});
+			   			
+			   		}
+			   		
+		   		}   
+		 	});
+			
+		}
+		
+	}
+	
+	function getStoresFromCategory() {
+		
+		var _str = $( "#_catfrm" ).serialize();
+		console.log("../../servlet/ws/GetStoreFromCategory?"+_str);
+		
+		$.ajax({
+		      type: "POST",
+		      url: "../../servlet/ws/GetStoreFromCategory",
+		      data: _str,
+		      dataType: "json",
+		      success: function(result)
+		      {
+		         //alert(JSON.stringify(result));
+		    	
+		         uncheckAll();
+		         
+		         var ss = result.stores.split(',');
+		         
+		         if(ss[0]!='') {
+		         	 $('#modal-nrstores').html('('+ss.length+' Stores selected)');
+		         }
+		         else {
+		        	 $('#modal-nrstores').html('(0 Stores selected)');
+		         }
+		         
+		       	 $('#idstores').val(result.stores);
+				 $('#group').val('4');
+					
+		         
+				 
+				/* 
+				var search = function(e) {
+				  var pattern = $('#input-search').val();
+		          var options = {
+		            ignoreCase: true,
+		            exactMatch: false,
+		            revealResults: true
+		          };
+		          var results = $searchableTree.treeview('search', [ pattern, options ]);
+		        }
+				*/
+			    var treeViewObject = $('#tree').data('treeview'),
+			    allCollapsedNodes = treeViewObject.getCollapsed(),
+			    allExpandedNodes = treeViewObject.getExpanded(),
+			    allNodes = allCollapsedNodes.concat(allExpandedNodes);
+				
+				
+				
+				
+				for(var s = 0; s < ss.length; s++) {
+					for (var i = 0; i < allNodes.length; i++) {
+				        if (allNodes[i].id != ss[s]) continue;
+				        //treeViewObject.selectNode(allNodes[i].nodeId);
+				        treeViewObject.checkNode(allNodes[i].nodeId);
+				        
+				    }
+				}
+				
+		         
+		         
+				
+				//$('#idstores').val(result.stores);
+				//$('#group').val('4');
+				//$( "#deskForm" ).submit();
+				
+				
+				
+				 
+		      },
+		      error: function()
+		      {
+		        alert("Chiamata fallita, si prega di riprovare...");
+		      }
+		});
+	}
+	
+	function getNodes2() {
+		getStoresFromCategory();
+	}
+	
+	function selectStore(sel, cat) {
+		
+		
+		var selval = $('#'+sel).val();
+		
+		console.log(cat+': '+$('#'+sel).val());
+		
+		getStoresFromCategory();
+		
+	}
+	
+	////////////////////////////
   </script> 
   
   
@@ -2201,6 +2495,13 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   		
   		$('#chgUser').submit();
   	}
+  	
+  	
+  	
+  	
+  	
+  	
+	
   </script>
   
 </body>

@@ -15,7 +15,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 <html lang="it" class="app">
 <head>  
   <meta charset="utf-8" />
-  <title>Filters | SmartSuite</title>
+  <title>Profile | SmartSuite</title>
   <meta name="description" content="AppAtSource" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <link rel="stylesheet" href="../../css/bootstrap.css?2" type="text/css" />
@@ -117,7 +117,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
                       
                 	<div class="row row-sm">
                       
-		                <h2 class="font-thin m-b">Filters</h2>
+		                <h2 class="font-thin m-b">Profile</h2>
 		                
 		                
 		                <section class="panel panel-default">

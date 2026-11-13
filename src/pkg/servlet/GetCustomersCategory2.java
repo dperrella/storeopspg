@@ -60,7 +60,7 @@ public class GetCustomersCategory2 extends HttpServlet {
 			JSONObject responseJson = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			
-			sql   = "select category, parent_category, case when value is null then '[]'::json else value end from customers_category "+
+			sql   = "select category, parent_category, required, case when value is null then '[]'::json else value end from customers_category "+
 					"where id_customer = "+idcus+" and category = '"+category.replaceAll("'", "''")+"' and parent_category = '"+parent_category.replaceAll("'", "''")+"' ";
 			System.out.println(sql);
 			rs=st.executeQuery(sql);
@@ -72,11 +72,13 @@ public class GetCustomersCategory2 extends HttpServlet {
 				jsonObj.put("text", rs.getString("category").trim());
 				jsonObj.put("value", rs.getObject("value"));
 				jsonObj.put("parent_id", rs.getString("parent_category"));
+				jsonObj.put("req", rs.getString("required"));
+				
 				
 				// ---------------------->
 				// Legge Region per xcdel 
 				JSONArray jsonArray2 = new JSONArray();
-				sql   = "select category, parent_category, case when value is null then '[]'::json else value end from customers_category "+
+				sql   = "select category, parent_category, required, case when value is null then '[]'::json else value end from customers_category "+
 						"where id_customer = "+idcus+" and parent_category = '"+rs.getString("category")+"' ";
 				System.out.println(sql);
 				rs2=st2.executeQuery(sql);
@@ -90,6 +92,7 @@ public class GetCustomersCategory2 extends HttpServlet {
 					jsonObj2.put("text", rs2.getString("category").trim());
 					jsonObj2.put("value", rs2.getObject("value"));
 					jsonObj2.put("parent_id", rs.getString("category"));
+					jsonObj2.put("req", rs.getString("required"));
 					
 					jsonArray2.add(jsonObj2);
 				}

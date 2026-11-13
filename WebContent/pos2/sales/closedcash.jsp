@@ -296,7 +296,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	
 	$('.datepicker-input2').datepicker({
 	    format: 'yyyy-mm-dd',
-	    orientation: 'top',
+	    orientation: 'bottom',
 	    autoclose: true
 	});  
 	

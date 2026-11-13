@@ -257,6 +257,44 @@ public class Site implements CRUD {
 			catch(Exception e) {}
 		}
 	}
+	
+	public static Integer getPrefSite(Connection conn, String username) {
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		Integer idsite = -1;
+		
+		try {
+			st = conn.prepareStatement("select count(0) num from pref_user_sites where idusr = '"+username+"'");
+			rs=st.executeQuery();
+			int _num = 0;
+			if(rs.next()) {
+				_num = rs.getInt("num");
+			}
+			rs.close();
+			st.close();
+			
+			if(_num==1) {
+				System.out.println("pref_idsite esiste, qual'e'?");
+				st = conn.prepareStatement("select idsite from pref_user_sites where idusr = '"+username+"'");
+				rs=st.executeQuery();
+				if(rs.next()) {
+					idsite = rs.getInt("idsite");
+				}
+				rs.close();
+				st.close();
+				System.out.println("pref_idsite = "+idsite);
+				
+			}
+			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return idsite;
+		
+		
+	}
 
 	
 }

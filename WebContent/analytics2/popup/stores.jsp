@@ -17,48 +17,119 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 
 <div class="modal-dialog">
   <div class="modal-content">
-	<div class="modal-header">
-		<a class="close" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();">&times;</a>
-		<h3 class="font-thin">Select Stores</h3>
-	</div>
-	<div class="modal-body">
-		
-		<header class="panel-heading bg-light">
-			<span class="hidden-sm"><b>Where? <span id="modal-nrstores">(<%=nrstores%> Stores selected)</span></b></span>
-	    </header>
-	    
-	    <div class="row">
-	    	<div class="col-sm-6">
-			    <div class="input-group" style="margin-top:10px">
-		        	<div class="checkbox i-checks">
-		              <label>
-		                <input name="updStores" id="updStores" type="checkbox" value="S">
-		                <i></i>
-		                Only Updates Stores
-		              </label>
-		            </div>
-			    </div>
-			</div>
-			<div class="col-sm-6">
-				<button id="btn-uncheck" onclick="uncheckAll()" class="btn btn-default" style="margin-top:12px" disabled>Uncheck All</button>
-			</div>
+  
+  	<div id="standard-search">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();">&times;</a>
+			<h3 class="font-thin">Select Stores</h3>
 		</div>
-	    
-	    <div class="input-group" style="margin-top:10px">
-          <input type="text" class="form-control" id="input-search" placeholder="Type to search..." value="">
-          <span class="input-group-btn">
-            <button id="search-btn" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
-          </span>
-        </div>
-        
-        <div style="margin-top:10px" id="tree"></div>
-	    
+		<div class="modal-body">
+			
+			<header class="panel-heading bg-light">
+				<span class="hidden-sm"><b>Where? <span id="modal-nrstores">(<%=nrstores%> Stores selected)</span></b></span>
+				<!-- 
+				<a href="#" onclick="$('#standard-search').hide();$('#category-search').show();" class="pull-right">Advanced Category Search</a>
+		    	-->
+		    	<button id="btn-uncheck" onclick="uncheckAll()" class="btn btn-default btn-xs pull-right" disabled>Uncheck All</button>
+		    </header>
+		    
+		    
+		    <!-- 
+		    <div class="row">
+		    	<div class="col-sm-6">
+				    <div class="input-group" style="margin-top:10px">
+			        	<div class="checkbox i-checks">
+			              <label>
+			                <input name="updStores" id="updStores" type="checkbox" value="S">
+			                <i></i>
+			                Only Updates Stores
+			              </label>
+			            </div>
+				    </div>
+				</div>
+				<div class="col-sm-6">
+					<button id="btn-uncheck" onclick="uncheckAll()" class="btn btn-default" style="margin-top:12px" disabled>Uncheck All</button>
+				</div>
+			</div>
+		    -->
+		    
+		    
+		    
+		    <div class="input-group" style="margin-top:10px">
+	          <input type="text" class="form-control" id="input-search" placeholder="Type to search..." value="">
+	          <span class="input-group-btn">
+	            <button id="search-btn" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+	          </span>
+	        </div>
+	        
+	        <form id="_catfrm" name="_catftm" method="post">
+		   
+		    <div id="_catloader" align="center" style="margin-top:10px">
+		    	Please wait...<br/><img src="../../images/loader_xs.gif"/>
+		    </div>			    
+		    <div id="_cat" style="margin-top:10px">
+			    
+			    
+			    
+		        <div id="_catsel"></div>
+		        
+		    </div>
+		    
+		    </form>
+			
+	        <div style="margin-top:10px" id="tree"></div>
+		    
+		</div>
+		<div class="modal-footer">
+			<img src="../../images/spacer.gif" onload="getStores();$('#category-search').hide()"/>
+			<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_cancel") %></a>
+			<a class="btn btn-default" onclick="saveNodes()"><%=propLang.get("pop_default") %></a>
+			<a class="btn btn-primary btn-lg" onclick="getNodes('GO')"><%=propLang.get("pop_run") %></a>	
+		</div>
 	</div>
-	<div class="modal-footer">
-		<img src="../../images/spacer.gif" onload="getStores();"/>
-		<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_cancel") %></a>
-		<a class="btn btn-default" onclick="saveNodes()"><%=propLang.get("pop_default") %></a>
-		<a class="btn btn-primary btn-lg" onclick="getNodes('GO')"><%=propLang.get("pop_run") %></a>	
+	
+	<!-- 
+	<div id="category-search">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();">&times;</a>
+			<h3 class="font-thin">Select Stores</h3>
+		</div>
+		<div class="modal-body">
+			
+			<header class="panel-heading bg-light">
+				<span class="hidden-sm"><b>Where? <span id="modal-nrstores">(<%=nrstores%> Stores selected)</span></b></span>
+				<a href="#" onclick="$('#standard-search').show();$('#category-search').hide();" class="pull-right">Standard Store Search</a>
+		    </header>
+		    
+		    
+		    <form id="_catfrm" name="_catftm" method="post">
+		    <div class="row" style="margin-top:10px">
+		    	<div class="col-sm-12">
+		        	<label>Description</label>
+		        	<input type="text" name="_description" id="_description" class="form-control" placeholder="Store Description" value=""/>
+				</div>
+			</div>
+			
+			<div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+		    <div id="_cat">
+			        
+		        <div id="_catsel"></div>
+		        
+		    </div>
+		    
+		    </form>
+			
+		    
+		</div>
+		<div class="modal-footer">
+			<img src="../../images/spacer.gif" onload="getCategory();"/>
+			<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_cancel") %></a>
+			<a class="btn btn-primary btn-lg" id="_catsubmit" onclick="getNodes2(); $('#_catsubmit').attr('disabled', true); showLoading()"><%=propLang.get("pop_run") %></a>	
+			
+		</div>
 	</div>
+	-->
+	
   </div>
 </div>

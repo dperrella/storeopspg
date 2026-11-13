@@ -57,6 +57,9 @@ public class DocumentsList extends AbstractController {
 			flows = Flow.getFlowByIdCustomer(conn, idcus);
 			sites = Site.getSitesByIdCustomer(conn, idcus);
 			
+			Integer prefIdsite = Site.getPrefSite(conn, session.getAttribute("username").toString());
+			obj.put("prefIdsite", prefIdsite);
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();

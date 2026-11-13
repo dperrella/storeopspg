@@ -37,7 +37,7 @@ public class Tickets extends AbstractController {
 			connAdmin = Utility.getConnAdmin();
 			
 			//sto = Stores.getStoresByIdCustomer(connAdmin, Integer.parseInt(idcus));
-			sto = Stores.getStoresByIdCustomerAndUsername(connAdmin, Integer.parseInt(session.getAttribute("idcus").toString()), session.getAttribute("username").toString());
+			sto = Stores.getStoresByIdCustomerAndUsername3(connAdmin, Integer.parseInt(session.getAttribute("idcus").toString()), session.getAttribute("username").toString());
 			obj.put("sto", sto);
 			obj.put("from", iso.format(new Date()));
 			obj.put("to", iso.format(new Date()));

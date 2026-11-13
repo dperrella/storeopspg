@@ -70,6 +70,8 @@ public class LoginControl extends AbstractController {
 			        "and tipo = '01' and cdapp = '"+cdapp+"' "+
 			        "order by f.ordinamento, f.tipo, f.descr ";
 			
+			System.out.println(sql);
+			
 			rs = st.executeQuery(sql);
 			while(rs.next()) {
 				

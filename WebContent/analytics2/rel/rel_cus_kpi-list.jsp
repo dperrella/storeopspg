@@ -337,8 +337,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   function reloadList() {
 	  var idcus = $('#idcus').val();
 		
-	  javascript:window.location='rel_cus_kpi-list.htm?idcus='+idcus;
-	  window.location.href='rel_cus_kpi-list.htm?idcus='+idcus; 
+	  javascript:window.location='rel_cus_kpi-list.htm?app=${whereIAm}&idcus='+idcus;
+	  window.location.href='rel_cus_kpi-list.htm?app=${whereIAm}&idcus='+idcus; 
   }
   
   /*
@@ -385,8 +385,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		  // - idusr (idusr)
 		  // - idcustomers (chk)
 		  
-		  javascript:window.location='rel_cus_kpi-list.htm?azione=S&idcus='+idcus+'&idkpi='+chk;
-	  	  window.location.href='rel_cus_kpi-list.htm?azione=S&idcus='+idcus+'&idkpi='+chk; 
+		  javascript:window.location='rel_cus_kpi-list.htm?app=${whereIAm}&azione=S&idcus='+idcus+'&idkpi='+chk;
+	  	  window.location.href='rel_cus_kpi-list.htm?app=${whereIAm}&azione=S&idcus='+idcus+'&idkpi='+chk; 
 		  
 	  }
 	  

@@ -49,11 +49,22 @@ public class GetLogChart extends HttpServlet {
 			conn=Utility.getConnControl();
 			st=conn.createStatement();
 			
-			sql   = "select v_dashlog_2.brandname, count(store) num  \n" + 
-					"from v_dashlog_2 left join stores on v_dashlog_2.id = stores.id::text \n" + 
-					"where stores.id in(select idstore::integer from rel_user_stores where idusr = '"+session.getAttribute("username").toString().trim().toUpperCase()+"') \n" + 
-					"group by v_dashlog_2.brandname\n" + 
-					"order by v_dashlog_2.brandname \n";
+			String uc = ""+request.getParameter("uc");
+			uc = Utility.noNull(uc);
+			String country = ""+request.getParameter("country");
+			country = Utility.noNull(country);
+			String cond = "";
+			if(uc.length()>0)
+				cond+= " and v_dashlog_2_new.under_costruction = "+uc+" ";
+			if(country.length()>0)
+				cond+= " and v_dashlog_2_new.customer_country_id = "+country+" ";
+			
+			
+			sql   = "select v_dashlog_2_new.brandname, count(store) num  \n" + 
+					"from v_dashlog_2_new left join stores on v_dashlog_2_new.id = stores.id::text \n" + 
+					"where stores.id in(select idstore::integer from rel_user_stores where idusr = '"+session.getAttribute("username").toString().trim().toUpperCase()+"') "+cond+" \n" + 
+					"group by v_dashlog_2_new.brandname\n" + 
+					"order by v_dashlog_2_new.brandname \n";
 			System.out.println(sql);
 			rs=st.executeQuery(sql);
 			int tot = 0;

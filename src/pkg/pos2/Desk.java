@@ -73,7 +73,7 @@ public class Desk extends AbstractController {
 			
 			if(idcus.length()>0) {
 				//sto = Stores.getStoresByIdCustomer(connAdmin, Integer.parseInt(idcus));
-				sto = Stores.getStoresByIdCustomerAndUsername(connAdmin, Integer.parseInt(idcus), session.getAttribute("username").toString());
+				sto = Stores.getStoresByIdCustomerAndUsername3(connAdmin, Integer.parseInt(idcus), session.getAttribute("username").toString());
 				obj.put("sto", sto);
 				
 				obj.put("from", iso.format(new Date()));

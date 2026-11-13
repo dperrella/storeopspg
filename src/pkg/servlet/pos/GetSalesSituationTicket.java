@@ -100,7 +100,8 @@ public class GetSalesSituationTicket extends HttpServlet {
 						"like '%"+search.toUpperCase().replaceAll("'", "''")+"%' ";
 			}
 			
-			sql  =  "select count(*) num from st_wsticket('"+store+"','"+from+"', 0) "+cond+" ";
+			//sql  =  "select count(*) num from st_wsticket('"+store+"','"+from+"', 0) "+cond+" ";
+			sql  =  "select count(*) num from st_wsticket4('"+store+"','"+from+"', '"+to+"', 0) "+cond+" ";
 			System.out.println("1. "+sql);
 			st = conn.prepareStatement(sql);
 			rs=st.executeQuery();
@@ -131,7 +132,8 @@ public class GetSalesSituationTicket extends HttpServlet {
 			}
 
 			
-			sql = "select * from st_wsticket('"+store+"','"+from+"', 0) "+cond+" ";
+			//sql = "select * from st_wsticket('"+store+"','"+from+"', 0) "+cond+" ";
+			sql = "select * from st_wsticket4('"+store+"','"+from+"', '"+to+"', 0) "+cond+" ";
 			if(colIndex.length()>0) {
 				sql+="order by "+(Integer.parseInt(colIndex))+" "+dir+" ";
 			}

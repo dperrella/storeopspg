@@ -62,6 +62,7 @@ public class LoginCustomerControl extends AbstractController {
 			        "AND a.idusr = '"+username+"' and a.cdazi in('T', 'V') " +
 			        "and tipo = '01' and cdapp = '"+cdapp+"' "+
 			        "order by f.ordinamento, f.tipo, f.descr ";
+			System.out.println(sql);
 			
 			rs = st.executeQuery(sql);
 			while(rs.next()) {
@@ -77,6 +78,27 @@ public class LoginCustomerControl extends AbstractController {
 			if(mnuArray01.trim().length()>0)
 				mnuArray01 = mnuArray01.substring(0,mnuArray01.length()-1);
 			
+			
+			
+			// DEVICE LINK
+			boolean deviceLink = false;
+			sql   = "SELECT f.cdfun, l.descr, f.tipo, a.cdazi, f.percorso, f.icon, a.cdcli " + 
+			        "FROM zfunzioni f, zutefunz a, zfunlang l " + 
+			        "WHERE f.cdfun = a.cdfun and f.cdfun = l.cdfun and l.lang = '"+language+"' " + 
+			        "AND a.idusr = '"+username+"' and a.cdazi in('T', 'V') " +
+			        "and tipo = '99' and cdapp = '"+cdapp+"' "+
+			        "order by f.ordinamento, f.tipo, f.descr ";
+			System.out.println(sql);
+			
+			rs = st.executeQuery(sql);
+			if(rs.next()) {
+				
+				deviceLink = true;
+				
+			}
+			rs.close();
+			
+			session.setAttribute("deviceLink", deviceLink);
 			
 			System.out.println("*****"+mnuArray01);
 			

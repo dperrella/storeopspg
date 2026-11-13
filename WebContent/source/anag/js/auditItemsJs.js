@@ -101,29 +101,39 @@ function createElement(id,note,nome,descrizione,risultato, url){
 }
 
 $('#myBody').on('click','.myPlus',function(){
-	//$('#myModal1').modal({backdrop: 'static', keyboard: false});
-	$('#myClose').attr("onclick","");
-	$('#myClose2').attr("onclick","");
-	var idItem = $(this).attr('id');
-	$('.line'+idItem).each(function(){
-		$(this).removeClass("active");
-	});
-	if($(this).hasClass('active'))
-		$(this).removeClass("active");
-	else{
-		$(this).addClass("active");
-		var result = $(this).attr('value');
-		  $.ajax({
-				url: '../../ats/SetAuditItem',
-				type: 'GET',
-				data: {type:"E",idaudit:id,iditem:idItem,result:result,note:""},
-				success: function(data){
-					//$('#myModal1').modal({backdrop:false, keyboard: true});
-					$('#myClose').attr("onclick","$('.modal').remove(); $('div.modal-backdrop').remove();");
-					$('#myClose2').attr("onclick","$('.modal').remove(); $('div.modal-backdrop').remove();");
-				}
-				});
+	
+	var _state = parseInt($('#_state').val());
+	
+	if(_state==0) {
+	
+		//$('#myModal1').modal({backdrop: 'static', keyboard: false});
+		$('#myClose').attr("onclick","");
+		$('#myClose2').attr("onclick","");
+		var idItem = $(this).attr('id');
+		$('.line'+idItem).each(function(){
+			$(this).removeClass("active");
+		});
+		if($(this).hasClass('active'))
+			$(this).removeClass("active");
+		else{
+			$(this).addClass("active");
+			var result = $(this).attr('value');
+			  $.ajax({
+					url: '../../ats/SetAuditItem',
+					type: 'GET',
+					data: {type:"E",idaudit:id,iditem:idItem,result:result,note:""},
+					success: function(data){
+						//$('#myModal1').modal({backdrop:false, keyboard: true});
+						$('#myClose').attr("onclick","$('.modal').remove(); $('div.modal-backdrop').remove();");
+						$('#myClose2').attr("onclick","$('.modal').remove(); $('div.modal-backdrop').remove();");
+					}
+					});
+		}
 	}
+	else {
+		alert('Audit is closed.\nCannot change Item Status');
+	}
+	
 	
 });
 

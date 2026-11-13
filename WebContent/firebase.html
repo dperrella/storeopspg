@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Firebase</title>
+</head>
+<body>
+
+<table id="tabledata">
+	<tr>
+		<th>Store</th>
+		<th>Firmware</th>
+	</tr>
+	<tbody id="data">
+	
+	</tbody>
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.3/firebase-database.js"></script>
+
+<script>
+//Your web app's Firebase configuration
+var firebaseConfig = {
+  apiKey: "AIzaSyCMslIC8kpABVxT6aNCvFlzt4BUN70hCDU",
+  authDomain: "rnprj-a2be7.firebaseapp.com",
+  databaseURL: "https://rnprj-a2be7.firebaseio.com",
+  projectId: "rnprj-a2be7",
+  storageBucket: "rnprj-a2be7.appspot.com",
+  messagingSenderId: "845204873852",
+  appId: "1:845204873852:web:1693d4cf07826cc8a01ff9"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+var database = firebase.database();	
+
+try {
+    mRef.off('value');
+}
+catch(err) {
+    console.log(err);
+}
+  
+mRef = database.ref("settings");
+mRef.orderByKey().startAt("3412-").endAt('3412\uf8ff').on('value', (snapshot) => {
+	  let datas = snapshot.val();
+	  
+	  Object.values(datas).forEach((data, i) => {
+		  
+		  
+		  //console.log(data)
+		  
+		  $("#tabledata tbody").append("<tr><td>"+data.store+"</td><td>"+data.firmware+"</td></tr>");
+		  
+		  //setFirmware(data.store);
+	  });
+	  
+	  
+	  //console.log(JSON.stringify(Object.values(datas)));
+});
+
+
+
+function setFirmware(store) {
+	
+	var settings = {
+	  "url": "https://rnprj-a2be7.firebaseio.com/settings/"+store+"/firmware.json",
+	  "method": "PUT",
+	  "timeout": 0,
+	  "headers": {
+	    "Content-Type": "application/json"
+	  },
+	  "data": JSON.stringify("1.4.2_Test"),
+	};
+
+	$.ajax(settings).done(function (response) {
+	  console.log(response);
+	});
+	
+}
+</script>
+</body>
+</html>

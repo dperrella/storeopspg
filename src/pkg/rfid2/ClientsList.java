@@ -1,6 +1,8 @@
 package pkg.rfid2;
 
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,8 @@ public class ClientsList extends AbstractController {
 		List<Client> clients = new ArrayList<Client>();
 		clients.clear();
 		
+		DateFormat iso = new SimpleDateFormat("yyyy-MM-dd");
+		
 		HttpSession session = req.getSession();
 		int idcus = Integer.parseInt(session.getAttribute("idcus").toString());
 		
@@ -38,6 +42,11 @@ public class ClientsList extends AbstractController {
 		
 		String view = ""+req.getParameter("view");
 		view=Utility.noNull(view);
+		
+		String showContract = ""+req.getParameter("showContract");
+		showContract=Utility.noNull(showContract);
+		
+		Boolean contract = showContract.length()==0?false:true;
 		
 		// Per operazioni di CRUD
 		String tipoForm = ""+req.getParameter("tipoForm");
@@ -64,6 +73,13 @@ public class ClientsList extends AbstractController {
 				if(enabled.equals("on"))
 					enabled = "true";
 				
+				String _contract = req.getParameter("contract");
+				_contract = Utility.noNull(_contract);
+				if(_contract.equals("on"))
+					_contract = "true";
+				
+				String _contractDate = ""+req.getParameter("contractDate");
+				_contractDate = Utility.noNull(_contractDate);
 				switch (tipoForm) {
 	                     
 	            case "M": 
@@ -72,7 +88,11 @@ public class ClientsList extends AbstractController {
 	            	bean.setDescription(description);
 	            	bean.setIsEnabled(Boolean.parseBoolean(enabled));
 	            	bean.setIdCustomer(idcus);
+	            	bean.setContract(Boolean.parseBoolean(_contract));
 	            	
+	            	if(_contractDate.length()>0) {
+	            		bean.setContractDate(iso.parse(_contractDate));
+	            	}
 	            	bean.update(conn);
 	            	
 	            	// cancella vecchie relazioni
@@ -142,8 +162,10 @@ public class ClientsList extends AbstractController {
 				clients = Client.getClientsByIdCustomerAndNull(conn, idcus);
 			}
 			else {
-				clients = Client.getClientsByIdCustomer(conn, idcus);
+				clients = Client.getClientsByIdCustomer(conn, idcus, contract);
 			}
+			
+			obj.put("contract", contract);
 			
 		}
 		catch(Exception e) {

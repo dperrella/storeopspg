@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Document {
 	private int idDocument;
@@ -27,6 +28,8 @@ public class Document {
 	
 	private int idSiteDest;
 	private String docType;
+	
+	private Integer filterType;
 	
 	public Document() { }
 
@@ -254,6 +257,16 @@ public class Document {
 		}
 	}
 	
+	
+	
+	public Integer getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(Integer filterType) {
+		this.filterType = filterType;
+	}
+
 	public static ArrayList<Document> getDocumentsBySelector(Connection conn, DocumentSelector documentSelector, int id, Date from, Date to){
 		PreparedStatement st = null;
 		ResultSet rs = null;
@@ -427,10 +440,7 @@ public class Document {
 					"values " + 
 					"(now() , ?, 'USER', (select idflow from step where idstep = ?), ?, ?, (select id_doctype_default " + 
 					"from step s join step_type t on s.idsteptype = t.idstep_type " + 
-					"where s.idstep = ?) , 1, ?, ?) returning id ";
-			
-			
-			
+					"where s.idstep = ?) , ?, ?, ?) returning id ";
 			
 			st = conn.prepareStatement(sql);
 			st.setString(1, docRef);
@@ -438,8 +448,13 @@ public class Document {
 			st.setInt(3, idStep);
 			st.setInt(4, idSite);
 			st.setInt(5, idStep);
-			st.setInt(6, idSiteDest);
-			st.setString(7, docType);
+			
+			if(filterType<0)
+				st.setNull(6, java.sql.Types.INTEGER);
+			else
+				st.setInt(6, filterType);
+			st.setInt(7, idSiteDest);
+			st.setString(8, docType);
 			
 			System.out.println(st.toString());
 			rs = st.executeQuery();
@@ -460,6 +475,26 @@ public class Document {
 		}
 		
 		return iddoc;
+	}
+	
+	
+	public static void setOriginRef(Connection conn, int iddoc) {
+		
+		PreparedStatement st = null;
+		String sql = "";
+		
+		try {
+			sql = "update documents set origin_ref = 'VELASCA' where id = "+iddoc+" "
+					+ "and (select write_file from documents_type where id_doctype = id_document_type) = true";
+			st = conn.prepareStatement(sql);
+			System.out.println(st.toString());
+			st.executeUpdate();
+			st.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
@@ -599,11 +634,52 @@ public class Document {
 			st.executeBatch();
 			st.close();
 			
-			// call function...
-			sql = "select * from closeinventory("+iddoc+" , '"+closeType+"') ";
+//			// call function...
+//			sql = "select * from closeinventory("+iddoc+" , '"+closeType+"') ";
+//			st = conn.prepareStatement(sql);
+//			System.out.println(st.toString());
+//			st.executeUpdate();
+//			st.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public static void closeDoc(Connection conn, Integer iddoc, List<DocumentToclose> rows) {
+		
+		PreparedStatement st = null;
+		String sql = "";
+		
+		try {
+			
+			sql = "delete from documents_toclose where iddoc = "+iddoc+" ";
 			st = conn.prepareStatement(sql);
 			System.out.println(st.toString());
 			st.executeUpdate();
+			st.close();
+			
+			sql = "insert into documents_toclose (iddoc, epc, sku) values (?, ?, ?) ";
+			st = conn.prepareStatement(sql);
+			for(DocumentToclose row : rows) {
+				
+				System.out.println(row.getEpc()+" "+row.getSku());
+				st.setInt(1, iddoc);
+				st.setString(2, row.getEpc());
+				st.setString(3, row.getSku());
+				st.addBatch();
+			}
+			st.executeBatch();
+			st.close();
+			
+//			// call function...
+			sql = "select * from closeinventory_dan("+iddoc+") ";
+			st = conn.prepareStatement(sql);
+			System.out.println(st.toString());
+			ResultSet rs = st.executeQuery();
+			rs.close();
 			st.close();
 		}
 		catch(Exception e) {
@@ -692,13 +768,32 @@ public class Document {
 			st.executeUpdate();
 			st.close();
 			
-			sql = "update documents set status = null, doc_destination = null , previous_iddoc = null where id = "+iddoc+" ";
+			sql = "update documents set status = null, doc_destination = null , previous_iddoc = null, fiege_export=false where id = "+iddoc+" ";
 			st = conn.prepareStatement(sql);
 			System.out.println(st.toString());
 			st.executeUpdate();
 			st.close();
 			
 			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void closeDoc(Connection conn, int iddoc) {
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try {
+			sql = "select * from close_step2("+iddoc+");";
+			System.out.println(sql);
+			st = conn.prepareStatement(sql);
+			rs=st.executeQuery();
+			rs.close();
 		}
 		catch(Exception e) {
 			e.printStackTrace();

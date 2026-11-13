@@ -301,6 +301,65 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						        </div>
 						    </div>
 						    
+						    <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+						    <div class="panel-footer bg-light">
+		                      <div class="padder">
+	                            <span class="h4 block">Click Software Information</span>
+	                          </div>
+		                    </div>
+					        <br/>
+					        
+					        <div class="form-group pull-in clearfix">
+						        <div class="col-sm-4">
+						          <div class="checkbox i-checks">
+						         
+			                          <label>
+			                            <input type="checkbox" value="true" 
+			                            	name="clicksoftware_integration" id="clicksoftware_integration" ${readonly} onclick="checkCS()">
+			                            <i></i>
+			                            Click Software Integration
+			                          </label>
+			                      </div>
+						        </div>
+						    </div>
+						    
+						    <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+						    <div class="form-group pull-in clearfix">
+						        
+						        
+						        <div class="col-sm-4">
+						          <label>Charge Code</label>
+		                          <input type="text" id="charge_code" name="charge_code" class="form-control" 
+					          		value="${charge_code}" ${readonly}>   
+			                     
+						        </div>
+						        
+						    </div>
+						    
+						    <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+						    <div class="panel-footer bg-light">
+		                      <div class="padder">
+	                            <span class="h4 block">@Source Information</span>
+	                          </div>
+		                    </div>
+					        <br/>
+					        
+					        <div class="form-group pull-in clearfix">
+						        <div class="col-sm-4">
+						          <div class="checkbox i-checks">
+			                          <label>
+			                            <input type="checkbox" value="true" name="ats_dummy_customer" id="ats_dummy_customer" ${readonly}>
+			                            <i></i>
+			                            Dummy Customer
+			                          </label>
+			                      </div>
+						        </div>
+						        
+						    </div>
+						    
 						  </div>
 						  
 						  <footer class="panel-footer text-right bg-light lter">
@@ -424,6 +483,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   	
 	var agreement = '${agreement}';
 	
+	var atsDummyCustomer = '${ats_dummy_customer}';
+	if(atsDummyCustomer=='t') {
+		$('#ats_dummy_customer').attr('checked', true);
+	}
+	
+	var clicksoftware_integration = '${clicksoftware_integration}';
+	if(clicksoftware_integration=='t') {
+		$('#clicksoftware_integration').attr('checked', true);
+	}
+	
 	if(agreement=='t') {
 		//$("#agreement_si").attr('checked', 'checked');
 		//$("#btn_agreement_si").addClass("active");
@@ -518,6 +587,18 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		
 	}
 	
+	function checkCS() {
+		if($('#clicksoftware_integration').is(":checked")) {
+			$('#charge_code').prop('readonly', false);
+			$('#charge_code').val('${charge_code}');
+		}
+		else {
+			$('#charge_code').prop('readonly', true);
+			$('#charge_code').val('');
+		}
+	}
+	
+	checkCS();
   </script>
   
   <%@ include file="../../inc/autorized.jsp" %>

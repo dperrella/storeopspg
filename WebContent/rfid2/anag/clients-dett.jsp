@@ -17,7 +17,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <div class="modal-content">
 	<div class="modal-header">
 		<a class="close" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();">&times;</a>
-		<h3 class="font-thin"><%=propLang.get("cli_dsfun") %></h3>
+		<h3 class="font-thin">Clients</h3>
 	</div>
 	<div class="modal-body">
 		
@@ -43,7 +43,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
 	    
 	    <div class="form-group pull-in clearfix">
-	        <div class="col-sm-12">
+	        <div class="col-sm-4">
 	          <div class="checkbox i-checks">
                 <label>
                   <input id="enabled" name="enabled" type="checkbox" ><i></i> <%=propLang.get("rea_enabled") %>
@@ -55,6 +55,61 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
               	$('#enabled').prop('checked', true);
               }
 	        </script>
+	        
+	        
+	        <div class="col-sm-4">
+	          <div class="checkbox i-checks">
+                <label>
+                  <input id="contract" name="contract" type="checkbox" ><i></i> Contract
+                </label>
+              </div>
+	        </div>
+	        <script>
+	          if('${contract}'=='true') {
+              	$('#contract').prop('checked', true);
+              }
+	        </script>
+	        
+	        <div class="col-sm-4">
+	        
+	          <div id="cd_div">
+	          <input class="datepicker-input2 form-control" name="contractDate" id="contractDate" 
+				autocomplete="off" type="text" value="${contractDate}" data-date-format="yyyy-mm-dd" placeholder="Contract Date">
+	          </div>
+	          	
+	          <script>
+	            $("#contract").change(function() {
+	      		
+		      		if(this.checked) {
+		      	        //Do stuff
+		      	    	$('#cd_div').show();
+		      	        
+		      	    	//.attr('data-required', 'true');
+		      	    	$('#contractDate').prop("required", true);
+		      	    	
+		      	    }
+		      	    else {
+		      	    	$('#cd_div').hide();
+		      	    	$('#contractDate').val('');
+		      	    	$('#contractDate').prop("required", false);
+		      	    }
+	      		
+	      	    });
+	            
+	            
+	            var contract = '${contract}';
+	            
+	            if(contract=='true') {
+	        		$('#contract').attr('checked', true);
+	        		$('#cd_div').show();
+	        	}
+	        	else {
+	        		$('#cd_div').hide();
+	        		$('#contractDate').val('');
+	        	}
+	          </script>
+	        </div>
+	        
 	    </div>
 	    
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -69,7 +124,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
         <div class="form-group pull-in clearfix">
 	        <div class="col-sm-12">
 	          <label><%=propLang.get("sit_dsfun") %></label>
-	          <select name="sites" id="sites" multiple 
+	          <select name="sites" id="sites" 
               	class="form-control ss">
                 <c:forEach items="${sites}" var="sites" varStatus="status">
 				<option value="${sites.idSite}">${sites.description}</option>
@@ -109,7 +164,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
         
 	</div>
 	<div class="modal-footer">
-		<img src="../../images/spacer.gif" onload="parsleyForm();selpick()"/>
+		<img src="../../images/spacer.gif" onload="parsleyForm();selpick();calendar()"/>
 		<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_ap_chiudi") %></a>
 		<input type="submit" class="btn btn-primary btn-lg" value="<%=propLang.get("pop_ap_conferma") %>">	
 	</div>

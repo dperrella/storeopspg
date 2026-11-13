@@ -1,3 +1,8 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="req" value="${pageContext.request}" />
+<c:set var="url">${req.requestURL}</c:set>
+<c:set var="uri" value="${req.requestURI}" />
 <%@ page 
 	language="java" 
 	contentType="text/html; charset=ISO-8859-1"
@@ -34,9 +39,11 @@ ReadProperties propf = new ReadProperties(session.getAttribute("language").toStr
                <%=propf.get("notifiche") %>
              </a>
            </li>
-           <li>
-             <a href="../../app/main/docs.html"><%=propf.get("guida") %></a>
+           <c:if test = "${fn:contains(uri, 'analytics2')}">
+	       <li>
+             <a href="../../analytics2/popup/tutorial.jsp" data-toggle="ajaxModal"><%=propIdx.get("guida") %></a>
            </li>
+	       </c:if>
            <li class="divider"></li>
            <li>
              <a href="../../app/main/modal.lockme.jsp" data-toggle="ajaxModal" ><%=propf.get("esci") %></a>

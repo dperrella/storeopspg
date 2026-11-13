@@ -205,6 +205,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	                            Export Data
 	                        </a>
 	                        
+	                        <a href="#" onclick="excelExportEpc()" class="btn btn-default btn-xs m-l-sm pull-right" >
+	                            <i class="fa fa-table"></i>
+	                            Export Data with EPC and Reference
+	                        </a>
+	                        
 	                        
 			              </header>
 			              
@@ -213,6 +218,10 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 								<ul class="nav nav-pills">
 									<li><a href="documents-list.htm"><%=propLang.get("torna") %></a></li>
 									<li><a href="#" onclick="deleteSelected()"> Cancella Selezionati</a></li>
+									<li><a href="#" onclick="deleteScannerSelected()"> Cancella Letture Selezionati</a></li>
+									<li><a href="../popup/addCsv.jsp?iddoc=${iddoc}" data-toggle="ajaxModal"> Import From Csv</a></li>
+									<li><a href="../popup/addXlsx.jsp?iddoc=${iddoc}" data-toggle="ajaxModal"> Import Inventory Xslx (Cegid)</a></li>
+									<li><a href="../popup/addXlsxReturn.jsp?iddoc=${iddoc}" data-toggle="ajaxModal"> Import Return Xlsx</a></li>
 								</ul>
 							</div>
 						  </section>
@@ -503,6 +512,51 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		
 	}
   
+  function excelExportEpc() {
+		
+		var iddoc = '${iddoc}';
+		
+		var type = '${type}';
+		var onlydiff = '${onlydiff}';
+		var href = '../popup/docExportEpc.jsp?iddoc='+iddoc+'&type='+type+'&onlydiff='+onlydiff;
+	
+    $('div.modal-backdrop ').remove();
+    $('#ajaxModal').remove();
+    $("div.modal").remove();
+    
+    showLoader2();
+		
+    var data = '';
+    $.ajax({
+	  	  url: href,
+	  	  async: true,
+	  	  dataType: 'html',
+	  	  beforeSend: function () {
+	  		  
+	  	  },
+	  	  success: function(html) {
+	  	      
+	  		  var $modal = $('<div class="modal fade" id="ajaxModal"><div class="modal-body"></div></div>');
+	  	      $('body').append($modal);
+	  	      $modal.modal();
+	  	        
+	  		  //alert(html);
+	  		  $modal.append(html);
+	  		  
+	  		  hideLoader2();
+	  		  
+	  	  },
+	  	  error: function (xhr, ajaxOptions, thrownError) {
+	 	        alert(xhr.status);
+	 	        alert(thrownError);
+	 	        
+	 	        hideLoader2();
+	 	        
+	 	      }
+	  	});
+		
+	}
+  
   
   function stores2Export() {
 		
@@ -718,6 +772,31 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      data: datastring,
       		  async: true,
 		      success: function (data) {
+		    	  location.href="documents-create.htm?iddoc=${iddoc}";
+		      },
+		      error: function () {
+		      	//alert('Errore! si e\' verificato un errore.');
+		      }
+		});
+ 		
+  	
+	  
+  }
+  
+	function deleteScannerSelected() {
+	  
+	  var iddoc = '${iddoc}';
+  	  var datastring = table.$('input[type="checkbox"]').serialize();
+	  
+  		
+	  $.ajax({
+		      url: '../ajax/deleteScannerSelected.jsp?iddoc='+iddoc,
+		      type: 'POST',
+		      dataType: 'html',
+		      data: datastring,
+      		  async: true,
+		      success: function (data) {
+		    	  alert('Letture Cancellate')
 		    	  location.href="documents-create.htm?iddoc=${iddoc}";
 		      },
 		      error: function () {
@@ -1026,6 +1105,24 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		
 	}
 	  
+  
+  
+  function chkUploadXlsx() {
+		//var f = $(#fileToUpload).val();
+		//if(f.length!=0)
+		showLoader2();
+		$('#xlsxBtn').prop('disabled',true);
+		
+	}
+	  
+  
+  function chkUploadXlsxReturn() {
+		//var f = $(#fileToUpload).val();
+		//if(f.length!=0)
+		showLoader2();
+		$('#xlsxBtn').prop('disabled',true);
+		
+	}
 	  
 
   

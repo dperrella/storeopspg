@@ -68,6 +68,22 @@ try {
 	        "group by day::date, s.id, s.description "+
 	        "order by s.id, day::date ";
 		
+		
+		
+		
+		sql   = "select day, id, description, count(distinct(epc)) units from ( "
+				+"SELECT day::date as day, coalesce(sum(units) , null, 0) units, epc, s.id, s.description "
+				+"FROM   generate_series(timestamp '"+dtda+"', timestamp '"+dtal+"' , interval  '1 day') AS t(day) "
+				+"left join sites s on id in("+rs.getString("id")+") "
+				+"left join stockdiary on ts::date <= day::date "
+				+"and id_site = s.id "
+				+"group by day::date, s.id, s.description, epc "
+				+"having sum(units) >= 1 "
+				+"order by s.id, day::date "
+				+") a "
+				+"group by day, id, description "
+				+"order by id, day::date ";
+		
 		String s = "";
 		st2 = conn.prepareStatement(sql);
 		rs2 = st2.executeQuery();

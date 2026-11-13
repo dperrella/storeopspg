@@ -149,8 +149,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                    <div class="col-sm-4">
 			                      <div class="bg-black wrapper-md r">
 			                        <a href="#">
-			                          <span class="h4 block"><i class="fa fa-edit i-lg"></i> Items Request</span>
-			                          <span class="text-muted font-thin" style="text-align:center;font-size:100px">${numRequests}</span>
+			                          <span class="h4 block"><i class="fa fa fa-list i-lg"></i> Vendors</span>
+			                          <span class="text-muted font-thin" style="text-align:center;font-size:100px">${numVendors}</span>
 			                        </a>
 			                      </div>
 			                    </div>
@@ -158,8 +158,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                    <div class="col-sm-4">
 			                      <div class="bg-light dker wrapper-md r">
 			                        <a href="#">
-			                          <span class="h4 block"><i class="fa fa-tasks icon i-lg"></i> Audits</span>
-			                          <span class="text-muted font-thin" style="text-align:center;font-size:100px">${numAudits}</span>
+			                          <span class="h4 block"><i class="fa fa-list-alt icon i-lg"></i> Brands</span>
+			                          <span class="text-muted font-thin" style="text-align:center;font-size:100px">${numBrands}</span>
 			                        </a>
 			                      </div>
 			                    </div>

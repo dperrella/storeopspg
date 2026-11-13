@@ -76,6 +76,13 @@ public class GetAudits extends HttpServlet {
 				jsonObj.put("type", audit.get(i).getTypeDescription());
 				jsonObj.put("store", audit.get(i).getStoreDescription());
 				
+//				if(audit.get(i).getState()==0) {
+//					jsonObj.put("state_desc", "Active");
+//				}
+//				else if(audit.get(i).getState()==1) {
+//					jsonObj.put("state_desc", "Closed");
+//				}
+				
 				jsonArray.add(jsonObj);
 			}
 			

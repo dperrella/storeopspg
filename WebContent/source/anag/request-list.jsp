@@ -224,8 +224,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 							        <th width="10%"><%=propLang.get("itm_brand_name") %></th>
 							        <th width="10%"><%=propLang.get("itm_category_name") %></th>
 							        <th width="5%"><%=propLang.get("itm_country_name") %></th>
-							        <th width="10%"><%=propLang.get("itm_evrl") %></th>
+							        <th width="10%">WishList</th>
 							        <th width="5%"><%=propLang.get("itm_protected") %></th>
+							        <th width="5%"></th>
 							        <th width="5%"></th>
 							        <th width="5%"></th>
 							        <th width="5%"></th>
@@ -320,8 +321,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			      { data: 'brandname' },
 			      { data: 'categoryname' },
 			      { data: 'countryname' },
-			      { data: 'evreportlink' },
+			      { data: 'wish' },
 			      { data: 'protected' },
+				  {data:null},
 				  {data:null},
 				  {data:null},
 				  {data:null},
@@ -357,6 +359,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	            {
 	                "targets": [ 13 ],
 	                "className": "text-center"
+	            },
+	            {
+	                "targets": [ 14 ],
+	                "className": "text-center"
+	            },
+	            {
+	                "targets": [ 15 ],
+	                "className": "text-center"
 	            }
 	            
 	        ], 
@@ -374,12 +384,21 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
       "iDisplayLength": 50,
       "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
     	    $('td:eq(0)', nRow).html('<span class="label bg-light">' + aData["id"] + '</span>');
+    	    $('td:eq(8)', nRow).html('<span class="label bg-light">' + aData["wish"] + '</span>');
     	    $('td:eq(9)', nRow).html('<span class="label bg-danger">Not Protected</span>');
-    	    $('td:eq(10)', nRow).html('<a href="request-dett.htm?tipoForm=E&id='+aData["id"]+'" id="editItem" class="btn btn-default myEdit" data-toggle="ajaxModal"><i class="fa fa-pencils"></i></a>');
+    	    $('td:eq(10)', nRow).html('<a href="request-dett.htm?tipoForm=E&id='+aData["id"]+'" id="editItem" class="btn btn-default myEdit" data-toggle="ajaxModal"><i class="fa fa-pencil"></i></a>');
     	    $('td:eq(11)', nRow).html('<a href="item-barcodes.htm?id='+aData["id"]+'" id="addBarcode" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-barcode" aria-hidden="true"></i></a>');
-    	    $('td:eq(12)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'" id="addPhoto" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
-    	    $('td:eq(13)', nRow).html('<a href="request-dett.htm?tipoForm=A&id='+aData["id"]+'" id="approveItem" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-check text-success"></i></a>');
-    	    $('td:eq(14)', nRow).html('<a href="request-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal"><i class="fa fa-times"></i></a>');
+    	    //$('td:eq(12)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'" id="addPhoto" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
+    	    if(aData["photos"].length>0) {
+    	    	$('td:eq(12)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'"  class="btn btn-success" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
+    	    	$('td:eq(13)', nRow).html('<a href="item-addphoto.jsp?id='+aData["id"]+'&name='+aData["name"]+'"  class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-plus"></a>');
+    	    }
+    	    else {
+    	    	$('td:eq(12)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'"  class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
+    	    	$('td:eq(13)', nRow).html('<a href="item-addphoto.jsp?id='+aData["id"]+'&name='+aData["name"]+'" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-plus"></a>');
+    	    }
+    	    $('td:eq(14)', nRow).html('<a href="request-dett.htm?tipoForm=A&id='+aData["id"]+'" id="approveItem" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-check text-success"></i></a>');
+    	    $('td:eq(15)', nRow).html('<a href="request-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal"><i class="fa fa-times"></i></a>');
     	    return nRow;
       },
   } );

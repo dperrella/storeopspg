@@ -57,13 +57,18 @@ public class TemplatesList extends AbstractController {
 				String id = req.getParameter("id");
 				String name = req.getParameter("name");
 				String zpl = req.getParameter("zpl");
+				String breakLabel = ""+req.getParameter("breakLabel");
+				breakLabel = Utility.noNull(breakLabel);
+				if(breakLabel.equals("on"))
+					breakLabel = "true";
 				
 				switch (tipoForm) {
 	            case "I": 
 	            	
 	            	bean.setName(name);
 	            	bean.setZpl(zpl);
-	            	bean.setIdCustomer(idcus);	            	
+	            	bean.setIdCustomer(idcus);	 
+	            	bean.setBreakLabel(Boolean.parseBoolean(breakLabel));
 	            	bean.add(conn);
 	            	
 	            	break;
@@ -74,6 +79,7 @@ public class TemplatesList extends AbstractController {
 	            	bean.setName(name);
 	            	bean.setZpl(zpl);
 	            	bean.setIdCustomer(idcus);
+	            	bean.setBreakLabel(Boolean.parseBoolean(breakLabel));
 	            	bean.update(conn);
 	            	
 	            	break;

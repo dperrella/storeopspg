@@ -249,7 +249,7 @@ public class Desk extends AbstractController {
 							String temp[] = array.split(",");
 							intest = array;
 							for(int i=0;i<temp.length;i++) {
-								xAxis+="'"+temp[i]+"',";
+								xAxis+="'"+temp[i].replaceAll("'", "\\'").replaceAll(",", " ")+"',";
 							}
 						}
 						// Totali
@@ -293,6 +293,8 @@ public class Desk extends AbstractController {
 					ArrayList<String> q = new ArrayList<String>();
 					int n = 0;
 					String query2 = "";
+					
+					xAxis = "";
 					for(int i=0;i<temp.length;i++) {
 						
 						Random random = new Random();
@@ -307,9 +309,11 @@ public class Desk extends AbstractController {
 						
 						tiles.add(new Tables(""+(i+1),temp[i],temp2[i],temp3[i],col,"#5B6A79",""+perc));
 						
+						xAxis+="'"+temp2[i].replaceAll("'", "\\'").replaceAll(",", " ")+" | ID:"+temp[i]+"',";
+						
 						float iLat = 0;
 						float iLon = 0;
-						String lat = "0";
+						String lat = "0";	
 						String lon = "0";
 						
 						try {
@@ -369,13 +373,15 @@ public class Desk extends AbstractController {
 					
 					obj.put("q", q);
 					
-					session.setAttribute("sto",sto);
 					
 					obj.put("min", min);
 					obj.put("max", max);
 					
 					
 				}
+				
+				session.setAttribute("sto",sto);
+				
 			}
 		}
 		catch(Exception e) {

@@ -54,6 +54,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
             	<table class="table" id="config">
                 	<thead>
                 		<tr>
+                			<th style="width:5%">Step Id</th>
                 			<th style="width:20%">Step Type</th>
                 			<th style="width:20%">Interface</th>
                 			<th style="width:30%">Description</th>
@@ -65,6 +66,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
                 	<tbody>
                 		<c:forEach items="${step}" var="step" varStatus="status">
                 		<tr>
+                			<td><span class="label bg-light">${step.idStep}</span></td>
                				<td><input type="hidden" id="${step.count}nrrig" name="nrrig" value="${step.count}" class="idrow">
                					<input type="hidden" id="${step.count}idstep" name="idstep" value="${step.idStep}">
                					<select name="steptype" id="${step.count}steptype" class="form-control ss">

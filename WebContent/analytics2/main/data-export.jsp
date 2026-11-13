@@ -67,7 +67,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				   width: 200px;
 				   height: 200px;
 				   margin-top: -100px;
-				   margin-left: -50px;" />
+				   margin-left: -100px;" />
   </div>
   
   <section class="vbox">
@@ -140,6 +140,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						        <select name="dataType" id="dataType" class="form-control" onchange="chgDataType(this.value)">
 						        	<option value="G" selected>Group data</option>
 						        	<option value="R">Raw Data</option>
+						        	<option value="P">Pivot data</option>
 						        </select>
 	                        </li>
 	                        
@@ -318,6 +319,24 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									</table>
 		                      	  </div>
 		                        </section>
+		                        
+		                        <!--  ---  -->
+		                        
+		                        <section class="panel panel-default" id="tb-data3">
+					              <header class="panel-heading font-bold">
+					                <span id="table_id3">Data Results</span>
+					                
+					                <a href="#" onclick="excelExport3()" class="btn btn-default btn-xs m-l-sm pull-right" >
+			                            <i class="fa fa-table"></i>
+			                            Export Data
+			                        </a>
+					              </header>
+					              
+					              <div class="table-responsive" id="tbl_data3">
+					              	
+					              </div>
+					            </section>
+					            
 							</div>
 						</div>
 						
@@ -356,7 +375,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		jQuery('#loading-image').hide();
 		$('#tb-data').hide();
 		$('#tb-data2').hide();
-		
+		$('#tb-data3').hide();
 	});
 	function showLoader() {
 	  jQuery('#loading-image').show();
@@ -377,10 +396,22 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		if(type=='G') {
 			$('#ev_li').hide();
 			$('#kpi_li').show();
+			$('#export_type').attr('disabled', false);
+			$('#mail').prop('disabled', false);
 		}
 		if(type=='R') {
 			$('#kpi_li').hide();
 			$('#ev_li').show();
+			$('#export_type').attr('disabled', false);
+			$('#mail').prop('disabled', false);
+		}
+		if(type=='P') {
+			$('#ev_li').hide();
+			$('#kpi_li').show();
+			$('#export_type').val('V');
+			$('#export_type').attr('disabled', true);
+			$('#mail').val('');
+			$('#mail').prop('disabled', true);
 		}
 	}
 	
@@ -413,7 +444,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		var idstore = $('#idstore').val();
 		var hour = $('#hour').val();
 		
-		if(dataType=='G') {
+		if(dataType=='G'||dataType=='P') {
 			if (!$("#kpi").val())
 			{
 				err+="<br/> - Choose at least one KPI";
@@ -486,6 +517,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			if(dataType=='G') {
 				$('#tb-data').show();
 				$('#tb-data2').hide();
+				$('#tb-data3').hide();
+				
 				
 				$('#test').DataTable( {
 					"bDestroy": true,
@@ -528,6 +561,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			if(dataType=='R') {
 				$('#tb-data').hide();
 				$('#tb-data2').show();
+				$('#tb-data3').hide();
 				
 				
 				$('#test2').DataTable( {
@@ -562,7 +596,34 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		        } );
 				
 			}
-			
+			if(dataType=='P') {
+				$('#tb-data').hide();
+				$('#tb-data2').hide();
+				$('#tb-data3').show();
+				
+				showLoader();
+				
+				$.ajax({
+			        url: "../ajax/export_pivot_data.jsp",
+			        type: 'POST',
+			        dataType: 'html',
+			        data: "kpi="+kpi+"&dtda="+dtda+"&dtal="+dtal+"&idstore="+idstore+"&hour="+hour+"&account_code=${account_code}&id_customer=${id_customer}&mail="+mail+"&dataType="+dataType,
+			        beforeSend: function () {
+			        	
+					},
+			        success: function (data) {
+			        	$('#tbl_data3').html('');
+			        	$('#tbl_data3').html($.trim(data));
+			        	
+			        	hideLoader();
+			        },
+			        error: function () {
+			        	alert('Errore! si e\' verificato un errore.');
+			        }
+			    });
+				
+				
+			}
 			
 			
 			hideLoader2();
@@ -664,6 +725,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		var formData = $('#deskForm').serialize();
 		var href = '../popup/excelExport2_2.jsp?kpi='+kpi+'&dtda='+dtda+'&dtal='+dtal+'&idstore='+idstore+'&hour='+hour+'&account_code=${account_code}&id_customer=${id_customer}';
     	
+		console.log(href);
+		
+		
         $('div.modal-backdrop ').remove();
         $('#ajaxModal').remove();
         $("div.modal").remove();
@@ -699,6 +763,20 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
    	        
    	      }
     	});
+		
+	}
+	
+	function excelExport3() {
+		
+		
+		function doit(type, fn, dl) {
+			var elt = document.getElementById('tbl_data3');
+			var wb = XLSX.utils.table_to_book(elt, {sheet:"Sheet JS"});
+			return dl ?
+				XLSX.write(wb, {bookType:type, bookSST:true, type: 'base64'}) :
+				XLSX.writeFile(wb, fn || ('download.' + (type || 'xlsx')));
+		}
+		doit('xlsx');
 		
 	}
 	

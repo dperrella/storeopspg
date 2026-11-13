@@ -1,5 +1,6 @@
 package eu.mcsistemi;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,6 @@ public class Places extends AbstractController {
 		
 		// contenuto del controller
 		// ...
-		
 		// singolo uid
 		Place place = new Place("ChIJ_USvLZQEOxMRbJop4zaV8vU");
 		System.out.print(place.toString());

@@ -192,7 +192,7 @@ public class GetStock extends HttpServlet {
 				jsonRecord.add(rs.getString("variante"));
 				jsonRecord.add(rs.getString("taglia"));
 				jsonRecord.add(rs.getString("location"));
-				jsonRecord.add(rs.getInt("units"));
+				jsonRecord.add(rs.getLong("units"));
 				jsonRecord.add("");
 				jsonRecord.add(rs.getString("idclient"));
 				jsonArray.add(jsonRecord);

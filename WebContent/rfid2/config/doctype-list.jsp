@@ -127,7 +127,10 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                  <thead>
 								  <tr>
 							        <th width="10%"><%=propLang.get("dot_id") %></th>
-							        <th width="80%"><%=propLang.get("dot_descrizione") %></th>
+							        <th width="50%"><%=propLang.get("dot_descrizione") %></th>
+							        <th width="10%">Can Change Location</th>
+							        <th width="10%">As Expected</th>
+							        <th width="10%">Can Overload</th>
 							        <th></th>
 							        <th></th>
 							      </tr>
@@ -138,6 +141,30 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 								<tr>
 								  <td><span class="label bg-light">${doctype.idDoctype}</span></td>
 								  <td>${doctype.description}</td>
+								  <td><c:choose>
+									  <c:when test="${doctype.canChangeLocation}">
+									    <i class="fa fa-check text-success"></i>
+									  </c:when>
+									  <c:otherwise>
+									    <i class="fa fa-times text-danger"></i>
+									  </c:otherwise>
+								  </c:choose></td>
+								  <td><c:choose>
+									  <c:when test="${doctype.asExpected}">
+									    <i class="fa fa-check text-success"></i>
+									  </c:when>
+									  <c:otherwise>
+									    <i class="fa fa-times text-danger"></i>
+									  </c:otherwise>
+								  </c:choose></td>
+								  <td><c:choose>
+									  <c:when test="${doctype.canOverload}">
+									    <i class="fa fa-check text-success"></i>
+									  </c:when>
+									  <c:otherwise>
+									    <i class="fa fa-times text-danger"></i>
+									  </c:otherwise>
+								  </c:choose></td>
 								  <td><a href="doctype-dett.htm?tipoForm=M&id=${doctype.idDoctype}" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-edit"></i></a></td>
 								  <td><a href="doctype-dett.htm?tipoForm=E&id=${doctype.idDoctype}" class="btn btn-danger" data-toggle="ajaxModal"><i class="fa fa-times"></i></a></td>
 								</tr>

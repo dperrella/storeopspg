@@ -36,9 +36,9 @@ jQuery.fn.tableToCSV = function() {
 			download_link.href = uri;
 			var ts = new Date().getTime();
 			if(caption==""){
-				download_link.download = "S2CE_BATCH_"+ts+".txt";
+				download_link.download = "FILE_"+ts+".csv";
 			} else {
-				download_link.download = "S2CE_BATCH_"+caption+".txt";
+				download_link.download = caption+".csv";
 			}
 			document.body.appendChild(download_link);
 			download_link.click();

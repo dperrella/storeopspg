@@ -100,6 +100,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
          		<c:when test = "${whereIAm == 'SDA'}">
          			<%@ include file="../../inc2/menuApp6.jsp" %>
          		</c:when>
+         		<c:when test = "${whereIAm == 'OCC'}">
+         			<%@ include file="../../inc2/menuApp16.jsp" %>
+         		</c:when>
      		</c:choose>  
      		    
             <section>
@@ -262,14 +265,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	function setTemplate() {
 		
 		
-		var id_customer = '<%=session.getAttribute("arrayCustomers")%>';
+		//var id_customer = '<%=session.getAttribute("arrayCustomers")%>';
+		var id_customer = '<%=session.getAttribute("idcus")%>';
 		var description = $('#description').val();
 		var shortdescr = $('#shortdescr').val();
 		var fromhour = $('#fromhour').val();
 		var tohour = $('#tohour').val();
 		var whereIAm = "${whereIAm}";
 		
-		//alert(id_customer+" "+description+" "+shortdescr+" "+fromhour+" "+tohour);
 		
 		location.href="template-list.htm?tipoForm=I&azione=S&id_customer="+id_customer+"&description="+description+"&shortdescr="+shortdescr+"&fromhour="+fromhour+'&tohour='+tohour+'&cdapp='+whereIAm;
 		  

@@ -163,7 +163,7 @@ public class ControlRic extends AbstractController {
 				$department_code=rs.getString("department_code");
 				
 				dep.add(new Departments($id,$description,$parentid,$address,$locality,$province,$zipcode,
-						$state,$phone,$email,$department_code,"","","",0,0,0,$cmp1,$cmp2,$cmp3,$cmp4));
+						$state,$phone,$email,$department_code,"","","",0,0,0,false,$cmp1,$cmp2,$cmp3,$cmp4));
 				
 			}
 			rs.close();
@@ -237,7 +237,7 @@ public class ControlRic extends AbstractController {
 			// =======================
 			// Settimane
 			
-			Calendar c = Calendar.getInstance();
+			Calendar c = Calendar.getInstance(Locale.GERMAN);
 			c.set(Integer.parseInt(currentYear), 0, 1);
 			
 			// Formato data
@@ -254,7 +254,7 @@ public class ControlRic extends AbstractController {
 			System.out.println(currentWeek);
 			
 			// Per settimanale
-			Calendar cal = Calendar.getInstance();
+			Calendar cal = Calendar.getInstance(Locale.GERMAN);
 			// Imposta l'anno corrente
 			cal.set(Integer.parseInt(currentYear), 0, 1);
 			

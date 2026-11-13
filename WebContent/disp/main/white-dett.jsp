@@ -135,7 +135,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						  	<div class="form-group pull-in clearfix">
 						        <div class="col-sm-4">
 						          <label><%="Id Customer" %></label>
-						          <select id="idcustomer" name="idcustomer" class="form-control" onchange="CustomerChange(this)">
+						          <select id="idcustomer" name="idcustomer" class="form-control chosen-select" onchange="CustomerChange(this)">
 						          	<option value=""> -- Seleziona -- </option>
 						          	${OptC}
 						          </select>   

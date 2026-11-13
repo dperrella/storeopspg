@@ -128,7 +128,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                  <thead>
 								  <tr>
 							        <th width="10%"><%=propLang.get("prt_id") %></th>
-							        <th width="80%"><%=propLang.get("prt_name") %></th>
+							        <th width="70%"><%=propLang.get("prt_name") %></th>
+							        <th width="10%">Breakpoint Label</th>
 							        <th></th>
 							        <th></th>
 							      </tr>
@@ -139,6 +140,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 								<tr>
 								  <td><span class="label bg-light">${templates.id}</span></td>
 								  <td>${templates.name}</td>
+								  <td>${templates.breakLabel==true ? '<i class="text-success fa fa-check"></i>' : '<i class="text-danger fa fa-ban"></i>'}
+								  </td>
 								  <td><a href="templates-dett.htm?tipoForm=M&id=${templates.id}" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-edit"></i></a></td>
 								  <td><a href="templates-dett.htm?tipoForm=E&id=${templates.id}" class="btn btn-danger" data-toggle="ajaxModal"><i class="fa fa-times"></i></a></td>
 								</tr>

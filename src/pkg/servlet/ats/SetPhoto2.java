@@ -3,6 +3,7 @@ package pkg.servlet.ats;
 import java.io.IOException;
 
 import java.sql.Connection;
+import java.util.Base64.Decoder;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -19,7 +20,7 @@ import java.io.File;
  
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Decoder;
 
 /**
  * Servlet implementation class GetRegioni
@@ -92,8 +93,12 @@ public class SetPhoto2 extends HttpServlet {
 			BufferedImage image = null;
 			byte[] imageByte;
 
-			BASE64Decoder decoder = new BASE64Decoder();
-			imageByte = decoder.decodeBuffer(imageString);
+//			BASE64Decoder decoder = new BASE64Decoder();
+//			imageByte = decoder.decodeBuffer(imageString);
+			
+			Decoder decoder = java.util.Base64.getDecoder();
+			imageByte = decoder.decode(imageString);
+			
 			ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
 			image = ImageIO.read(bis);
 			bis.close();

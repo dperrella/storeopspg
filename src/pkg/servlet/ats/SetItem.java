@@ -72,6 +72,15 @@ public class SetItem extends HttpServlet {
 		String sc = request.getParameter("sc");
 		
 		
+		//
+		String idwishlist = ""+request.getParameter("idwishlist");
+		idwishlist = Utility.noNull(idwishlist);
+		if(idwishlist.length()==0)
+			idwishlist = "-1";
+		
+		String note = ""+request.getParameter("note");
+		note = Utility.noNull(note);
+		
 		System.out.println(idusr);
 		System.out.println(role);
 		
@@ -90,6 +99,9 @@ public class SetItem extends HttpServlet {
 		
 		System.out.println(sc);
 		
+		System.out.println(idwishlist);
+		
+		System.out.println(note);
 		
 		
 		try {
@@ -110,6 +122,8 @@ public class SetItem extends HttpServlet {
             	item.setCountry(Integer.parseInt(country));
             	item.setItemProtected(Integer.parseInt(isProtected));
             	item.setEvReportLink(evReportLink);
+            	item.setIdwishlist(Integer.parseInt(idwishlist));
+            	item.setNote(note);
             	item.add(conn);
             	
             	if(auditId.length()>0) {
@@ -145,6 +159,9 @@ public class SetItem extends HttpServlet {
             	item.setCountry(Integer.parseInt(country));
             	item.setItemProtected(Integer.parseInt(isProtected));
             	item.setEvReportLink(evReportLink);
+            	item.setIdwishlist(Integer.parseInt(idwishlist));
+            	item.setNote(note);
+            	
             	item.update(conn);
             	
             	break;

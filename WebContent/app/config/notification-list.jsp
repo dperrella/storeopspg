@@ -188,7 +188,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	                        <span class="pull-right m-t-sm m-l text-md">
 	                          <small class="text-muted">${notif.dtnot}</small>
 	                        </span>
-	                        <a class="clear" href="#">
+	                        <a class="clear" href="${notif.link}">
 	                          <span class="block text-ellipsis">${notif.titolo}</span>
 	                          <small class="text-muted">${notif.nota}</small>
 	                        </a>

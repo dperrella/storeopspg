@@ -368,7 +368,7 @@ public class PlannerListTab2 extends AbstractController {
 						heatmap=heatmap.substring(0,heatmap.length()-1);
 					
 					try {
-						max = Collections.max(l);
+						max = (int)Collections.max(l);
 					}
 					catch(Exception e) {
 						max = 0;
@@ -738,7 +738,7 @@ public class PlannerListTab2 extends AbstractController {
 				$tollerance=rs.getString("tollerance");
 				
 				dep.add(new Departments($id,$description,$parentid,$address,$locality,$province,$zipcode,
-						$state,$phone,$email,$department_code,$minnum_intervals,$tollerance,"",0,0,0,$cmp1,$cmp2,$cmp3,$cmp4));
+						$state,$phone,$email,$department_code,$minnum_intervals,$tollerance,"",0,0,0,false,$cmp1,$cmp2,$cmp3,$cmp4));
 				
 			}
 			rs.close();

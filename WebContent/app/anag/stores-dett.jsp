@@ -23,7 +23,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <link rel="stylesheet" href="../../css/simple-line-icons.css" type="text/css" />
   <link rel="stylesheet" href="../../css/font.css" type="text/css" />
   <link rel="stylesheet" href="../../css/app.css?2" type="text/css" />  
-    <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
+  <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
+  <link rel="stylesheet" href="../../js/datepicker/bootstrap-datepicker.css" type="text/css" />
     <!--[if lt IE 9]>
     <script src="../../js/ie/html5shiv.js"></script>
     <script src="../../js/ie/respond.min.js"></script>
@@ -144,6 +145,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									</c:choose>
 									Google Places Connect</a>
 				                    </li>  	
+				                    <c:if test = "${tipoForm!='I'}">
+				                    	<c:if test = "${cs==true}">
+				                    		<li><a href="stores-ticket.htm?idstore=${storeid}" data-toggle="ajaxModal">ClickSoftware Tickets</a></li>
+				                    	</c:if>
+				                    </c:if>
 								</ul>
 							</div>
 						  </section>
@@ -424,6 +430,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                        </div>
 			                    </div>
 			                    
+			                    <div class="col-sm-4" id="ucd_div">
+						        	<label>Store Under Construction Until</label>
+						        	<input class="datepicker-input2 form-control" name="under_construction_date" id="under_construction_date" 
+						          		autocomplete="off" type="text" value="${under_construction_date}" data-date-format="yyyy-mm-dd" >
+			                    </div>
+			                    
+			                    
+			                    
 						    </div>
 						    
 						    <div id="_cat">
@@ -489,7 +503,22 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						    
 						    <div class="panel-footer bg-light">
 		                      <div class="padder">
-	                            <span class="h4 block">Store Rappresentative</span>
+	                            <span class="h4 block">Store Gallery</span>
+	                          </div>
+		                    </div>
+					        <br/>
+					        
+					        <div id="gallery">
+						        
+						    </div>
+					        
+					        
+						    
+						    <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+						    <div class="panel-footer bg-light">
+		                      <div class="padder">
+	                            <span class="h4 block">Store Representative</span>
 	                          </div>
 		                    </div>
 					        <br/>
@@ -620,6 +649,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/jquery.min.js"></script>
   <!-- Bootstrap -->
   <script src="../../js/bootstrap.js"></script>
+  <!-- datepicker -->
+  <script src="../../js/datepicker/bootstrap-datepicker.js"></script>
   <!-- parsley -->
   <script src="../../js/parsley/parsley.min.js"></script>
   <script src="../../js/parsley/parsley.extend.js"></script>
@@ -651,6 +682,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  jQuery('#loading-image2').hide();
 	}
 	
+	$("#under_construction").change(function() {
+	    if(this.checked) {
+	        //Do stuff
+	    	$('#ucd_div').show();
+	    }
+	    else {
+	    	$('#ucd_div').hide();
+	    	$('#under_construction_date').val('');
+	    }
+	});
   	
 	function selpick() {
 		$('.ss').selectpicker({
@@ -658,6 +699,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		    tickIcon: 'fa fa-check'
 		 });
 	}
+	$('.datepicker-input2').datepicker({
+	    format: 'yyyy-mm-dd',
+	    orientation: 'bottom',
+	    autoclose: true
+	});  
 	
 	if('${country}'!='3'&&'${country}'!='230') {
 		$('#regdiv').hide();
@@ -714,6 +760,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	var under_construction = '${under_construction}';
 	if(under_construction=='t') {
 		$('#under_construction').attr('checked', true);
+		$('#ucd_div').show();
+	}
+	else {
+		$('#ucd_div').hide();
+		$('#under_construction_date').val('');
 	}
 	
 	
@@ -735,6 +786,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		    	var lista = data.listings;
 		    	var id = "";
 		    	var name = "";
+		    	
+		    	$('#city').append($('<option>', {
+	    		    value: '',
+	    		    text: ''
+	    		}));
+	    		
 		    	$.each(lista, function(index, lista) {
 					id = lista.id;
 		    		name = lista.name;
@@ -774,6 +831,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		    	var lista = data.listings;
 		    	var id = "";
 		    	var name = "";
+		    	
+		    	$('#region').append($('<option>', {
+	    		    value: '',
+	    		    text: ''
+	    		}));
 		    	$.each(lista, function(index, lista) {
 					id = lista.id;
 		    		name = lista.name;
@@ -807,6 +869,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    	var lista = data.listings;
 	    	var id = "";
 	    	var name = "";
+	    	
+	    	$('#province').append($('<option>', {
+    		    value: '',
+    		    text: ''
+    		}));
+	    	
 	    	$.each(lista, function(index, lista) {
 				id = lista.id;
 	    		name = lista.name;
@@ -822,6 +890,34 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		});
 		
 		
+		//////
+		$.getJSON('../../servlet/ws/GetComuni?id_reg='+idreg, function (data) {
+			
+			// Legge json di risposta...
+	    	var lista = data.listings;
+	    	var id = "";
+	    	var name = "";
+	    	
+	    	$('#city').append($('<option>', {
+    		    value: '',
+    		    text: ''
+    		}));
+	    	
+	    	$.each(lista, function(index, lista) {
+				id = lista.id;
+	    		name = lista.name;
+	    		
+	    		$('#city').append($('<option>', {
+	    		    value: id,
+	    		    text: name
+	    		}));
+	    	});
+	    	
+
+			$('.ss').selectpicker('refresh');
+	    	
+		});
+		
 	}
 	
 	function chgPro(idpro) {
@@ -836,6 +932,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    	var lista = data.listings;
 	    	var id = "";
 	    	var name = "";
+	    	
+	    	$('#city').append($('<option>', {
+    		    value: '',
+    		    text: ''
+    		}));
+	    	
 	    	$.each(lista, function(index, lista) {
 				id = lista.id;
 	    		name = lista.name;
@@ -845,6 +947,31 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    		    text: name
 	    		}));
 	    	});
+	    	
+
+			$('.ss').selectpicker('refresh');
+	    	
+		});
+		
+		
+		
+	}
+	
+	
+	function chgCit(idcom) {
+		
+		showLoader2();
+		// Call ws GetProvince
+		$.getJSON('../../servlet/ws/GetCityDet?id_com='+idcom, function (data) {
+			
+			hideLoader2();
+			
+			// Legge json di risposta...
+	    	var city = data.city;
+	    	var id = "";
+	    	var name = "";
+	    	
+	    	$('#province').val(city.idpro);
 	    	
 
 			$('.ss').selectpicker('refresh');
@@ -949,6 +1076,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			   			//console.log(JSON.stringify(data))
 			   			var cat = data;
 			   			$.each(cat, function(index, cat) {
+			   				
+			   				//alert(JSON.stringify(cat));
 			   				parseCategory(cat, idcus, '_catsel');
 			   			});
 			   			
@@ -970,7 +1099,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			}
 			else {
 				
-				markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control" onchange="checkNodes(this.value, \''+cat.name+'\',  \''+idcus+'\')">'
+				var r = ''+cat.req;
+				if(r=='true') {
+					r = "required";
+				}
+				
+				markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control" '+r+' onchange="checkNodes(this.value, \''+cat.name+'\',  \''+idcus+'\')">'
 					+'<option value=""></option>';
 				
 				//var val = [];
@@ -986,7 +1120,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		}
 		else {
 			
-			markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" class="ss form-control">'
+			var r = ''+cat.req;
+			if(r=='true') {
+				r = "required";
+			}
+			
+			markup = '<input type="hidden" name="_cat" value="'+cat.name+'"/><select id="_cat_'+cat.name+'" name="_cat_'+cat.name+'" '+r+' class="ss form-control">'
 				+'<option value=""></option>';
 			
 			$.each(cat.value, function(index, value) {
@@ -1072,6 +1211,120 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	}
 	
 	
+	
+	function loadGallery() {
+		
+		$('#gallery').html('');
+		
+		$.ajax({
+    		url : "../ajax/storeImages.jsp?idstore=${storeid}&storeName=${description}&storeCode=${store_code}",
+    		success : function(response) {
+    			$('#gallery').html(response);
+    		}
+    	});	 
+	}
+	
+	loadGallery();
+	
+	
+	function tryToDownload(f, id) {
+    	
+    	$.ajax({
+            url:f, //be sure to check the right attribute
+            success: function () { //pass an anonymous callback function
+            	
+            	$("#loader_"+id).attr("src",f);
+            	
+            	
+            },
+            error: function (jqXHR, status, er) {
+                //only set the error on 404
+                if (jqXHR.status === 404) { 
+                	wait(1000);	
+                	tryToDownload(f, id)
+                }
+            }
+        });
+    	
+    }
+	function wait(ms){
+		   var start = new Date().getTime();
+		   var end = start;
+		   while(end < start + ms) {
+		     end = new Date().getTime();
+		  }
+		}
+	
+	function update(idstore, url, note) {
+		
+		showLoader2();
+		$.ajax({
+    		url : "../ajax/updateStoreImage.jsp",
+    		method: "POST",
+    		data: "idstore="+idstore+"&url="+url+"&note="+note,
+    		success : function(response) {
+    			hideLoader2();
+    			$('.modal').remove(); $('div.modal-backdrop').remove();
+    		}
+    	});	 
+		
+		//alert(idstore+' '+url+' '+note);
+	}
+	
+	function confirmDelete(idstore, url) {
+		
+		if(confirm('Confirm Delete Image?')) {
+			
+			showLoader2();	
+			
+			$.ajax({
+	    		url : "../ajax/deleteStoreImage.jsp?idstore="+idstore+"&url="+url,
+	    		success : function(response) {
+	    			hideLoader2();
+	    			$('.modal').remove(); $('div.modal-backdrop').remove();
+	    			loadGallery();
+	    		}
+	    	});	 
+		}
+		
+		
+	}
+	
+function ticket() {
+		
+		$('#err').html('');
+		var callDescriptionShort = $('#callDescriptionShort').val();
+		var callDescriptionLong = $('#callDescriptionLong').val();
+		var err='';
+		if(callDescriptionShort.length==0) {
+			err+='- Insert Title<br/>';
+		}
+		if(callDescriptionLong.length==0) {
+			err+='- Insert Description<br/>';
+		}
+		
+		if(err=='') {
+			showLoader2();
+			
+			var data = $("#ticketForm").serialize();
+			$.ajax({
+	    		url : "../../control/ajax/saveTicket.jsp",
+	    		method: "POST",
+	    		data: data,
+	    		success : function(response) {
+	    			hideLoader2();
+	    			$('.modal').remove(); $('div.modal-backdrop').remove();
+	    		}
+	    	});
+			
+			
+		}
+		else {
+			$('#err').html('<div class="alert alert-danger">'+err+'</div>');
+		}
+		
+		
+	}
 	
   </script>
   

@@ -11,7 +11,7 @@ ReadProperties propIdx = new ReadProperties(session.getAttribute("language").toS
 ReadProperties propLang = new ReadProperties(session.getAttribute("language").toString()+".properties");
 %>
 <!DOCTYPE html>
-<html lang="it" class="app">
+<html class="app">
 <head>  
   <meta charset="utf-8" />
   <title>Desk | Smart Suite</title>
@@ -470,6 +470,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <!-- datepicker -->
   <script src="../../js/datepicker/bootstrap-datepicker.js"></script>
   
+  
   <script type="text/javascript"  src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
   <script type="text/javascript"  src="https://cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js"></script>
@@ -510,6 +511,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	$(document).ready(function() {
 		  var table = $('#example').DataTable({
 		    dom: 'Bfrtip',
+		    "bSortable" : false,
+		    "ordering": false,
 		    "bPaginate": false,
 		    "searching": false,
 		    buttons: [
@@ -832,6 +835,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   	}
   	
   	function selpick() {
+  		
+  		console.log('selpick()');
   		$('.ss').selectpicker({
   		    liveSearch: true,
   		    tickIcon: 'fa fa-check'
@@ -1216,22 +1221,42 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		  callWeather2New();
 	  }
 	  
+	  function selStore() {
+		  
+			
+			var values="${idstores}";
+		    $.each(values.split(","), function(i,e){
+		        $("#id_store option[value='" + e + "']").prop("selected", true);
+		    });
+		    
+		    
+		    $('.ss').selectpicker('refresh');
+			  
+		  }
+	  
 	  function selAll() {
 		  
+		/*
 		var values="${idstores}";
 	    $.each(values.split(","), function(i,e){
 	        $("#id_store option[value='" + e + "']").prop("selected", true);
 	    });
+	    */
+	    $("#id_store option").prop("selected", true);
 	    
 	    $('.ss').selectpicker('refresh');
 		  
 	  }
 	  function clearSelection() {
 		  
+		  	/*
 			var values="${idstores}";
 		    $.each(values.split(","), function(i,e){
 		        $("#id_store option[value='" + e + "']").prop("selected", false);
 		    });
+		    */
+		    
+		    $("#id_store option").prop("selected", false);
 			
 		    $('.ss').selectpicker('refresh');
 			

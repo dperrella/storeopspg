@@ -55,7 +55,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	        <div class="col-sm-12">
 	          <label><%=propLang.get("itm_description") %></label>
 			   <input type="text" id="description" name="description" 
-	          	class="form-control myCheck" data-required="true">   
+	          	class="form-control myCheck_">   
 	        </div>
 	    </div>
         
@@ -91,29 +91,6 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
         <div class="line line-dashed b-b line-lg pull-in"></div>
 			         
 			          
-	    
-<!-- 	    <div class="line line-dashed b-b line-lg pull-in"></div> -->
-	   
-<!-- 	    <div class="form-group pull-in clearfix"> -->
-<!-- 	        <div class="col-sm-12"> -->
-<%-- 	          <label><%=propLang.get("itm_brand_name") %></label> --%>
-<!-- 			  <select id="idbrand" name="idbrand" class="form-control ss" data-required="true"> -->
-<!--          	  </select> -->
-<!-- 	        </div> -->
-<!-- 	    </div> -->
-	     
-        
-<!-- 	    <div class="line line-dashed b-b line-lg pull-in"></div> -->
-	    
-<!-- 	    <div class="form-group pull-in clearfix"> -->
-<!-- 	        <div class="col-sm-12"> -->
-<%-- 	          <label><%=propLang.get("itm_category_name") %></label> --%>
-<!-- 			  <select id="idcategory" name="idcategory" class="form-control ss" data-required="true"> -->
-<!--          	  </select> -->
-<!-- 	        </div> -->
-<!-- 	    </div> -->
-	    
-<!-- 	    <div class="line line-dashed b-b line-lg pull-in"></div> -->
 	    <div class="spinner" id="loadCountry">
 		    <div class="form-group pull-in clearfix">
 		        <div class="col-sm-12 mySDiv">
@@ -146,6 +123,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    </div>
 	    
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
+	    
+	    <div class="form-group pull-in clearfix">
+	        <div class="col-sm-12">
+	          <label>Note</label>
+			   <textarea id="note" name="note" 
+	          	class="form-control" style="height:100px"></textarea>   
+	        </div>
+	    </div>
 	
 	</div>
 	</div>
@@ -193,6 +178,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									 $('#description').val(itemJson.description);
 									 $('#isProtected').val(itemJson.isProtected);
 									 $('#evreportlink').val(itemJson.evreportlink);
+									 $('#note').val(itemJson.note);
+									 
 									 $.when(getVendors(itemJson.idvendor,""), getBrands(itemJson.idbrand,""), getCategories(itemJson.idcategory,""), getCountries(itemJson.country),getCustomers(itemJson.customers)).done(function(a1, a2, a3, a4,a5){
 									  });
 							}

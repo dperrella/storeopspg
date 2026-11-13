@@ -136,7 +136,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    </div>
 	    
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
-	
+		
+		<div class="form-group pull-in clearfix">
+	        <div class="col-sm-12">
+	          <label>Note</label>
+			   <textarea id="note" name="note" 
+	          	class="form-control" style="height:100px"></textarea>   
+	        </div>
+	    </div>
+	    
 	</div>
 	<div class="spinner" id="loadCustomer" style="display:none">
         	<label><%=propLang.get("cus_dsfun") %></label>
@@ -148,6 +156,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
    			 </div>
    		</div> 
 	</div>
+	
+	
 	<div class="modal-footer">
 		<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_ap_chiudi") %></a>
 		<button type="button" class="btn btn-primary btn-lg" id="saveButton"><%=propLang.get("pop_ap_conferma") %></button>	
@@ -191,6 +201,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									 $('#description').val(itemJson.description);
 									 $('#isProtected').val(itemJson.isProtected);
 									 $('#evreportlink').val(itemJson.evreportlink);
+									 $('#note').val(itemJson.note);
+									 
 									 $.when(getVendors(itemJson.idvendor,""), getBrands(itemJson.idbrand,""), getCategories(itemJson.idcategory,""), getCountries(itemJson.country)).done(function(a1, a2, a3, a4){
 									  });
 							}
@@ -263,7 +275,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						});
 			    break;
 			  case "A":
-				  var itemId,name,description,evreportlink,idvendor,idbrand,idcategory,country;
+				  var itemId,name,description,evreportlink,idvendor,idbrand,idcategory,country,note;
 			 	  $.ajax({
 						url: '../../ats/GetItem',
 						type: 'GET',
@@ -280,6 +292,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 										 idbrand = itemJson.idbrand;
 										 idcategory = itemJson.idcategory;
 										 country = itemJson.country;
+										 note = itemJson.note;
 								}
 						});
 			 	 var sc = null;
@@ -295,7 +308,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						type: 'GET',
 						dataType: "html",
 						data: {	id:itemId,name:name,description:description,
-							   	evreportlink:evreportlink,idvendor:idvendor,
+							   	evreportlink:evreportlink,note:note,idvendor:idvendor,
 							   	idbrand:idbrand,idcategory:idcategory,country:country,isProtected:"1",sc:sc, type:"E"
 							},
 						success: function (data) {

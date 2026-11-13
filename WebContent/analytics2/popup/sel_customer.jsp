@@ -29,7 +29,7 @@ try
 	conn=Utility.getConnAdmin();
 	st = conn.createStatement();
 		
-	sql  =  "select id, description from customers where "
+	sql  =  "select id, account_code, description from customers where "
 			+ "id in(select idcustomer from rel_user_customers "
 			+ "where idusr = '"+(String)session.getAttribute("username")+"') ";
 	System.out.println(sql);
@@ -51,7 +51,7 @@ try
 <%
 	while(rs.next()) {
 %>
-		<option value="<%=rs.getString("id")%>"><%=rs.getString("description")%></option>
+		<option value="<%=rs.getString("id")%>"><%=rs.getString("account_code")%> - <%=rs.getString("description")%></option>
 <%
 	}
 	rs.close();

@@ -57,9 +57,9 @@ public class GetItem extends HttpServlet {
 			
 			sql   = "select i.id, i.name, i.description,\n" + 
 					"i.idvendor, i.idbrand, i.idcategory,\n" + 
-					"i.country, i.evolution_report_link,\n" + 
+					"i.country, i.idwishlist, i.evolution_report_link, i.note, \n" + 
 					"v.name as vendorname, b.name as brandname,\n" + 
-					"c.name as categoryname, n.name as countryname,protected,\n" + 
+					"c.name as categoryname, n.name as countryname, w.name as wishlistname, protected,\n" + 
 					"	CASE\n" + 
 					"		WHEN json_agg(x.*)::text = '[null]'::text THEN '[]'::json\n" + 
 					"		ELSE json_agg(x.*)\n" + 
@@ -77,13 +77,14 @@ public class GetItem extends HttpServlet {
 					"left join ats.brand b on b.id = i.idbrand\n" + 
 					"left join ats.category c on c.id = i.idcategory\n" + 
 					"left join ats.country n on n.id = i.country\n" + 
+					"left join ats.wishlist w on w.id = i.idwishlist\n" + 
 					"LEFT JOIN ats.barcode x ON x.iditem = i.id\n" + 
 					"where i.id = ? \n" + 
 					"group by i.id, i.name, i.description,\n" + 
 					"i.idvendor, i.idbrand, i.idcategory,\n" + 
-					"i.country, i.evolution_report_link,protected,\n" + 
+					"i.country, i.idwishlist, i.evolution_report_link,protected,note,\n" + 
 					"v.name, b.name,\n" + 
-					"c.name, n.name ";
+					"c.name, n.name, w.name  ";
 			
 			st = conn.prepareStatement(sql);
 			st.setInt(1, Integer.parseInt(idItem));
@@ -127,6 +128,11 @@ public class GetItem extends HttpServlet {
 				jsonObj.put("photo", rs.getObject("photo"));
 				jsonObj.put("customers", rs.getObject("customers"));
 				jsonObj.put("isProtected", rs.getInt("protected"));
+				
+				jsonObj.put("idwishlist", rs.getInt("idwishlist"));
+				jsonObj.put("wishlistname", rs.getString("wishlistname"));
+				
+				jsonObj.put("note", rs.getString("note"));
 				
 				
 			}

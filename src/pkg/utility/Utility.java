@@ -32,6 +32,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 
@@ -367,11 +369,15 @@ public class Utility
 			
 			//System.out.println(url+database+","+usr+","+psw);
 			if(Boolean.parseBoolean(ssl)) {
+				System.out.println("ssl=true");
+				
 				Class.forName(drv);
 				url = url+database+"?user="+usr+"&password="+psw+"&ssl=true";
 				conn = DriverManager.getConnection(url);
 			}
 			else {
+				System.out.println("ssl=false");
+				
 				Class.forName(drv);
 				conn = DriverManager.getConnection(url+database, usr, psw);
 			}
@@ -429,7 +435,8 @@ public class Utility
 			if(Boolean.parseBoolean(ssl)) {
 				Class.forName(drv);
 				//url = url+database+"?user="+usr+"&password="+psw+"&ssl=true";
-				url = url+database+"?user="+usr+"&password="+psw+"&sslmode=require";
+				//url = url+database+"?user="+usr+"&password="+psw+"&sslmode=require";
+				url = url+database+"?user="+usr+"&password="+psw+"";
 				conn = DriverManager.getConnection(url);
 			}
 			else {
@@ -516,6 +523,20 @@ public class Utility
 		cmp = ""+cmp;
 		if(cmp.equals("null"))
 			cmp = "";
+		
+		return cmp;
+		
+	}
+	
+	/*
+	 * ----------------------------------
+	 * remove last
+	 * ----------------------------------
+	 */
+	public static String removeLast(String cmp) {
+		
+		if(cmp.length()>0)
+			cmp = cmp.substring(0,cmp.length()-1);
 		
 		return cmp;
 		
@@ -639,14 +660,13 @@ public class Utility
 		    e.printStackTrace();
 		}    
 		
-		System.out.println(dateStart);
-		System.out.println(dateStop);
-
 		// Get msec from each, and subtract.
 		long diff = d2.getTime() - d1.getTime();
-		long diffDays = diff / (1000 * 60 * 60 * 24);                  
 		
-		System.out.println("Time in days: " + diffDays + " days.");         
+		//System.out.println(diff);
+		double abc = diff / (1000.0 * 60.0 * 60.0 * 24.0);
+		System.out.println(abc);
+		long diffDays = (long) Math.ceil(abc);                  
 		
 		return (int) diffDays;
 
@@ -885,7 +905,39 @@ public String getPath() throws UnsupportedEncodingException {
 		
 		try {
 			st=conn.createStatement();
-			sql = "select description from customers where id = "+idcus+" ";
+			sql = "select account_code, description from customers where id = "+idcus+" ";
+			rs = st.executeQuery(sql);
+			if(rs.next()) {
+				description = rs.getString("account_code")+" - "+rs.getString("description");
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}
+		
+		return description;
+		
+	}
+	
+	public static String getCustomerDescriptionByAccountCode(Connection conn, String accountCode) {
+		
+		String description = "";
+		
+		Statement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try {
+			st=conn.createStatement();
+			sql = "select description from customers where account_code = '"+accountCode+"' ";
 			rs = st.executeQuery(sql);
 			if(rs.next()) {
 				description = rs.getString("description");
@@ -962,6 +1014,38 @@ public String getPath() throws UnsupportedEncodingException {
 		}
 		
 		return description;
+		
+	}
+	
+	public static String getAccountId(Connection conn, String idcus) {
+		
+		String accountId = "";
+		
+		Statement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try {
+			st=conn.createStatement();
+			sql = "select account_code from customers where id = "+idcus+" ";
+			rs = st.executeQuery(sql);
+			if(rs.next()) {
+				accountId = rs.getString("account_code");
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}
+		
+		return accountId;
 		
 	}
 	
@@ -1727,6 +1811,89 @@ public String getPath() throws UnsupportedEncodingException {
 		
 	}
 	
+	public static String getXAxisNew(Connection conn, String idcus, String idstores) {
+		
+		String xAxis = "";
+		String min = "0";
+		String max = "23";
+		Statement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		
+		try {
+			st=conn.createStatement();
+			
+			/*
+			sql="select " + 
+				"min(extract(hour from fromhour)) m1, " + 
+				"max(extract(hour from tohour)) m2 " + 
+				"from dailyoperation_stores where id_stores in( "+idstores+" )";
+			*/
+			sql="select min(extract(hour from round_time(fromhour))) m1, "+
+				"max(extract(hour from round_time(tohour))) m2 "+
+				"from dailyoperation_stores where id_stores in( "+idstores+" )";
+			System.out.println(sql);
+			rs=st.executeQuery(sql);
+			if(rs.next()) {
+				int m1 = rs.getInt("m1");
+				int m2 = rs.getInt("m2");
+				/////////////
+				if(m2==0)
+					m2 = 24;
+				/////////////
+				
+				String s1 = ""+rs.getString("m1");
+				String s2 = ""+rs.getString("m2");
+				s1=Utility.noNull(s1);
+				s2=Utility.noNull(s2);
+				
+				
+				if(s1.length()>0&&s2.length()>0) {
+					
+					
+					
+					min = rs.getString("m1");
+					max = ""+m2;
+					
+					
+				
+					for(int i=m1;i<m2;i++) {
+						String h1 = "00"+i;
+						String h2 = "00"+(i+1);
+						h1=h1.substring(h1.length()-2,h1.length());
+						h2=h2.substring(h2.length()-2,h2.length());
+						xAxis+=""+h1+"-"+h2+",";
+					}
+					
+					if(xAxis.length()>0)
+						xAxis = xAxis.substring(0, xAxis.length()-1);
+				
+				}
+				else {
+					xAxis = "00-01,01-02,02-03,03-04,04-05,05-06,06-07,07-08,08-09,09-10,10-11,11-12,12-13,13-14,14-15,15-16,16-17,17-18,18-19,19-20,20-21,21-22,22-23,23-24";
+				}
+			}
+			else {
+				xAxis = "00-01,01-02,02-03,03-04,04-05,05-06,06-07,07-08,08-09,09-10,10-11,11-12,12-13,13-14,14-15,15-16,16-17,17-18,18-19,19-20,20-21,21-22,22-23,23-24";
+		 	}
+			
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}
+		
+		return xAxis+"##@@"+min+"##@@"+max;
+		
+	}
+	
 	public static String cleanString(String text) 
     { 
         text = text.replace('\'', ' '); 
@@ -1810,5 +1977,92 @@ public String getPath() throws UnsupportedEncodingException {
 		return s;
 	}
 	
+	
+	
+	
+	
+	
+	public static JSONObject consumeRest(String apiEndPoint, String method, String jsonParm, String token) {
+
+    	JSONObject json = null;
+
+    	System.out.println(apiEndPoint);
+		//System.out.println(token);
+
+		try {
+
+
+			URL url = new URL(apiEndPoint);
+
+
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+			if(token.length()>0) {
+				con.setRequestProperty("Authorization", "Bearer " + token);
+			}
+			con.setRequestMethod(method);
+
+			if(jsonParm.length()>0) {
+				con.setRequestProperty("Content-Type", "application/json");
+				con.setDoOutput(true);
+				OutputStream os = con.getOutputStream();
+				os.write(jsonParm.getBytes());
+				os.flush();
+			}
+
+			int responseCode = con.getResponseCode();
+
+			StringBuilder content;
+			System.out.println("Response Code : " + responseCode);
+
+			try (BufferedReader in = new BufferedReader(
+					new InputStreamReader(con.getInputStream()))) {
+
+				String line;
+				content = new StringBuilder();
+
+				while ((line = in.readLine()) != null) {
+
+					content.append(line);
+					content.append(System.lineSeparator());
+				}
+
+			}
+
+			try {
+				json = new JSONObject(content.toString());
+			}
+			catch(Exception err) {
+				//err.printStackTrace();
+				JSONArray arr = new JSONArray(content.toString());
+				json = new JSONObject();
+				json.put("listings", arr);
+			}
+		}
+    	catch(Exception e) {
+			//e.printStackTrace();
+			System.err.println(e.getLocalizedMessage());
+		}
+    	return  json;
+
+	}
+	
+	/**
+	 * Recursive implementation, invokes itself for each factor of a thousand, increasing the class on each invokation.
+	 * @param n the number to format
+	 * @param iteration in fact this is the class from the array c
+	 * @return a String representing the number n formatted in a cool looking way.
+	 */
+	private static char[] c = new char[]{'k', 'm', 'b', 't'};
+	public static String coolFormat(double n, int iteration) {
+	    double d = ((long) n / 100) / 10.0;
+	    boolean isRound = (d * 10) %10 == 0;//true if the decimal part is equal to 0 (then it's trimmed anyway)
+	    return (d < 1000? //this determines the class, i.e. 'k', 'm' etc
+	        ("+"+(d > 99.9 || isRound || (!isRound && d > 9.99)? //this decides whether to trim the decimals
+	         (int) d * 10 / 10 : d + "" // (int) d * 10 / 10 drops the decimal
+	         ) + "" + c[iteration]) 
+	        : coolFormat(d, iteration+1));
+
+	}
 	
 }

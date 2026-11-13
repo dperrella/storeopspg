@@ -93,6 +93,17 @@ finally {
 		<select class="form-control chosen-select" multiple name="idsto" id="idsto">
 			<!-- <option value="*"><%=propLang.get("sel_all") %></option>-->
 		</select>
+		
+		<div class="line line-dashed b-b line-lg pull-in"></div>
+		
+		<div class="checkbox i-checks">
+           <label>
+             <input id="send_mail" name="send_mail" type="checkbox" value="true">
+             <i></i>
+             
+             Send Mail to Stores or Customer
+           </label>
+         </div>
 	    
 	</div>
 	<div class="modal-footer">

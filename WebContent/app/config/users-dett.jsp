@@ -265,6 +265,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 							    	    
 							    	    <input type="hidden" name="rel_user_customers" id="rel_user_customers"
 							    	    	value="${rel_user_customers}"/>
+							    	    
+							    	    <input type="hidden" name="_chkwr" id="_chkwr"
+							    	    	value="${_chkwr}"/>
+							    	    <input type="hidden" name="_chkdr" id="_chkdr"
+							    	    	value="${_chkdr}"/>
 						    	    </div>
 								    
 								    <div class="line line-dashed b-b line-lg pull-in"></div>
@@ -511,11 +516,28 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		}
 		else {
 			$('#aut').show();
-			if(idrole=="3"||idrole=="4") {
+			if(idrole=="3") {
 				
 				$('#divcus').show();
 				$('#divcou').show();
 				$('#divsto').show();
+				$('#divcou2').hide();
+				
+				
+				if(blank=='S') {
+					$('#rel_user_customers').val('');
+					$('#rel_user_country').val('');
+					$('#rel_user_country2').val('');
+					$('#rel_user_stores').val('');
+				}
+				
+				
+			}
+			else if(idrole=="4") {
+				
+				$('#divcus').show();
+				$('#divcou').hide();
+				$('#divsto').hide();
 				$('#divcou2').hide();
 				
 				
@@ -618,15 +640,38 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  //alert('a');
 	  
 	  var chk = "";
+	  var chkwr = "";
+	  var chkdr = "";
 	  $('input[name="chkCustomer"]:checked').each(function() {
 		  chk=chk+this.value+","; 
+		  
+		  if($('#_'+this.value+'wr').is(":checked")) {
+			  chkwr=chkwr+"t,"; 
+		  }
+		  else {
+			  chkwr=chkwr+"f,"; 
+		  }
+		  
+		  if($('#_'+this.value+'dr').is(":checked")) {
+			  chkdr=chkdr+"t,"; 
+		  }
+		  else {
+			  chkdr=chkdr+"f,"; 
+		  }
+		  
 	  });
 	  
 	  chk = chk.substring(0, chk.length - 1);
+	  chkwr = chkwr.substring(0, chkwr.length - 1);
+	  chkdr = chkdr.substring(0, chkdr.length - 1);
+	  
 	  
 	  //alert(chk);
 	  
 	  $('#rel_user_customers').val(chk);
+	  $('#_chkwr').val(chkwr);
+	  $('#_chkdr').val(chkdr);
+	  
 	  
   }
   
@@ -758,6 +803,24 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	if('${tipoForm}'=='M' || '${tipoForm}'=='E') {
 		
 		pwdRequired(false);
+		
+	}
+	
+	function _enable(idcus) {
+		if($('#_'+idcus).is(":checked")) {
+			
+			
+			$('#_'+idcus+'wr').prop("disabled", false);
+			$('#_'+idcus+'dr').prop("disabled", false);
+			
+		}
+		else {
+			$('#_'+idcus+'wr').prop("checked", false);
+			$('#_'+idcus+'dr').prop("checked", false);
+			
+			$('#_'+idcus+'wr').prop("disabled", true);
+			$('#_'+idcus+'dr').prop("disabled", true);
+		}
 		
 	}
 	

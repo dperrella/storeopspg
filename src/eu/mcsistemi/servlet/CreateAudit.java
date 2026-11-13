@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.glass.ui.CommonDialogs.Type;
-
 import eu.mcsistemi.dao.AuditDAO;
 import eu.mcsistemi.dao.AuditDAOImpl;
 import eu.mcsistemi.dao.AuditItemDAO;

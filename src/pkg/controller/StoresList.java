@@ -52,9 +52,16 @@ public class StoresList extends AbstractController {
 		obj.put("customerid", customerid);
 		
 		String cond = "";
-		if(customerid.length()>0)
+		boolean search = false;
+		if(customerid.length()>0) {
 			cond = "and c.id = "+customerid+" ";
-		
+			search = true;
+		}
+		else {
+			cond = "and c.id = 99999999999 ";
+			search = false;
+		}
+		obj.put("search", search);
 		HttpSession session = req.getSession();
 		
 		String allStores = ""+req.getParameter("allStores");

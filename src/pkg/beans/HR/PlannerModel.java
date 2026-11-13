@@ -175,9 +175,12 @@ public class PlannerModel {
 					"join hr_roles r on r.id = v.id_roles\r\n" + 					
 					"left JOIN vw_planner p ON p.id_employee = v.id_employee\r\n" + 
 					"--and p.id_departments = v.id_departments\r\n" + 
-					"and p.plan_year::integer = v.anno\r\n" + 
-					"and p.plan_week::integer = v.settimana\r\n" + 
-					"and p.plan_day::integer = v.dow\r\n" + 
+					//"and p.plan_year::integer = v.anno\r\n" + 
+					//"and p.plan_week::integer = v.settimana\r\n" + 
+					//"and p.plan_day::integer = v.dow\r\n" + 
+					"and coalesce(p.plan_year, null, '0')::integer = v.anno\n" + 
+					"and coalesce(p.plan_week, null, '0')::integer = v.settimana\n" + 
+					"and coalesce(p.plan_day, null, '0')::integer = v.dow " +
 					"where v.id_departments = '"+id_departments+"'\r\n" + 
 					"and v.anno = "+year+" and settimana = "+week+" and dow = "+dow+" \r\n" + 
 					"group by v.id_employee, v.id_roles, v.id_departments, v.monteore,\r\n" + 
@@ -353,7 +356,7 @@ public class PlannerModel {
 					"group by v.id_employee, v.id_roles, v.id_departments, v.monteore,\r\n" + 
 					"e.name, e.surname, r.description\r\n";
 			
-			System.out.println(sql);
+			System.out.println("******* - - "+sql+"");
 			st = conn.prepareStatement(sql);
 			rs = st.executeQuery();
 			

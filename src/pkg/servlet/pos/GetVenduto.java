@@ -100,7 +100,7 @@ public class GetVenduto extends HttpServlet {
 						"like '%"+search.toUpperCase().replaceAll("'", "''")+"%' ";
 			}
 			
-			sql  =  "select count(*) num from (select * from venduto_giornaliero) a where idclient = '"+store+"' and giorno >= '"+from+"' and giorno <= '"+to+"' "+cond+" ";
+			sql  =  "select count(*) num from (select * from venduto_giornaliero2) a where idclient = '"+store+"' and giorno::date >= '"+from+"' and giorno::date <= '"+to+"' "+cond+" ";
 			System.out.println("1. "+sql);
 			st = conn.prepareStatement(sql);
 			rs=st.executeQuery();
@@ -131,7 +131,7 @@ public class GetVenduto extends HttpServlet {
 			}
 
 			
-			sql = "select * from (select * from venduto_giornaliero) a where idclient = '"+store+"' and giorno >= '"+from+"' and giorno <= '"+to+"' "+cond+" ";
+			sql = "select giorno, codart, codartalt, taglia, parte, codcol, variante, pezzi, valore, code, idclient   from (select * from venduto_giornaliero2) a where idclient = '"+store+"' and giorno::date >= '"+from+"' and giorno::date <= '"+to+"' "+cond+" ";
 			if(colIndex.length()>0) {
 				sql+="order by "+(Integer.parseInt(colIndex))+" "+dir+" ";
 			}

@@ -140,6 +140,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
                   <form action="stores-google.htm" class="" role="search">
                   <input type="hidden" name="id" value="${id}"/>
                   <input type="hidden" name="googleUid" value="${googleUid}"/>
+                  <input type="hidden" id="customerid" name="customerid" value="${customerid}"/>
                   
                   <div class="form-group clearfix m-b-none">
                     <div class="input-group m-t m-b">
@@ -196,6 +197,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
                   <input type="hidden" id="sel_lat" name="lat" value=""/>
                   <input type="hidden" id="sel_lon" name="lon" value=""/>
                   <input type="hidden" id="sel_types" name="types" value=""/>
+                  <input type="hidden" id="customerid" name="customerid" value="${customerid}"/>
                   
                   <div class="form-group clearfix m-t m-b-none">
                       

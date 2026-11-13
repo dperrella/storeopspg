@@ -194,18 +194,44 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				                  </div>
 				                </footer>
 				                    
+				                <div class="row wrapper">
+				                	<div class="col-sm-2">
+				                		<label>Store Status</label>
+				                		<select class="form-control" name="uc" id="uc" onchange="getLogs()">
+				                			<option value="false">Only Active</option>
+				                			<option value="true">Under Construction</option>
+				                			<option value="">All</option>
+				                		</select>
+				                	</div>
+				                	
+				                	<div class="col-sm-2">
+				                		<label>Customer Country</label>
+				                		<select class="form-control" name="country" id="country" onchange="getLogs()">
+				                			<option value="">All</option>
+				                			
+				                		</select>
+				                	</div>
+				                </div>
+				                
+				                <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+				                
 			                    <div class="table-responsive">
 					                <table class="table table-striped m-b-none" id="logs" data-ride="datatables">
 					                  <thead>
 										  <tr>
-									        <th><%=propLang.get("sm_cont_dd") %></th>
-									        <th><%=propLang.get("sm_cont_do") %></th>
-									        <th><%=propLang.get("sm_cont_cl") %></th>
-									        <th><%=propLang.get("sm_cont_ne") %></th>
-									        <th><%=propLang.get("sm_cont_ce") %></th>
-									        <th>Note</th>
-									        <th><%=propLang.get("sm_cont_is") %></th>
-									        <th></th>
+										    <th width="10%">Down Time</th>
+									        <th width="10%">Last Check</th>
+									        <th width="10%">Next Check</th>
+									        <th width="10%">Country</th>
+									        <th width="20%"><%=propLang.get("sm_cont_cl") %></th>
+									        <th width="10%"><%=propLang.get("sm_cont_ne") %></th>
+									        <th width="5%"><%=propLang.get("sm_cont_ce") %></th>
+									        <th width="5%">Status</th>
+									        <th width="5%">Note</th>
+									        <th width="5%"><%=propLang.get("sm_cont_is") %></th>
+									        <th width="5%">Ticket</th>
+									        <th width="1%">Store</th>
 									      </tr>
 									  </thead>
 			      					  
@@ -213,7 +239,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			      					  </tbody>
 			      					  <tfoot>
 			      					  	  <tr>
-			      					  	  	<td colspan="8"><div id="logs_total" style="margin-left:5px"></div></td>
+			      					  	  	<td colspan="12"><div id="logs_total" style="margin-left:5px"></div></td>
 			      					  	  </tr>
 			      					  </tfoot>
 			      					</table>
@@ -459,13 +485,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					                <table class="table table-striped m-b-none" id="ul" data-ride="datatables">
 					                  <thead>
 										  <tr>
-									        <th width="25%"><%=propLang.get("sm_cont_cl") %></th>
-									        <th width="10%">Store Id</th>
-									        <th width="30%"><%=propLang.get("sm_cont_ne") %></th>
-									        <th width="25%"><%=propLang.get("sm_cont_ip") %></th>
-									        <th width="10%">Account Id</th>
-									        <th width="10%">Store Id</th>
-									        <th width="10%">Door Id</th>
+									        <th width="20%"><%=propLang.get("sm_cont_cl") %></th>
+									        <th width="20%"><%=propLang.get("sm_cont_ne") %></th>
+									        <th width="20%"><%=propLang.get("sm_cont_ip") %></th>
+									        <th width="5%">Attempts</th>
+									        <th width="10%">Updating From</th>
+									        <th width="10%">Status</th>
+									        <th width="5%">Account Id</th>
+									        <th width="5%">Store Id</th>
+									        <th width="5%">Door Id</th>
 									        <th></th>
 									      </tr>
 									  </thead>
@@ -474,7 +502,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			      					  </tbody>
 			      					  <tfoot>
 			      					  	  <tr>
-			      					  	  	<td colspan="7"><div id="ul_total" style="margin-left:5px"></div></td>
+			      					  	  	<td colspan="10"><div id="ul_total" style="margin-left:5px"></div></td>
 			      					  	  </tr>
 			      					  </tfoot>
 			      					</table>
@@ -694,6 +722,10 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		$('#jsLi').removeClass('active');
 		
 		
+		var uc = $('#uc').val();
+		var country = $('#country').val();
+		
+		
 		// based on prepared DOM, initialize echarts instance
 	    var myChart = echarts.init(document.getElementById('x_main'));
 		
@@ -705,7 +737,43 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		$('#x_main').html("<div align='center'><img src='../../images/loader_xs.gif'/></div>");
 		
 		$.ajax({
-		      url: '../../servlet/ws/GetLogChart',
+		      url: '../../servlet/ws/GetLogCountry?uc='+uc,
+		      type: 'POST',
+		      dataType: 'json',
+		      async: true,
+		      success: function (data) {
+		    	  
+		    	  	//alert(JSON.stringify(data));
+		    	  
+		    	  	$('#country').empty();
+		    	  	$('#country').append($('<option>', {
+		    		    value: '',
+		    		    text: 'All'
+		    		}));
+		    	  	
+		    	  	var lista = data.listings;
+		    	  	
+		    	  	$.each(lista, function(index, lista) {
+		   				id = lista.id;
+			    		name = lista.name;
+			    		
+			    		$('#country').append($('<option>', {
+			    		    value: id,
+			    		    text: name
+			    		}));
+		   			});
+					
+		    	  	$('#country').val(country);
+		    		
+		      },
+		      error: function () {
+		      	alert('Errore! si e\' verificato un errore.');
+		      }
+		});
+		
+		
+		$.ajax({
+		      url: '../../servlet/ws/GetLogChart?uc='+uc+'&country='+country,
 		      type: 'POST',
 		      dataType: 'html',
 		      async: true,
@@ -804,23 +872,40 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      "columns": [
 		      { "width": "10%" },
 		      { "width": "10%" },
-		   	  { "width": "25%" },
-		      { "width": "25%" },
-		   	  { "width": "15%" },
-		      { "width": "5%" },
+		      { "width": "10%" },
+		      { "width": "10%" },
+		   	  { "width": "10%" },
+		      { "width": "20%" },
+		   	  { "width": "10%" },
+		   	  { "width": "5%" },
 		  	  { "width": "5%" },
-		      { "width": "5%" }
+		  	  { "width": "5%" },
+		      { "width": "5%" },
+		  	  { "width": "1%" }
+		  	  
 		      
 		      
 			    ],
 		      //"serverSide": true,
 		      "ajax": {
-	            "url": "../../servlet/ws/GetLog",
+	            "url": "../../servlet/ws/GetLog?uc="+uc+"&country="+country,
 	            //"dataType": "jsonp"
 	          },
 	          "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-	        	  $('td:eq(7)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[6] + '" class="btn btn-default">Edit</a>');
-	              $('td:eq(6)', nRow).html('<span class="label bg-light">' + aData[5] + '</span>');
+	        	  $('td:eq(11)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[8] + '" class="btn btn-default"><i class="fa fa-edit"></i></a>');
+	        	  
+	        	  
+	        	  if(aData[14]==true) {
+	        		  var cls = 'btn-default';
+	        		  var callid = '<i class="icon-bubbles"></i>';
+	        		  if(aData[15]!=null){
+	        			  cls = 'btn-success';
+	        			  callid = aData[15]; 
+	        		  }
+	        		  
+	        		$('td:eq(10)', nRow).html('<a href="../../app/anag/stores-ticket.htm?idstore=' + aData[8] + '&err='+aData[6]+'" class="btn '+cls+'" data-toggle="ajaxModal">'+callid+'</a>');
+	        	  }
+	        	  $('td:eq(9)', nRow).html('<span class="label bg-light">' + aData[7] + '</span>');
 	              
 	              
 	              /*
@@ -834,7 +919,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	            	  $('td:eq(5)', nRow).html('<span">-</span>');
 	              }
 	              */
-	              var note = aData[9];
+	              var note = aData[11];
 	              var cls = "";
 	              if( note.length>0 ) {
 	            	  cls = "btn-success";
@@ -842,8 +927,17 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	              else {
 	            	  cls = "btn-default";
 	              }
-	              $('td:eq(5)', nRow).html('<a href="store-notes.jsp?id='+aData[6]+'" id="_'+aData[6]+'_btn" class="btn '+cls+'" data-toggle="ajaxModal"> <i class="fa fa-info"></i> </a>');
+	              $('td:eq(8)', nRow).html('<a href="store-notes.jsp?id='+aData[8]+'" id="_'+aData[8]+'_btn" class="btn '+cls+'" data-toggle="ajaxModal"> <i class="fa fa-info"></i> </a>');
 	              
+	              var sts = aData[12];
+	              if(sts==true) {
+	            	  $('td:eq(7)', nRow).html('<div align="center"><i class="fa fa-circle text-danger"></i></div>');  
+	              }
+	              else {
+	            	  $('td:eq(7)', nRow).html('<div align="center"><i class="fa fa-circle text-success"></i></div>');
+	              }
+	              
+		         
 	              
 	              return nRow;
 	          },
@@ -1029,14 +1123,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      "destroy": true,
 		      //"serverSide": true,
 		      "ajax": {
-	            "url": "../../servlet/ws/GetUpdating",
+	            "url": "../../servlet/ws/GetUpdating2",
 	            //"dataType": "jsonp"
 	          },
 	          "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-	              $('td:eq(7)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[1] + '" class="btn btn-default">Edit</a>');
-	              $('td:eq(4)', nRow).html('<span class="label bg-light">' + aData[4] + '</span>');
-	              $('td:eq(5)', nRow).html('<span class="label bg-light">' + aData[5] + '</span>');
+	              $('td:eq(9)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[10] + '" class="btn btn-default"><i class="fa fa-edit"></i></a>');
 	              $('td:eq(6)', nRow).html('<span class="label bg-light">' + aData[6] + '</span>');
+	              $('td:eq(7)', nRow).html('<span class="label bg-light">' + aData[7] + '</span>');
+	              $('td:eq(8)', nRow).html('<span class="label bg-light">' + aData[8] + '</span>');
+	              $('td:eq(3)', nRow).html('<b>' + aData[3] + '</b>');
 	              return nRow;
 	          },
 	          "fnInitComplete": function (settings,json) {
@@ -1354,7 +1449,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		$('#al2Li').removeClass('active');
 		$('#ulLi').removeClass('active');
 		$('#dneLi').addClass('active');
-		$('#jsLi').addClass('active');
+		$('#jsLi').removeClass('active');
 		
 		var dne = $('#dne').dataTable( {
 		      "language": {
@@ -1379,7 +1474,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	          },
 	          "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
 	        	  $('td:eq(0)', nRow).html('<span class="label bg-light">' + aData[0] + '</span>');
-	        	  $('td:eq(8)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[2] + '" class="btn btn-default">Edit</a>');
+	        	  $('td:eq(8)', nRow).html('<a href="../../app/anag/stores-dett.htm?tipoForm=M&id=' + aData[2] + '" class="btn btn-default"><i class="fa fa-edit"></i></a>');
 	        	  
 	        	  return nRow;
 	          },
@@ -1644,6 +1739,42 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      	alert('Errore! si e\' verificato un errore.');
 		      }
 		});
+		
+		
+	}
+	
+	function ticket() {
+		
+		$('#err').html('');
+		var callDescriptionShort = $('#callDescriptionShort').val();
+		var callDescriptionLong = $('#callDescriptionLong').val();
+		var err='';
+		if(callDescriptionShort.length==0) {
+			err+='- Insert Title<br/>';
+		}
+		if(callDescriptionLong.length==0) {
+			err+='- Insert Description<br/>';
+		}
+		
+		if(err=='') {
+			showLoader2();
+			
+			var data = $("#ticketForm").serialize();
+			$.ajax({
+	    		url : "../ajax/saveTicket.jsp",
+	    		method: "POST",
+	    		data: data,
+	    		success : function(response) {
+	    			hideLoader2();
+	    			$('.modal').remove(); $('div.modal-backdrop').remove();
+	    		}
+	    	});
+			
+			
+		}
+		else {
+			$('#err').html('<div class="alert alert-danger">'+err+'</div>');
+		}
 		
 		
 	}

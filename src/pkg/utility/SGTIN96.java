@@ -326,4 +326,68 @@ public class SGTIN96 {
     		return "E";
     	}
     }
+    
+    
+    public static String getSerial(String sgtin96_epc) {
+        // 3.4.2.2 SGTIN-96 Decoding Procedure. page 29.
+    	
+        if (sgtin96_epc.length() != sgtin96_length_hex) {
+            throw new IllegalArgumentException("EPC must be 24 characters long");
+        }
+        String binary = zeroFill(hexToBinary(sgtin96_epc), sgtin96_length_bits);
+        //System.out.println(binary);
+        
+        String header = binary.substring(0, 8);
+        //System.out.println(binary);
+        if (!header.equals(sgtin96_bin_header)) {
+            //throw new IllegalArgumentException("EPC header does not correlate to SGTIN-96");
+        	System.out.println("EPC header does not correlate to SGTIN-96");
+        }
+
+        Integer filter_value = binaryToInt(binary.substring(8, 11));
+        Integer partition_value = binaryToInt(binary.substring(11, 14));
+        if (partition_value > 6) {
+            //throw new IllegalArgumentException("Partition value cannot be greater than 6");
+        	System.out.println("Partition value cannot be greater than 6");
+        }
+
+        int[] lookup = getPartitionsByPartitionValue(partition_value);
+
+        Integer company_prefix_len_bits = lookup[1];
+        Integer company_prefix_len_digits = lookup[0];
+
+        Long long_company_prefix_value = binaryToLong(binary.substring(14, 14 + company_prefix_len_bits));
+        if (long_company_prefix_value >= Math.pow(10, company_prefix_len_digits)) {
+            //throw new IllegalArgumentException("Company Prefix exceeded specified length");
+        	System.out.println("Company Prefix exceeded specified length");
+        }
+        String company_prefix = zeroFill(long_company_prefix_value.toString(), company_prefix_len_digits);
+
+        Integer item_reference_and_indicator_len_digits = 13 - company_prefix_len_digits;
+        Integer int_item_reference_and_indicator = binaryToInt(binary.substring(14 + company_prefix_len_bits, 58));
+        if (int_item_reference_and_indicator >= Math.pow(10, item_reference_and_indicator_len_digits) ) {
+            //throw new IllegalArgumentException("Item Reference and Indicator exceeded specified length");
+        	System.out.println("Item Reference and Indicator exceeded specified length");
+        }
+        String item_reference_and_indicator = zeroFill(int_item_reference_and_indicator.toString(), item_reference_and_indicator_len_digits);
+
+        String thirteen = item_reference_and_indicator.substring(0, 1) + company_prefix + item_reference_and_indicator.substring(1);
+        int termA = 0;
+        int termB = 0;
+        for (int i = 0; i < thirteen.length(); i++){
+            String c = thirteen.substring(i, i+1);
+            if (i%2 == 0) {
+                termB += Integer.parseInt(c);
+            } else {
+                termA += Integer.parseInt(c);
+            }
+        }
+        int check_digit = Math.abs(((-3 * termA) - termB) % 10);
+        String gtin14 = thirteen + String.valueOf(check_digit);
+		
+        Long serial_number = binaryToLong(binary.substring(58));
+        //System.out.println(thirteen);
+        return String.format("%012d",serial_number);
+        
+    }
 }

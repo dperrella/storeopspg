@@ -95,6 +95,8 @@ public class DocumentsDett extends AbstractController {
 			obj.put("dsstep",d.getDsStep());
 			obj.put("dstype",d.getDsType());
 			
+			obj.put("status",d.getStatus());
+			
 			
 			obj.put("idstep",d.getIdStep());
 			

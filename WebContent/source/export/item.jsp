@@ -56,6 +56,7 @@ String role = session.getAttribute("tipo").toString();
 				"		<th>"+propLang.get("itm_country_name")+"</th>"+
 				"		<th>"+propLang.get("itm_evrl")+"</th>"+
 				"		<th>"+propLang.get("itm_protected")+"</th>"+
+				"		<th>Photos</th>"+
 				"		<th>Barcode(s)</th>"+
 				
 				"	</tr>"+
@@ -69,16 +70,18 @@ String role = session.getAttribute("tipo").toString();
 			
 			table+="<tr>"+
 					"<td>"+$riga+"</td>"+
-					"<td>"+item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "")+"</td>"+
 					"<td>"+item.get(i).getIdItem()+"</td>"+
+					"<td>"+item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "")+"</td>"+
 					"<td>"+item.get(i).getName()+"</td>"+
 					"<td>"+item.get(i).getDescription()+"</td>"+
 					"<td>"+item.get(i).getVendorName()+"</td>"+
 					"<td>"+item.get(i).getBrandName()+"</td>"+
 					"<td>"+item.get(i).getCategoryName()+"</td>"+
 					"<td>"+item.get(i).getCountryName()+"</td>"+
-					"<td>"+item.get(i).getEvReportLink()+"</td>"+
+					"<td>"+Utility.noNull(item.get(i).getEvReportLink())+"</td>"+
 					"<td>"+item.get(i).getItemProtected()+"</td>"+
+					"<td>"+(item.get(i).getPhotos().length()>0 ? "X" : "") +"</td>"+
+					
 					"<td>"+item.get(i).getBarcodes().replaceAll("\"", "")+"</td>"+
 					"</tr>";	
 		}

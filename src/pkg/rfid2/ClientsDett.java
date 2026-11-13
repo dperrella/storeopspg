@@ -60,6 +60,8 @@ public class ClientsDett extends AbstractController {
 				obj.put("description", client.getDescription());
 				obj.put("mac", client.getMacAddress());
 				obj.put("enabled", client.getIsEnabled());
+				obj.put("contract", client.isContract());
+				obj.put("contractDate", client.getContractDate());
 				
 				obj.put("idSite", Client.selectSiteByClient(conn, Integer.parseInt(id)));
 				obj.put("idStep", Client.selectStepByClient(conn, Integer.parseInt(id)));

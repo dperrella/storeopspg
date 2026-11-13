@@ -62,6 +62,21 @@ String table="";
 	    <div class="line line-dashed b-b line-lg pull-in"></div>
 	    
 	    <div class="form-group pull-in clearfix">
+	        <div class="col-sm-12">
+	          <label>Breakpoint Label</label>
+	          <select name="etichettaRott" id="etichettaRott" 
+              	class="form-control ss" data-required="true">
+                <option value="">-</option>
+                <c:forEach items="${templatesBrk}" var="templatesBrk" varStatus="status">
+				<option value="${templatesBrk.id}">${templatesBrk.name}</option>
+				</c:forEach>
+              </select>
+            </div>
+	    </div>
+	    
+	    <div class="line line-dashed b-b line-lg pull-in"></div>
+	    
+	    <div class="form-group pull-in clearfix">
 	        <div class="col-sm-6">
 	          <div class="checkbox i-checks">
                 <label>

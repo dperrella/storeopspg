@@ -9,6 +9,10 @@ public class DocType implements CRUD {
 	private int idDoctype;
 	private String description;
 	private int idCustomer;
+	private boolean canChangeLocation;
+	private boolean asExpected;
+	private boolean canOverload;
+	
 	
 	public DocType() {	}
 
@@ -16,6 +20,16 @@ public class DocType implements CRUD {
 		this.idDoctype = idDoctype;
 		this.description = description;
 		this.idCustomer = idCustomer;
+	}
+	
+	public DocType(int idDoctype, String description, int idCustomer, 
+			boolean canChangeLocation,boolean asExpected,boolean canOverload) {
+		this.idDoctype = idDoctype;
+		this.description = description;
+		this.idCustomer = idCustomer;
+		this.canChangeLocation = canChangeLocation;
+		this.asExpected = asExpected;
+		this.canOverload = canOverload;
 	}
 	
 	public int getIdDoctype() {
@@ -42,6 +56,32 @@ public class DocType implements CRUD {
 		this.idCustomer = idCustomer;
 	}
 	
+	
+	
+	public boolean isCanChangeLocation() {
+		return canChangeLocation;
+	}
+
+	public void setCanChangeLocation(boolean canChangeLocation) {
+		this.canChangeLocation = canChangeLocation;
+	}
+
+	public boolean isAsExpected() {
+		return asExpected;
+	}
+
+	public void setAsExpected(boolean asExpected) {
+		this.asExpected = asExpected;
+	}
+
+	public boolean isCanOverload() {
+		return canOverload;
+	}
+
+	public void setCanOverload(boolean canOverload) {
+		this.canOverload = canOverload;
+	}
+
 	public void selectRow(Connection conn) {
 		
 		PreparedStatement st = null;
@@ -56,6 +96,11 @@ public class DocType implements CRUD {
 			if(rs.next()) {
 				setDescription(rs.getString("description"));				
 				setIdCustomer(rs.getInt("id_customer"));
+				
+				setCanChangeLocation(rs.getBoolean("can_change_location"));
+				setAsExpected(rs.getBoolean("as_expected"));
+				setCanOverload(rs.getBoolean("can_overload"));
+				
 			}
 			rs.close();
 			
@@ -112,7 +157,10 @@ public class DocType implements CRUD {
 			st.setInt(1, idCustomer);
 			rs = st.executeQuery();
 			while(rs.next()) {
-				doctypeList.add(new DocType(rs.getInt("id_doctype"), rs.getString("description"), rs.getInt("id_customer")));
+				//doctypeList.add(new DocType(rs.getInt("id_doctype"), rs.getString("description"), rs.getInt("id_customer")));
+				
+				doctypeList.add(new DocType(rs.getInt("id_doctype"), rs.getString("description"), rs.getInt("id_customer"),
+						rs.getBoolean("can_change_location"), rs.getBoolean("as_expected"), rs.getBoolean("can_overload")));
 			}
 			rs.close();
 		}

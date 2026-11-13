@@ -72,6 +72,19 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
               </select>
             </div>
 	    </div>
+	    
+	    <div class="line line-dashed b-b line-lg pull-in"></div>
+	   
+	   	<div class="form-group pull-in clearfix">
+	        <div class="col-sm-12">
+	          <div class="checkbox i-checks">
+                <label>
+                  <input id="filter_type" name="filter_type" value="2" type="checkbox"><i></i> Enable Expected Filter
+                </label>
+              </div>
+              
+	        </div>
+	    </div>
 	</div>
 	<div class="modal-footer">
 		<img src="../../images/spacer.gif" onload="parsleyForm();selpick();"/>

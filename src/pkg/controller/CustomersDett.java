@@ -75,12 +75,18 @@ public class CustomersDett extends AbstractController {
 			String $wscrypt="";
 			String $date_agree_start="";
 			String $date_agree_end="";
+			String $atsDummyCustomer="";
+			String $clicksoftware_integration="";
+			String $charge_code="";
+			
 			
 			
 			String $analytics_export = "f";
 			
 			String $id_customers = ""+req.getParameter("id");
 			$id_customers=Utility.noNull($id_customers);
+			
+			
 			
 			// Apre la connessione
 			conn = Utility.getConnAdmin();
@@ -111,6 +117,20 @@ public class CustomersDett extends AbstractController {
 					$wscrypt=req.getParameter("wscrypt");
 					$date_agree_start=req.getParameter("date_agree_start");
 					$date_agree_end=req.getParameter("date_agree_end");
+					$atsDummyCustomer=""+req.getParameter("ats_dummy_customer");
+					$atsDummyCustomer=Utility.noNull($atsDummyCustomer);
+					if($atsDummyCustomer.length()==0)
+						$atsDummyCustomer = "false";
+					else
+						$atsDummyCustomer = "true";
+					
+					$clicksoftware_integration=""+req.getParameter("clicksoftware_integration");
+					$clicksoftware_integration=Utility.noNull($clicksoftware_integration);
+					if($clicksoftware_integration.length()==0)
+						$clicksoftware_integration = "false";
+					else
+						$clicksoftware_integration = "true";
+					$charge_code=req.getParameter("charge_code");
 					
 					String $id = Utility.getNewProgr(conn, "customers", "id", "");
 					
@@ -134,9 +154,9 @@ public class CustomersDett extends AbstractController {
 					else {
 						sql = "INSERT INTO customers( "+
 							  "id, companyname, description, contact, brandname, brandlogo, account_code, "+ 
-							  "phone, mail, mobile, id_optempl, customer_country_id, agreement, wskey, wsdecrypt_key, wscrypt, date_agree_start,date_agree_end, account_code_evolvestore) "+
+							  "phone, mail, mobile, id_optempl, customer_country_id, agreement, wskey, wsdecrypt_key, wscrypt, date_agree_start,date_agree_end, account_code_evolvestore, ats_dummy_customer, clicksoftware_integration, charge_code) "+
 							  "VALUES ("+$id+" , '"+$companyname.replaceAll("'", "''")+"', '"+$description.replaceAll("'", "''")+"', '"+$contact.replaceAll("'", "''")+"', '"+$brandname.replaceAll("'", "''")+"', '"+$brandlogo.replaceAll("'", "''")+"', '"+$account_code.replaceAll("'", "''")+"', "+ 
-							  "'"+$phone.replaceAll("'", "''")+"', '"+$mail.replaceAll("'", "''")+"', '"+$mobile.replaceAll("'", "''")+"', "+$id_optempl+", "+$customer_country_id+", "+$agreement+" , null, null, null , '"+$date_agree_start+"', '"+$date_agree_end+"','"+$account_code_evolve.replaceAll("'", "''")+"') returning id ";
+							  "'"+$phone.replaceAll("'", "''")+"', '"+$mail.replaceAll("'", "''")+"', '"+$mobile.replaceAll("'", "''")+"', "+$id_optempl+", "+$customer_country_id+", "+$agreement+" , null, null, null , '"+$date_agree_start+"', '"+$date_agree_end+"','"+$account_code_evolve.replaceAll("'", "''")+"', "+$atsDummyCustomer+", "+$clicksoftware_integration+", '"+$charge_code.replaceAll("'", "''")+"') returning id ";
 						System.out.println(sql);
 						
 						//insert
@@ -192,6 +212,20 @@ public class CustomersDett extends AbstractController {
 					$wscrypt=req.getParameter("wscrypt");
 					$date_agree_start=req.getParameter("date_agree_start");
 					$date_agree_end=req.getParameter("date_agree_end");
+					$atsDummyCustomer=""+req.getParameter("ats_dummy_customer");
+					$atsDummyCustomer=Utility.noNull($atsDummyCustomer);
+					if($atsDummyCustomer.length()==0)
+						$atsDummyCustomer = "false";
+					else
+						$atsDummyCustomer = "true";
+					
+					$clicksoftware_integration=""+req.getParameter("clicksoftware_integration");
+					$clicksoftware_integration=Utility.noNull($clicksoftware_integration);
+					if($clicksoftware_integration.length()==0)
+						$clicksoftware_integration = "false";
+					else
+						$clicksoftware_integration = "true";
+					$charge_code=req.getParameter("charge_code");
 					
 					if($id_optempl.trim().length()==0)
 						$id_optempl = "0";
@@ -227,7 +261,10 @@ public class CustomersDett extends AbstractController {
 								+ "agreement = "+$agreement+" , "
 								+ "date_agree_start = '"+$date_agree_start+"' , "
 								+ "date_agree_end = '"+$date_agree_end+"',  "
-								+ "account_code_evolvestore = '"+$account_code_evolve.replaceAll("'", "''")+"'  "
+								+ "account_code_evolvestore = '"+$account_code_evolve.replaceAll("'", "''")+"',  "
+								+ "ats_dummy_customer = "+$atsDummyCustomer+", "
+								+ "clicksoftware_integration = "+$clicksoftware_integration+" , "
+								+ "charge_code = '"+$charge_code.replaceAll("'", "''")+"' "
 								+ "where id = "+$id_customers+" ";
 						
 						System.out.println(sql);
@@ -313,6 +350,10 @@ public class CustomersDett extends AbstractController {
 					$date_agree_start=rs.getString("date_agree_start");
 					$date_agree_end=rs.getString("date_agree_end");
 					$account_code_evolve=rs.getString("account_code_evolvestore");
+					$atsDummyCustomer=rs.getString("ats_dummy_customer");
+					$clicksoftware_integration=rs.getString("clicksoftware_integration");
+					$charge_code=rs.getString("charge_code");
+					System.out.println($atsDummyCustomer);
 					
 				}
 				rs.close();
@@ -404,6 +445,10 @@ public class CustomersDett extends AbstractController {
 			obj.put("date_agree_end", $date_agree_end);
 			obj.put("analytics_export", $analytics_export);
 			obj.put("account_code_evolve", $account_code_evolve);
+			obj.put("ats_dummy_customer", $atsDummyCustomer);
+			obj.put("clicksoftware_integration", $clicksoftware_integration);
+			obj.put("charge_code", $charge_code);
+			
 			
 		}
 		catch(Exception e) {

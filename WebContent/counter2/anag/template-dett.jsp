@@ -103,6 +103,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
          		<c:when test = "${whereIAm == 'SDA'}">
          			<%@ include file="../../inc2/menuApp6.jsp" %>
          		</c:when>
+         		<c:when test = "${whereIAm == 'OCC'}">
+         			<%@ include file="../../inc2/menuApp16.jsp" %>
+         		</c:when>
      		</c:choose>     
      		    
             <section>

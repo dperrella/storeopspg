@@ -46,6 +46,12 @@ public class GetItems extends HttpServlet {
 		idusr = Utility.noNull(idusr);
 		String role = ""+request.getParameter("role");
 		role = Utility.noNull(role);
+		String page = ""+request.getParameter("page");
+		page = Utility.noNull(page);
+		
+		
+		String idcus = ""+request.getParameter("idcus");
+		idcus = Utility.noNull(idcus);
 		
 		System.out.println("idcustomer: "+idcustomer);
 		System.out.println("idusr: "+idusr);
@@ -68,15 +74,20 @@ public class GetItems extends HttpServlet {
 					//item = Item.getItemsByUser(conn, 1, idusr);
 					//item = Item.getItemsByUserRole(conn, 1, idusr, role);
 					
-					item = Item.getItemsByUserRole2(conn, "1,2", idusr, role);
+					if(page.length()==0)
+						item = Item.getItemsByUserRole2(conn, "1,2,3", idusr, role);
+					else
+						item = Item.getItemsByUserRole2(conn, "1,2,3", idusr, role, page);
 				}
 			}
 			else {
 				item = Item.getItemsByCustomer(conn, 1, Integer.parseInt(idcustomer));
 			}
 			
+			
 			for(int i=0;i<item.size();i++) {
 				JSONObject jsonObj = new JSONObject();
+				
 				
 				jsonObj.put("id", item.get(i).getIdItem());
 				jsonObj.put("name", item.get(i).getName());
@@ -96,8 +107,32 @@ public class GetItems extends HttpServlet {
 				jsonObj.put("photos", item.get(i).getPhotos().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", ""));
 				jsonObj.put("editable", item.get(i).getEditable());
 				
+				boolean inErr = false;
+			    if(item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    if(item.get(i).getBarcodes().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    if(item.get(i).getPhotos().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    
+			    jsonObj.put("inErr",inErr);
+			    
+				if(idcus.length()>0) {
+					if(item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").contains(idcus)) {
+						jsonArray.add(jsonObj);
+					}
+				}
+				else {
+					jsonArray.add(jsonObj);
+				}
 				
-				jsonArray.add(jsonObj);
+				
+				
+				
+				
 			}
 			
 			responseJson.put("listings", jsonArray);

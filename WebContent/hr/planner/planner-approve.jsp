@@ -9,6 +9,7 @@ import="java.text.SimpleDateFormat"
 import="java.util.Calendar"
 import="pkg.utility.Utility"
 import="pkg.utility.JSendMail"
+import="pkg.utility.JSendMailSSL"
 import="pkg.HR.Minnum_employeeDett"
 import="pkg.utility.PlannerMail"
 contentType="text/html; charset=ISO-8859-1"
@@ -182,7 +183,8 @@ try {
 		// JSendMail.msgMail("danieleperrella@yahoo.it",ogg,mess,"","smartHR@wycon.it");
 		// Invia mail
 		try {
-			JSendMail.msgMail(rs.getString("email"),ogg,mess,"","smarthr@smartretail.it");
+			//JSendMail.msgMail(rs.getString("email"),ogg,mess,"","smarthr@smartretail.it");
+			JSendMailSSL.sendMail(rs.getString("email"), ogg, mess, "", "smarthr@smartretail.it");
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -220,7 +222,7 @@ try {
 		// JSendMail.msgMail("danieleperrella@yahoo.it",ogg,mess,"","smartHR@wycon.it");
 		// Invia mail
 		try {
-			JSendMail.msgMail(rs.getString("email"),ogg,mess,"","smarthr@smartretail.it");
+			JSendMailSSL.sendMail(rs.getString("email"),ogg,mess,"","smarthr@smartretail.it");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

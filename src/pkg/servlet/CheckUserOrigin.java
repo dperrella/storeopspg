@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -58,7 +59,11 @@ public class CheckUserOrigin extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 			
+			System.out.println("1. "+new Date()+" open conn()");
+			
 			conn = Utility.getConnData();
+			
+			System.out.println("2. "+new Date()+" opened");
 			
 			sql = "select origin from zutenti where idusr = ? ";
 			st = conn.prepareStatement(sql);
@@ -75,6 +80,9 @@ public class CheckUserOrigin extends HttpServlet {
 			}
 			rs.close();
 			st.close();
+			
+			System.out.println("3. "+new Date()+" query executed");
+			
 		}
 		catch(Exception e) {
 			e.printStackTrace();

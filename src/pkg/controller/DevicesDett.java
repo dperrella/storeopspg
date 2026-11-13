@@ -571,6 +571,17 @@ public class DevicesDett extends AbstractController {
 			}
 			rs.close();
 			
+			/*
+			sql = "select name, utc_offset from pg_timezone_names " + 
+					"group by name,utc_offset " + 
+					"order by utc_offset, name ";
+			rs = st.executeQuery(sql);
+			while(rs.next()) {
+				tmz.add(new Tables("TMZ",rs.getString("name"),rs.getString("name"),rs.getString("utc_offset"),"","",""));
+			}
+			rs.close();
+			*/
+			
 			
 			sql = "select * from cause ";
 			rs = st.executeQuery(sql);

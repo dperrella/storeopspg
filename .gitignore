@@ -1,1 +1,10 @@
 /build/
+.DS_Store
+bin/
+target/
+build/
+*.class
+.metadata/
+.settings/
+.classpath
+.project

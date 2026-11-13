@@ -12,7 +12,7 @@ ReadProperties propIdx = new ReadProperties(session.getAttribute("language").toS
 ReadProperties propLang = new ReadProperties(session.getAttribute("language").toString()+".properties");
 %>
 <!DOCTYPE html>
-<html lang="it" class="app">
+<html class="app">
 <head>  
   <meta charset="utf-8" />
   <title>Desk | Smart Suite</title>
@@ -258,9 +258,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 								  		  <div class="panel-body text-center">
 					                      	
 					                      	<div class="clearfix">
-				                            <a href="#" class="pull-left thumb-sm avatar b-3x m-r" id="ico_${tiles.xcdtb}">
-				                              <img src="../../images/loader_xs.gif" style="width:24px"/>
-				                            </a>
+				                            <span class="pull-left thumb-sm avatar b-3x m-r" id="ico_${tiles.xcdtb}">
+				                              <img src="../../images/loader_xs.gif" style="width:20px;margin-top:10px;;margin-bottom:10px"/>
+				                            </span>
 				                            <div class="clear">
 				                              <div class="h5 m-t-xs m-b-xs text-ellipsis">
 				                                ${tiles.xdtab} 
@@ -498,7 +498,24 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	
 	  // use configuration item and data specified to show chart
 	  myChart.setOption(option);
-		
+	  
+	  
+	  
+	  //myChart.on('click', 'series', function () {
+	  //	  alert('series');  
+	  //});
+	  
+	  myChart.on('click', function (params) {
+	    
+		  var store = params.name;
+		  var idstore = store.split(" | ID:")[1];
+		  console.log(idstore+' '+store.split(" | ID:")[0]);
+		  
+		  showLoader();
+		  callReport(idstore);
+		  //window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+	  });
+	
   }
   
   
@@ -686,6 +703,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   	
   	function callReport(id_store) {
   		
+  		//alert(id_store);
 		$('#_id_store').val(id_store);
 		$('#_formPage').submit();
   		

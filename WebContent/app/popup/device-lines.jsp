@@ -51,7 +51,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  	    		<optgroup>
 	  	    		<option>-</option>
 	  	    		<c:forEach items="${door}" var="door" varStatus="status">
-                    <option value="${door.xcdel}">${door.xcdel} - ${door.xdtab}</option>
+                    <option value="${door.xcdel}" ${door.cmp4}>${door.xcdel} - ${door.xdtab}</option>
                     </c:forEach>
                     </optgroup>
                     <optgroup>

@@ -3,6 +3,7 @@ package pkg.source;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,12 +42,19 @@ public class Desk extends AbstractController {
 			int numItems = 0;
 			int numRequests = 0;
 			int numAudits = 0;
+			int numVendors = 0;
+			int numBrands = 0;
+			
 			String sql = "";
 			try {
 				sql = "select(select count(1) "+ 
 					  "from ats.items where protected='1') as numItems, "+
 					  "(select count(1) "+  
 					  "from ats.audit) as numAudits, "+
+					  "(select count(1) "+  
+					  "from ats.vendor) as numVendors, "+
+					  "(select count(1) "+  
+					  "from ats.brand) as numBrands, "+
 					  "(select count(1) "+ 
 					  "from ats.items where protected='0') as numRequests ";
 				st = connAdmin.prepareStatement(sql);
@@ -55,6 +63,9 @@ public class Desk extends AbstractController {
 					numItems = rs.getInt("numItems");
 					numRequests = rs.getInt("numRequests");
 					numAudits = rs.getInt("numAudits");
+					numVendors = rs.getInt("numVendors");
+					numBrands = rs.getInt("numBrands");
+					
 				}
 
 		}
@@ -68,12 +79,18 @@ public class Desk extends AbstractController {
 			}
 			catch(Exception e) {}
 		}
+			
+		DecimalFormat df = new DecimalFormat("###,###,###");
+			
 		System.out.println(numItems);
 		System.out.println(numRequests);
 		System.out.println(numAudits);
-		obj.put("numItems", numItems);
-		obj.put("numRequests", numRequests);
-		obj.put("numAudits", numAudits);
+		obj.put("numItems", df.format(numItems));
+		obj.put("numRequests", df.format(numRequests));
+		obj.put("numAudits", df.format(numAudits));
+		obj.put("numVendors", df.format(numVendors));
+		obj.put("numBrands", df.format(numBrands));
+		
 		return new ModelAndView("/source/main/index", obj);
 	}
 	

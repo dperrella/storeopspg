@@ -55,9 +55,10 @@ String table="";
 				"	<tr>"+
 				"		<th>Row</th>"+
 				"		<th>SKU/EPC</th>"+
+				"		<th>PackageId</th>"+
 				"		<th>Code</th>"+
 				"		<th>Description</th>"+
-				"		<th>Theoretical</th>"+
+				"		<th>Expected</th>"+
 				"		<th>Read</th>"+
 				"		<th>Differences</th>"+
 				"	</tr>"+
@@ -66,6 +67,7 @@ String table="";
 		
 		int $riga = 0;
 		String $sku="";
+		String $packageId="";
 		String $code="";
 		String $description="";
 		int $theo=0;
@@ -75,6 +77,7 @@ String table="";
 		for(int i=0;i<doc.size();i++) {
 			$riga = i;
 			$sku = doc.get(i).getSku()+"<br/>"+doc.get(i).getEpc();
+			$packageId = doc.get(i).getPackageId();
 			$code = doc.get(i).getCode();
 			$description = doc.get(i).getDescription();
 			$theo = doc.get(i).getQty_theo();
@@ -84,6 +87,7 @@ String table="";
 			table+="<tr>"+
 					"<td>"+$riga+"</td>"+
 					"<td>"+$sku+"</td>"+
+					"<td>"+$packageId+"</td>"+
 					"<td>"+$code+"</td>"+
 					"<td>"+$description+"</td>"+
 					"<td>"+$theo+"</td>"+

@@ -32,6 +32,9 @@ public class DocumentsPrint extends AbstractController {
 		List<PrintersTemplates> templates = new ArrayList<PrintersTemplates>();
 		templates.clear();
 		
+		List<PrintersTemplates> templatesBrk = new ArrayList<PrintersTemplates>();
+		templatesBrk.clear();
+		
 		HttpSession session = req.getSession();
 		int idcus = Integer.parseInt(session.getAttribute("idcus").toString());
 		
@@ -60,7 +63,10 @@ public class DocumentsPrint extends AbstractController {
 			obj.put("iddoc", iddoc);
 			
 			printers = Printers.getPrintersByIdCustomer(conn, idcus);
-			templates = PrintersTemplates.getTemplatesByIdCustomer(conn, idcus);
+			//templates = PrintersTemplates.getTemplatesByIdCustomer(conn, idcus);
+			templates = PrintersTemplates.getTemplatesByIdCustomer(conn, idcus, false);
+			templatesBrk = PrintersTemplates.getTemplatesByIdCustomer(conn, idcus, true);
+			
 			
 		}
 		catch(Exception e) {
@@ -77,6 +83,8 @@ public class DocumentsPrint extends AbstractController {
 		
 		obj.put("printers", printers);
 		obj.put("templates", templates);
+		obj.put("templatesBrk", templatesBrk);
+		
 		
 		obj.put("msg", msg);
 		

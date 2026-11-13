@@ -27,6 +27,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <link rel="stylesheet" href="../../js/datatables/datatables.css" type="text/css"/>
    <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
+   <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
     <!--[if lt IE 9]>
     <script src="../../js/ie/html5shiv.js"></script>
     <script src="../../js/ie/respond.min.js"></script>
@@ -213,13 +214,34 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									<li><a href="items-dett.htm?tipoForm=I&v=<%=new Date()%>" data-toggle="ajaxModal" id="addItem"><%=propLang.get("itm_new") %></a></li>
 								</ul>
 							</div>
+							
+							 
 						  </section>
 							
+			              
+			              <div class="form-group pull-in clearfix" style="margin-left:0px;margin-right:0px"> 
+					        
+				              
+					            <div class="col-sm-12">
+						          <label>Filter a Retailer</label>
+						          <select name="idcus" id="idcus"
+					              	class="form-control ss" onchange="getTable()">
+					              	<option value="">-- All Items --</option>
+					              	<c:forEach items="${cus}" var="cus" varStatus="status">
+			                        <option value="${cus.xdtab}">${cus.cmp1} ${cus.xdtab}</option>
+			                        </c:forEach>
+					               </select>
+					              </div>
+						    </div>
+						    
+						    <hr/>
+			             
 			              
 			              <div class="table-responsive">
 			                <table class="table table-striped m-b-none" id="example" data-ride="datatables" width="100%">
 			                  <thead>
 								  <tr>
+							        <th width="5%"></th>
 							        <th width="5%"><%=propLang.get("itm_id") %></th>
 							        <th width="15%">Retailers</th>
 							        <th width="10%"><%=propLang.get("itm_name") %></th>
@@ -230,12 +252,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 							        <th width="10%"><%=propLang.get("itm_country_name") %></th>
 							        <th width="5%"><%=propLang.get("itm_evrl") %></th>
 							        <th width="5%"><%=propLang.get("itm_protected") %></th>
-							        <th width="5%"></th>
-							        <th width="5%"></th>
-							        <th width="5%"></th>
-							        <th width="5%"></th>
+							        <th width="5%">EDIT</th>
+							        <th width="5%">BCODE</th>
+							        <th width="5%">PHOTO</th>
+							        <th width="5%">ADD PHOTO</th>
+							        <th width="5%">DEL</th>
 							      </tr>
 							  </thead>
+							  <tbody>
+			      			  </tbody>
 		  					</table>
 		  					
 		  				  </div>
@@ -280,6 +305,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script type="text/javascript" src="../main/xlsx/xlsx.full.min.js"></script>
   <script type="text/javascript" src="../main/xlsx/Blob.js"></script>
   <script type="text/javascript" src="../main/xlsx/FileSaver.js"></script>
+  
+  <script src="../../js/bootstrap-select/js/bootstrap-select.js"></script>
+  
     
     
   <script>
@@ -287,6 +315,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   var role = "${role}";
   jQuery(window).load(function() {
 		jQuery('#loading-image').hide();
+		selpick();
+		getTable();
 	});
 	  
 	function showLoader() {
@@ -302,82 +332,145 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  jQuery('#loading-image2').hide();
 	}
   var itemsJson;
-
-  $('#example').dataTable( {
-	"processing": true,
-	 "ajax": {
-	      "url": "../../ats/GetItems",
-	      "type": 'POST',
-	      "dataSrc": 'listings',
-	      "data": {idusr:username, role: role}
-	 },
-	"columns": [
-			      { data: 'id' },
-			      { data: 'retailers' },
-			      { data: 'name' },
-			      { data: 'description' },
-			      { data: 'vendorname' },
-			      { data: 'brandname' },
-			      { data: 'categoryname' },
-			      { data: 'countryname' },
-			      { data: 'evreportlink' },
-			      { data: 'protected' },
-				  {data:null},
-				  {data:null},
-				  {data:null},
-				  {data:null}
-	  		 ],
+	
+  
+  function getTable() {
 	  
-      "language": {
-          "lengthMenu": "_MENU_ &nbsp;&nbsp;<%=propLang.get("dt_nrRecord") %>",
-          "zeroRecords": "<%=propLang.get("dt_nessunrecord") %>",
-          "info": "<%=propLang.get("dt_pagina") %> _PAGE_ <%=propLang.get("dt_di") %> _PAGES_",
-          "infoEmpty": "<%=propLang.get("dt_nessunrecord2") %>",
-          "infoFiltered": "(Filtrati da _MAX_ records totali)",
-          "decimal": ",",
-          "thousands": ".",
-          search: "<%=propLang.get("dt_cerca") %>:&nbsp;&nbsp; "
-      },
-      "columnDefs": [
-          
-          {
-              "targets": [ 0 ],
-              "className": "text-center"
-          },
-          {
-              "targets": [ 9 ],
-              "className": "text-center"
-          },
-          {
-              "targets": [ 10 ],
-              "className": "text-center"
-          },
-          {
-              "targets": [ 11 ],
-              "className": "text-center"
-          },
-          {
-              "targets": [ 12 ],
-              "className": "text-center"
-          },
-          {
-              "targets": [ 13 ],
-              "className": "text-center"
-          }
-          
-      ], 
-      "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
-      "iDisplayLength": 50,
-      "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-    	    $('td:eq(0)', nRow).html('<span class="label bg-light">' + aData["id"] + '</span>');
-    	    $('td:eq(9)', nRow).html('<span class="label bg-success">Protected</span>');
-    	    $('td:eq(10)', nRow).html('<a href="items-dett.htm?tipoForm=E&id='+aData["id"]+'" id="editItem" class="btn btn-default myEdit" data-toggle="ajaxModal"><i class="fa fa-pencil"></i></a>');
-    	    $('td:eq(11)', nRow).html('<a href="item-barcodes.htm?id='+aData["id"]+'" id="addBarcode" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-barcode" aria-hidden="true"></i></a>');
-    	    $('td:eq(12)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'" id="addPhoto" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
-    	    $('td:eq(13)', nRow).html('<a href="items-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal"><i class="fa fa-times"></i></a>');
-    	    return nRow;
-      },
-  } );
+	  try {
+		  $("#example").dataTable().fnDestroy();
+	  }
+	  catch(Err) {
+		  
+	  }
+	  
+	  var idcus = $('#idcus').val();
+	  
+	  table = $('#example').dataTable( {
+		"processing": true,
+		 "ajax": {
+		      "url": "../../ats/GetItems",
+		      "type": 'POST',
+		      "dataSrc": 'listings',
+		      "data": {idusr:username, role: role, idcus: idcus}
+		 },
+		"columns": [
+			          { data: 'id' },
+					  { data: 'id' },
+				      { data: 'retailers' },
+				      { data: 'name' },
+				      { data: 'description' },
+				      { data: 'vendorname' },
+				      { data: 'brandname' },
+				      { data: 'categoryname' },
+				      { data: 'countryname' },
+				      { data: 'evreportlink' },
+				      { data: 'protected' },
+					  {data: null},
+					  {data:null},
+					  {data:null},
+					  {data:null},
+					  {data:null}
+			
+		  		 ],
+		  
+	      "language": {
+	          "lengthMenu": "_MENU_ &nbsp;&nbsp;<%=propLang.get("dt_nrRecord") %>",
+	          "zeroRecords": "<%=propLang.get("dt_nessunrecord") %>",
+	          "info": "<%=propLang.get("dt_pagina") %> _PAGE_ <%=propLang.get("dt_di") %> _PAGES_",
+	          "infoEmpty": "<%=propLang.get("dt_nessunrecord2") %>",
+	          "infoFiltered": "(Filtrati da _MAX_ records totali)",
+	          "decimal": ",",
+	          "thousands": ".",
+	          search: "<%=propLang.get("dt_cerca") %>:&nbsp;&nbsp; "
+	      },
+	      "columnDefs": [
+	          {
+	              "targets": [ 0 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 1 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 10 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 11 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 12 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 13 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 14 ],
+	              "className": "text-center"
+	          },
+	          {
+	              "targets": [ 15 ],
+	              "className": "text-center"
+	          }
+	          
+	      ], 
+	      "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+	      "iDisplayLength": 50,
+	      "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+	    	    
+	    	    $('td:eq(1)', nRow).html('<span class="label bg-light">' + aData["id"] + '</i>');
+	    	    //$('td:eq(8)', nRow).html(aData["photos"]);
+	    	    
+	    	    /*
+	    	    if(aData["protected"]==1) {
+	    	    	$('td:eq(9)', nRow).html('<span class="label bg-success">Protected</span>');
+	    	    }
+	    	    else if(aData["protected"]==2) {
+	    	    	$('td:eq(9)', nRow).html('<span class="label bg-warning">Previus Protected</span>');
+	    	    }
+	    	    else {
+	    	    	$('td:eq(9)', nRow).html('<span class="label bg-danger">Obsolete</span>');
+	    	    }
+	    	    */
+	    	    if(aData["protected"]==1) {
+	    	    	$('td:eq(10)', nRow).html('<a href="item-status.jsp?id='+aData["id"]+'&name='+aData["name"]+'&status=1" id="itemStatus" class="btn btn-success" data-toggle="ajaxModal">Protected</a>');
+	    	    }
+	    	    else if(aData["protected"]==2) {
+	    	    	$('td:eq(10)', nRow).html('<a href="item-status.jsp?id='+aData["id"]+'&name='+aData["name"]+'&status=2" id="itemStatus" class="btn btn-warning" data-toggle="ajaxModal">Previus Protected</a>');
+	    	    }
+	    	    else {
+	    	    	$('td:eq(10)', nRow).html('<a href="item-status.jsp?id='+aData["id"]+'&name='+aData["name"]+'&status='+aData["protected"]+'" id="itemStatus" class="btn btn-danger" data-toggle="ajaxModal">Obsolete</a>');
+	    	    }
+	    	    //$('td:eq(9)', nRow).html('<span class="label bg-success">Protected</span>');
+	    	    $('td:eq(11)', nRow).html('<a href="items-dett.htm?tipoForm=E&id='+aData["id"]+'" id="editItem" class="btn btn-default myEdit" data-toggle="ajaxModal"><i class="fa fa-pencil"></i></a>');
+	    	    $('td:eq(12)', nRow).html('<a href="item-barcodes.htm?id='+aData["id"]+'" id="addBarcode" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-barcode" aria-hidden="true"></i></a>');
+	    	    if(aData["photos"].length>0) {
+	    	    	$('td:eq(13)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'"  class="btn btn-success" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
+	    	    	$('td:eq(14)', nRow).html('<a href="item-addphoto.jsp?id='+aData["id"]+'&name='+aData["name"]+'"  class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-plus"></a>');
+	    	    }
+	    	    else {
+	    	    	$('td:eq(13)', nRow).html('<a href="item-photos.htm?id='+aData["id"]+'"  class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-camera-retro" aria-hidden="true"></i></a>');
+	    	    	$('td:eq(14)', nRow).html('<a href="item-addphoto.jsp?id='+aData["id"]+'&name='+aData["name"]+'" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-plus"></i></a>');
+	    	    }
+	    	    $('td:eq(15)', nRow).html('<a href="items-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal"><i class="fa fa-times"></i></a>');
+	    	    
+	    	    if(aData["inErr"]==true) {
+	    	    	$('td:eq(0)', nRow).html('<i class="fa fa-circle"></i>');
+	    	    }
+	    	    else {
+	    	    	$('td:eq(0)', nRow).html('');
+	    	    }
+	    	    
+	    	    return nRow;
+	      },
+	  } );
+	  
+  }
+  
   function selpick() {
 		$('.ss').selectpicker({
 		    liveSearch: true,
@@ -432,6 +525,13 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  	});
 		
 	}
+  
+  	function selpick() {
+		$('.ss').selectpicker({
+		    liveSearch: true,
+		    tickIcon: 'fa fa-check'
+		 });
+	  }
   </script>
 
   <%@ include file="../../inc/autorized.jsp" %>

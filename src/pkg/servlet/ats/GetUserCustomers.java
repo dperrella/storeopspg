@@ -61,7 +61,7 @@ public class GetUserCustomers extends HttpServlet {
 					+ "where "
 					+ "id in(select idcustomer from rel_user_customers "
 					+ "where idusr = '"+username.toUpperCase()+"') "
-					+ "and id in(select idcustomer from ats.rel_item_customer) ";
+					+ "and id in(select idcustomer from ats.rel_item_customer) order by description";
 			System.out.println(sql);
 			st = conn.prepareStatement(sql);
 			

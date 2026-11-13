@@ -17,6 +17,11 @@ String idtri = request.getParameter("idtri");
 String idcus = request.getParameter("idcus");
 String idsto = request.getParameter("idsto");
 
+String send_mail = ""+request.getParameter("send_mail");
+send_mail=Utility.noNull(send_mail);
+if(send_mail.length()==0)
+	send_mail = "false";
+
 try {
 	conn=Utility.getConnData();
 	st=conn.createStatement();
@@ -30,9 +35,9 @@ try {
 	for(int i=0;i<temp.length;i++) {
 		
 		sql   = "insert into rel_trigger_stores "+
-				"(trigger_id, customer_id, store_id) "+
+				"(trigger_id, customer_id, store_id, send_mail) "+
 				"values "+
-				"('"+idtri+"', "+idcus+" , '"+temp[i]+"')";
+				"('"+idtri+"', "+idcus+" , '"+temp[i]+"', "+send_mail+")";
 		System.out.println(sql);
 		st.executeUpdate(sql);
 		

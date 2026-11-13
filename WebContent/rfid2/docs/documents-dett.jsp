@@ -137,7 +137,10 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					        <select name="type" id="type" class="form-control ss" onchange="reloadTable()">
 					        	<option value="SKU">SKU</option>
 					        	<option value="EPC">EPC</option>
+					        	<option value="PACK">PACKAGE</option>
+					        	<!-- 
 					        	<option value="PT">Piano Taglie</option>
+					        	-->
 					        </select>
 		                </li>
 		              </ul>
@@ -177,11 +180,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			              	<div class="subnav">
 								<ul class="nav nav-pills">
 									<li><a href="documents-list.htm"><%=propLang.get("torna") %></a></li>
-									<li><a href="documents-print.htm?iddoc=${iddoc}" data-toggle="ajaxModal"><%=propLang.get("btnStampa") %> Selezionati</a></li>
+									<li><a href="documents-print.htm?iddoc=${iddoc}" data-toggle="ajaxModal">Print Selected</a></li>
 									<c:if test = "${expected == 'N'}">
 									<li><a href="#" onclick="diffGiacenze()">Differenze Inventario</a></li>
 									</c:if>
+									
+									<!-- 
 									<li><a href="#" onclick="stores2Export()">Stores2 Export Data</a></li>
+									-->
+									
 									<li><a href="#" onclick="export2()">Export con Piano Taglie</a></li>
 									
 									<!-- 
@@ -190,15 +197,38 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									<li><a href="#" onclick="closeDoc(2)">Rettifica e Crea nuovo Inv. per differenze</a></li>
 									</c:if>
 									-->
+									<c:if test = "${isInventory == 'Y'}">
+									<c:if test = "${status ne 'X'}">
 									
+									<li><a href="#" onclick="copyDoc()">Copia Inventario con sole Diff.</a></li>
+									<li><a href="#" onclick="cleanDoc()">Clean Inventory</a></li>
+									<li><a href="#" onclick="closeInventory()" class="text-danger"><b>Rettifica e Chiudi Inventario</b></a></li>
+									</c:if>
+									</c:if>
+									<!-- 
+									<c:if test = "${dsstep == 'Inventario FIEGE'}">
+									
+									</c:if>
 									<c:if test = "${dsstep == 'Inventario'}">
 									<li><a href="#" onclick="closeDoc(1)">Rettifica e Chiudi</a></li>
 									<li><a href="#" onclick="closeDoc(2)">Rettifica e Crea nuovo Inv. per differenze</a></li>
 									</c:if>
+									-->
+									<li><a href="#" onclick="CegidExport('SER')">SER Export</a></li>
+									<li><a href="#" onclick="CegidExport('INV')">INV Export</a></li>
+									<li><a href="#" onclick="CegidExport('R30')">R30 Export</a></li>
+									<li><a href="#" onclick="CegidExport('R31')">R31 Export</a></li>
+									<li><a href="#" onclick="CegidExport('R32')">R32 Export</a></li>
+									<!-- 
+									<li><a href="#" onclick="CegidExport('R10')">R10 Export (TEST)</a></li>
+									-->
+									<li><a href="#" onclick="P2RExport()">P2R Export</a></li>
+									
 								</ul>
 							</div>
 						  </section>
 			                
+			               
 			              <div id="msg">${msg}</div>
 			              
 			              <div class="table-responsive" >
@@ -284,7 +314,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		                    <div class="col-sm-6">
 		                      <div class="bg-primary lter wrapper-md r">
 		                        <a href="#">
-		                          <span class="h4 block"><i class="icon-docs i-lg"></i> Total Theoretical</span>
+		                          <span class="h4 block"><i class="icon-docs i-lg"></i> Total Expected</span>
 				                  <span class="text-muted font-thin" style="text-align:center;font-size:100px">${totTheo}</span>
 		                        </a>
 		                      </div>
@@ -393,7 +423,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/parsley/parsley.min.js"></script>
   <script src="../../js/parsley/parsley.extend.js"></script>
   
-  <script src="../../js/csvExport.js?v2"></script>
+  <script src="../../js/csvExport.js?v4"></script>
   
 	
   <script type="text/javascript" src="../main/xlsx/shim.min.js"></script>
@@ -815,6 +845,56 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    	
   }
   
+  	function closeInventoryAjax() {
+  		
+  		var iddoc = '${iddoc}';
+  	  	var datastring = table.$('input[type="checkbox"]').serialize();
+  	  	
+  	  	showLoader2();
+	  
+  	  	$.ajax({
+	      url: '../../servlet/ws/CloseDoc?iddoc='+iddoc+'&closeType=1',
+	      type: 'POST',
+	      dataType: 'html',
+	      data: datastring,
+	      //async: true,
+	      success: function (data) {
+				
+	    	  hideLoader2();
+	    	  location.href="documents-list.htm";
+	    	
+	      },
+	      error: function () {
+	      	//alert('Errore! si e\' verificato un errore.');
+	      	
+	    	  hideLoader2();
+	      }
+		});
+  	  	
+  	  
+  	}
+  
+	function closeInventory() {
+	  
+	  var iddoc = '${iddoc}';
+	  var datastring = table.$('input[type="checkbox"]').serialize();
+		  
+	  if(confirm('Attenzione.\nL\'operazione chiuderà l\'Inventario. Confermi?')) {
+			
+	  
+		  if(datastring.length==0) {
+			  if(confirm('Non hai selezionato nessuna riga da rettificare.\nVuoi continuare senza rettificare la giacenza?')) {
+				  closeInventoryAjax();
+			  }
+		  }
+		  else {
+			  closeInventoryAjax();
+		  }
+		  
+		  
+	  }
+	    
+  	}
   
   function closeDoc(closeType) {
 	  
@@ -839,6 +919,61 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      }
 		});
   	}
+  
+	function copyDoc() {
+	  
+	  var iddoc = '${iddoc}';
+	  
+	  if(confirm('Confirm Generate new Inventory with Only Difference?')) {
+	  
+		  showLoader2();
+		  
+		  $.ajax({
+			      url: '../../servlet/ws/CopyDoc?iddoc='+iddoc,
+			      type: 'POST',
+			      dataType: 'html',
+			      async: true,
+			      success: function (data) {
+						
+			    	  location.href="documents-list.htm";
+			    	
+			      },
+			      error: function () {
+			    	  hideLoader2();
+			    	  alert('Errore! si e\' verificato un errore.');
+			      	
+			      }
+			});
+	  	}
+	}
+	
+	function cleanDoc() {
+		  
+		  var iddoc = '${iddoc}';
+		  
+		  if(confirm('Confirm Clean Doc?')) {
+		  
+			  showLoader2();
+			  
+			  $.ajax({
+				      url: '../ajax/cleandoc.jsp?iddoc='+iddoc,
+				      type: 'POST',
+				      dataType: 'html',
+				      async: true,
+				      success: function (data) {
+							
+				    	  location.href="documents-dett.htm?iddoc="+iddoc;
+				    	
+				      },
+				      error: function () {
+				    	  hideLoader2();
+				    	  alert('Errore! si e\' verificato un errore.');
+				      	
+				      }
+				});
+		  	}
+	}
+  
   
   function export2() {
 		
@@ -883,6 +1018,96 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		
 	}
 	
+  
+  
+  
+  
+  function CegidExport(type) {
+		
+	  var iddoc = '${iddoc}';
+	  var doc_ref = '${doc_ref}';	
+	  var href = '../popup/cegidExport.jsp?iddoc='+iddoc+"&doc_ref="+doc_ref+"&type="+type;
+	
+	  $('div.modal-backdrop ').remove();
+	  $('#ajaxModal').remove();
+	  $("div.modal").remove();
+	  
+	  showLoader2();
+			
+	  var data = '';
+	  $.ajax({
+		  	  url: href,
+		  	  async: true,
+		  	  dataType: 'html',
+		  	  beforeSend: function () {
+		  		  
+		  	  },
+		  	  success: function(html) {
+		  	      
+		  		  var $modal = $('<div class="modal fade" id="ajaxModal"><div class="modal-body"></div></div>');
+		  	      $('body').append($modal);
+		  	      $modal.modal();
+		  	        
+		  		  //alert(html);
+		  		  $modal.append(html);
+		  		  
+		  		  hideLoader2();
+		  		  
+		  	  },
+		  	  error: function (xhr, ajaxOptions, thrownError) {
+		 	        alert(xhr.status);
+		 	        alert(thrownError);
+		 	        
+		 	        hideLoader2();
+		 	        
+		 	      }
+		  	});
+			
+		}
+	
+  
+  function P2RExport() {
+		
+	  var iddoc = '${iddoc}';
+	  var doc_ref = '${doc_ref}';	
+	  var href = '../popup/p2rExport.jsp?iddoc='+iddoc+"&doc_ref="+doc_ref;
+	
+	  $('div.modal-backdrop ').remove();
+	  $('#ajaxModal').remove();
+	  $("div.modal").remove();
+	  
+	  showLoader2();
+			
+	  var data = '';
+	  $.ajax({
+		  	  url: href,
+		  	  async: true,
+		  	  dataType: 'html',
+		  	  beforeSend: function () {
+		  		  
+		  	  },
+		  	  success: function(html) {
+		  	      
+		  		  var $modal = $('<div class="modal fade" id="ajaxModal"><div class="modal-body"></div></div>');
+		  	      $('body').append($modal);
+		  	      $modal.modal();
+		  	        
+		  		  //alert(html);
+		  		  $modal.append(html);
+		  		  
+		  		  hideLoader2();
+		  		  
+		  	  },
+		  	  error: function (xhr, ajaxOptions, thrownError) {
+		 	        alert(xhr.status);
+		 	        alert(thrownError);
+		 	        
+		 	        hideLoader2();
+		 	        
+		 	      }
+		  	});
+			
+		}
 	
   </script>
   

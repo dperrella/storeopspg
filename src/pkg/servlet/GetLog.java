@@ -52,11 +52,23 @@ public class GetLog extends HttpServlet {
 			JSONObject responseJson = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			
+			String uc = ""+request.getParameter("uc");
+			uc = Utility.noNull(uc);
+			String country = ""+request.getParameter("country");
+			country = Utility.noNull(country);
+			String cond = "";
+			if(uc.length()>0)
+				cond+= " and v_dashlog_2_new.under_costruction = "+uc+" ";
+			if(country.length()>0)
+				cond+= " and v_dashlog_2_new.customer_country_id = "+country+" ";
 			
-			sql   = "select v_dashlog_2.*,stores.store_code, stores.id from v_dashlog_2 "
-					+ "left join stores on v_dashlog_2.id = stores.id::text "
-					+ "where stores.id in(select idstore::integer from rel_user_stores where idusr = '"+session.getAttribute("username").toString().trim().toUpperCase()+"') "
-					+ "order by diffdate desc ";
+			
+			sql   = "select v_dashlog_2_new.*,stores.store_code, stores.id,nome_nazione from v_dashlog_2_new\n"
+					+ "					left join stores on v_dashlog_2_new.id = stores.id::text\n"
+					+ "					left join nazioni on id_naz = country::integer\n"
+					+ "					where stores.id in(select idstore::integer from rel_user_stores \n"
+					+ "					where idusr = '"+session.getAttribute("username").toString().trim().toUpperCase()+"') "+cond+"\n"
+					+ "					order by diffdate desc";
 			System.out.println(sql);
 			rs=st.executeQuery(sql);
 			int num = 0;
@@ -85,6 +97,8 @@ public class GetLog extends HttpServlet {
 				JSONArray jsonRecord = new JSONArray();
 				jsonRecord.add(rs.getString("diffdate"));
 				jsonRecord.add(rs.getString("tstamp"));
+				jsonRecord.add(rs.getString("next_check"));
+				jsonRecord.add(rs.getString("nome_nazione"));
 				jsonRecord.add(rs.getString("brandname"));
 				jsonRecord.add(rs.getString("store"));
 				jsonRecord.add(rs.getString("eventcode"));
@@ -93,6 +107,13 @@ public class GetLog extends HttpServlet {
 				jsonRecord.add("");
 				jsonRecord.add("");
 				jsonRecord.add(Utility.noNull(rs.getString("notes")));
+				jsonRecord.add(rs.getBoolean("under_costruction"));
+				jsonRecord.add(rs.getBoolean("newticket"));
+				jsonRecord.add(rs.getBoolean("ticketmanagement"));
+				jsonRecord.add(rs.getString("callid"));
+				
+				//jsonRecord.add(rs.getBoolean("under_costruction"));
+				//jsonRecord.add(rs.getBoolean("under_costruction"));
 				
 				jsonArray.add(jsonRecord);
 				

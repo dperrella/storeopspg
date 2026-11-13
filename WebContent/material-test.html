@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="css/md.css">
+  <title>Material Test</title>
+  <style>
+  	/* The side navigation menu */
+	.sidenav {
+	  height: 100%; /* 100% Full-height */
+	  width: 0; /* 0 width - change this with JavaScript */
+	  position: fixed; /* Stay in place */
+	  z-index: 1; /* Stay on top */
+	  top: 65px; /* Stay at the top */
+	  left: 0;
+	  background-color: #111; /* Black*/
+	  overflow-x: hidden; /* Disable horizontal scroll */
+	  padding-top: 60px; /* Place content 60px from the top */
+	  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+	}
+	
+	
+	
+	/* Position and style the close button (top right corner) */
+	.sidenav .closebtn {
+	  position: absolute;
+	  top: 0;
+	  right: 25px;
+	  font-size: 36px;
+	  margin-left: 50px;
+	}
+	
+	/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+	#main {
+	  transition: margin-left .5s;
+	}
+	
+	/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+	@media screen and (max-height: 450px) {
+	  .sidenav {padding-top: 15px;}
+	  .sidenav a {font-size: 18px;}
+	}
+  </style>
+</head>      
+  <body>
+  <div>
+  	<header class="bmd-layout-header">
+  	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom box-shadow" style="background-color:#000">
+      <div class="bmd-form-group bmd-collapse-inline pull-xs-right">
+		  <button class="btn bmd-btn-icon" onclick="openNav()">
+		    <i class="material-icons text-white">menu</i>
+		  </button>  
+	  </div>
+      <h5 class="my-0 mr-md-auto font-weight-normal text-white">StoreOps</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <a class="p-2 text-dark" href="#"><i class="material-icons text-white">apps</i></a>
+      </nav>
+     
+    </div>
+    </header>
+    
+    
+    
+	<main>
+		<div id="mySidenav" class="bg-dark sidenav">
+		  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		  
+		    <ul class="list-group">
+		      <a class="list-group-item text-white">Link 1</a>
+		      <a class="list-group-item text-white">Link 2</a>
+		      <a class="list-group-item text-white">Link 3</a>
+		    </ul>
+		</div>
+	    <div id="main" class="container-fluid">
+	    	  <p>Main content</p>
+		    
+	    </div>
+	</main>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+  <script src="https://cdn.rawgit.com/FezVrasta/snackbarjs/1.1.0/dist/snackbar.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+  
+  <script>
+  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
+  function openNav() {
+    document.getElementById("mySidenav").style.width = "200px";
+    document.getElementById("main").style.marginLeft = "200px";
+  }
+  
+  
+  /* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+  }
+  </script>
+  </body>  
+</html>

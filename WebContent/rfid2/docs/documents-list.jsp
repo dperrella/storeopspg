@@ -119,6 +119,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						        	<option value="${sites.idSite}">${sites.description}</option>
 						        	</c:forEach>
 						        </select>
+						        <span id="sitevid"></span>
 	                        </li>
 	                        
 	                        <li class="list-group-item">
@@ -192,6 +193,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 					              	<div class="subnav">
 										<ul class="nav nav-pills">
 											<li><a href="documents-new.htm" data-toggle="ajaxModal">New Document</a></li>
+											<li><a href="../popup/addXlsxCocama.jsp?iddoc=${iddoc}" data-toggle="ajaxModal">Import From Excel</a></li>
 										</ul>
 									</div>
 								  </section>
@@ -217,6 +219,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 											<th></th>
 											<th></th>
 											<th></th>
+											
 											
 											
 										</tr>
@@ -279,6 +282,18 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     jQuery(window).load(function() {
 		jQuery('#loading-image').hide();
 		
+		
+		<c:if test="${prefIdsite>0}">
+		$('#site').val('${prefIdsite}');
+		$('#site').attr('disabled', true);
+		$('.ss').selectpicker('refresh');
+		
+		$('#siteval').html('<input type="hidden" name="site" value="${prefIdsite}"/>');
+		
+		
+		</c:if>
+		
+		
 		loadTable();
 	});
 	function showLoader() {
@@ -294,6 +309,15 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  jQuery('#loading-image2').hide();
 	}
 	
+	
+	 function chkUploadXlsxCocama() {
+		//var f = $(#fileToUpload).val();
+		//if(f.length!=0)
+		showLoader2();
+		$('#xlsxBtn').prop('disabled',true);
+		
+	}
+ 
 	
 	$('.datepicker-input2').datepicker({
 	    format: 'yyyy-mm-dd',
@@ -414,8 +438,18 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		      	           
 		        	  }
 		        	  else {
-		        		  $('td:eq(14)', nRow).html('');
+		        		  //$('td:eq(14)', nRow).html('');
+		        		  
+		        		  if(aData[15]!='QC') {
+		        				$('td:eq(14)', nRow).html('<a href="#" onclick="closeDoc(' + aData[10] + ')" class="btn btn-success"><i class="fa fa-lock"></i></a>');
+		      	          }
+		        		  else {
+		        			  $('td:eq(14)', nRow).html('');
+		        		  }
 		        	  }
+		        	  
+		        	  
+		        	  
 		        	  
 	        	  }
 	        	  else {
@@ -466,6 +500,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     	var iddoc = $('#iddoc').val();
     	var idprinter = $('#idprinter').val();
     	var idtemplate = $('#idtemplate').val();
+    	var etichettaRott = $('#etichettaRott').val();
     	
     	var zplfile = $('#zplfile').prop('checked');
     	
@@ -478,7 +513,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     		//stampa
     		
     		$.ajax({
-	  		      url: '../ajax/getZpl.jsp?iddoc='+iddoc+'&idprinter='+idprinter+'&idtemplate='+idtemplate+'&zplfile='+zplfile+'&perc='+perc,
+	  		      url: '../ajax/getZpl.jsp?iddoc='+iddoc+'&idprinter='+idprinter+'&idtemplate='+idtemplate+'&zplfile='+zplfile+'&perc='+perc+'&etichettaRott='+etichettaRott,
 	  		      type: 'POST',
 	  		      dataType: 'html',
 	  		      async: true,
@@ -643,6 +678,42 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     		
     		$.ajax({
     		  	  url: "../../servlet/ws/OpenDoc?iddoc="+iddoc,
+    		  	  async: true,
+    		  	  dataType: 'html',
+    		  	  beforeSend: function () {
+    		  		  showLoader2();
+    		  	  },
+    		  	  success: function(html) {
+    		  	      
+    		  		  //hideLoader2();
+    		  		  
+    		  		loadTable();
+    		  		  
+    		  	  },
+    		  	  error: function (xhr, ajaxOptions, thrownError) {
+    		 	        alert(xhr.status);
+    		 	        alert(thrownError);
+    		 	        
+    		 	        hideLoader2();
+    		 	        
+    		 	      }
+    		  	});
+    		
+    	}
+    	else {
+    		
+    		console.log('NOT confirm...');
+    		
+    	}
+    	
+    }
+	
+	function closeDoc(iddoc) {
+    	
+    	if(confirm('Confirm Close Document?')) {
+    		
+    		$.ajax({
+    		  	  url: "../../servlet/ws/CloseDocLast?iddoc="+iddoc,
     		  	  async: true,
     		  	  dataType: 'html',
     		  	  beforeSend: function () {

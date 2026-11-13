@@ -446,12 +446,24 @@ public class DevicesDett_ extends AbstractController {
 				
 			}
 			
-			sql = "select * from timezone ";
+//			sql = "select * from timezone ";
+//			rs = st.executeQuery(sql);
+//			while(rs.next()) {
+//				tmz.add(new Tables("TMZ",rs.getString("code"),rs.getString("descrizione"),rs.getString("reltoutc"),"","",""));
+//			}
+//			rs.close();
+			
+			
+			sql = "select name, utc_offset from pg_timezone_names " + 
+					"group by name,utc_offset " + 
+					"order by utc_offset, name ";
 			rs = st.executeQuery(sql);
 			while(rs.next()) {
-				tmz.add(new Tables("TMZ",rs.getString("code"),rs.getString("descrizione"),rs.getString("reltoutc"),"","",""));
+				tmz.add(new Tables("TMZ",rs.getString("name"),rs.getString("name"),rs.getString("utc_offset"),"","",""));
 			}
 			rs.close();
+			
+			
 			
 			
 			sql = "select * from cause ";

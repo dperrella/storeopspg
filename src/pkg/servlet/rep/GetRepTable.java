@@ -50,7 +50,6 @@ public class GetRepTable extends HttpServlet {
 		try {
 			conn=Utility.getConnRfid();
 			
-			
 			sql  =  "SELECT json_agg(t) val FROM "+schema+"."+table+" t where rep_exported = false ";
 			st = conn.prepareStatement(sql);
 			rs=st.executeQuery();
@@ -65,7 +64,7 @@ public class GetRepTable extends HttpServlet {
 			JSONObject responseJson = new JSONObject();
 			responseJson.put("schema", schema);
 			responseJson.put("table", table);
-			responseJson.put("code", 201);
+			responseJson.put("code", 200);
 			responseJson.put("message", "OK");
 			responseJson.put("data", jsonArray);
 			response.setContentType("application/json;charset=UTF-8");

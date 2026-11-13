@@ -22,23 +22,23 @@ public class Departments {
 	private String minnum_intervals;
 	private String tollerance;
 	private String nocturne;
-	
 	private int id_store;
 	private int department_type;
 	private int id_customer;
-	
-	
+	private boolean hidetrasf;
 	private String cmp1;
 	private String cmp2;
 	private String cmp3;
 	private String cmp4;
+	
+	
 	
 	public Departments() {}
 
 	public Departments(String id, String description, String parentid, String address, String locality, 
 			String province, String zipcode, String state, String phone, String email, String department_code,
 			String minnum_intervals, String tollerance, String nocturne,
-			int id_store, int department_type, int id_customer,
+			int id_store, int department_type, int id_customer, boolean hidetrasf,
 			String cmp1, String cmp2, String cmp3, String cmp4) {
 		this.id=id;
 		this.description=description;
@@ -58,6 +58,7 @@ public class Departments {
 		this.id_store=id_store;
 		this.department_type=department_type;
 		this.id_customer=id_customer;
+		this.hidetrasf=hidetrasf;
 		
 		this.cmp1=cmp1;
 		this.cmp2=cmp2;
@@ -66,6 +67,14 @@ public class Departments {
 	
 	}
 	
+	public boolean isHidetrasf() {
+		return hidetrasf;
+	}
+
+	public void setHidetrasf(boolean hidetrasf) {
+		this.hidetrasf = hidetrasf;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -233,7 +242,7 @@ public class Departments {
 			st = conn.prepareStatement(sql);
 			
 			// Passa i parametri
-			st.setString(1, description);
+			st.setString(1, description);	
 			st.setString(2, department_code);
 			st.setInt(3, Integer.parseInt(minnum_intervals));
 			st.setInt(4, Integer.parseInt(tollerance));

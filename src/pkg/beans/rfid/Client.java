@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Client {
 	private int idClient;
@@ -11,15 +12,19 @@ public class Client {
 	private String macAddress;
 	private boolean isEnabled;
 	private int idCustomer;
+	private boolean contract;
+	private Date contractDate;
 	
 	public Client() {}
 
-	public Client(int idClient, String description, String macAddress, boolean isEnabled, int idCustomer) {
+	public Client(int idClient, String description, String macAddress, boolean isEnabled, int idCustomer, boolean contract, Date contractDate) {
 		this.idClient = idClient;
 		this.description = description;
 		this.macAddress = macAddress;
 		this.isEnabled = isEnabled;
 		this.idCustomer = idCustomer;
+		this.contract = contract;
+		this.contractDate = contractDate;
 	}
 
 	public int getIdClient() {
@@ -62,6 +67,24 @@ public class Client {
 		this.idCustomer = idCustomer;
 	}
 	
+	
+	
+	public boolean isContract() {
+		return contract;
+	}
+
+	public void setContract(boolean contract) {
+		this.contract = contract;
+	}
+
+	public Date getContractDate() {
+		return contractDate;
+	}
+
+	public void setContractDate(Date contractDate) {
+		this.contractDate = contractDate;
+	}
+
 	public void selectRow(Connection conn) {
 		
 		PreparedStatement st = null;
@@ -78,6 +101,8 @@ public class Client {
 				setMacAddress(rs.getString("mac"));
 				setIsEnabled(rs.getBoolean("enabled"));
 				setIdCustomer(rs.getInt("id_customer"));
+				setContract(rs.getBoolean("contract"));
+				setContractDate(rs.getDate("contract_date"));
 			}
 			rs.close();
 			
@@ -94,14 +119,16 @@ public class Client {
 		}
 	}
 
-	public static ArrayList<Client> getClientsByIdCustomer(Connection conn, int idCustomer){
+	public static ArrayList<Client> getClientsByIdCustomer(Connection conn, int idCustomer, boolean contract){
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		String sql = "";
 		ArrayList<Client> clientList = null;
 		try {
 			clientList = new ArrayList<>();
-			sql = "select * from clients where id_customer = ? ";
+			
+			String cond = contract?" and contract = true ":"";
+			sql = "select * from clients where id_customer = ? "+cond;
 			st = conn.prepareStatement(sql);
 			st.setInt(1, idCustomer);
 			rs = st.executeQuery();
@@ -111,7 +138,10 @@ public class Client {
 						rs.getString("description"), 
 						rs.getString("mac"),
 						rs.getBoolean("enabled"), 
-						rs.getInt("id_customer")));
+						rs.getInt("id_customer"),
+						rs.getBoolean("contract"), 
+						rs.getDate("contract_date")
+						));
 			}
 			rs.close();
 		}
@@ -145,7 +175,9 @@ public class Client {
 						rs.getString("description"), 
 						rs.getString("mac"),
 						rs.getBoolean("enabled"), 
-						rs.getInt("id_customer")));
+						rs.getInt("id_customer"),
+						rs.getBoolean("contract"), 
+						rs.getDate("contract_date")));
 			}
 			rs.close();
 		}
@@ -165,11 +197,18 @@ public class Client {
 	public void update(Connection conn) {
 		PreparedStatement st = null;
 		try{
-		  String sql = "update clients set description = ? , enabled = ? where id = ?";
+		  String sql = "update clients set description = ? , enabled = ? , contract = ?, contract_date = ? where id = ?";
 	      st = conn.prepareStatement(sql);
 	      st.setString(1, this.description);
 	      st.setBoolean(2, this.isEnabled);
-	      st.setInt(3, this.idClient);
+	      st.setBoolean(3, this.isContract());
+	      if(this.contractDate==null) {
+	    	  st.setNull(4, java.sql.Types.DATE);
+	      }
+	      else {
+	    	  st.setDate(4, new java.sql.Date(this.contractDate.getTime()));
+	      }
+	      st.setInt(5, this.idClient);
 	      // execute the java preparedstatement
 	      st.executeUpdate();
 		}

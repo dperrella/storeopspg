@@ -41,6 +41,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		position: fixed;
 		z-index: 1;
 	}
+		
 	 .myPlus {
 		cursor:pointer;
 	}
@@ -81,6 +82,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		position: fixed;
 		z-index: 10000;
 	}
+	
+	
 			
   </style>
 </head>
@@ -102,7 +105,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				   width: 200px;
 				   height: 200px;
 				   margin-top: -100px;
-				   margin-left: -50px;" />
+				   margin-left: -100px;" />
   </div>
   <section class="vbox">
     <header class="bg-white-only header header-md navbar navbar-fixed-top-xs">
@@ -175,7 +178,75 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									<li><a href="#" onclick="reload(2)">All</a></li>
 								</ul>
 							</div>
+							
+							
+							<div id="_prt">
+							  
+							  	<h3 id="_name"></h3>
+							  	<p id="_store"></p>
+							  	<p id="_closing_date"></p>
+							  	
+							  	<hr/>
+							  	
+							  	<table id="_auditTable" class="table">
+							  		<thead>
+							  		<tr>
+							  			<th>Item Name</th>
+							  			<th>Vendor</th>
+							  			<th>Brand</th>
+							  			<th>Category</th>
+							  			<th>Photo</th>
+							  			<th>Audit Result</th>
+							  		</tr>
+							  		</thead>
+							  		<tbody id="_tbody">
+							  		
+							  		</tbody>
+							  	</table>
+							  
+						    </div>
+						    
+						    
+						    <div id="_xls">
+							  
+							  	
+							  	<table id="_auditTable2" class="table">
+							  		<thead>
+							  		<tr>
+							  			<td colspan="8">Name <div id="_name2"></div></td>
+							  		</tr>
+							  		<tr>
+							  			<td colspan="8">Store <div id="_store2"></div>
+							  		</tr>
+							  		<tr>
+							  			<td colspan="8">Date <div id="_closing_date2"></div></td>
+							  		</tr>
+							  		<tr>
+							  			<td colspan="8">&nbsp;</td>
+							  		</tr>
+							  		
+							  		<tr>
+							  			<th>Id Item</th>
+							  			<th>Item Name</th>
+							  			<th>Vendor</th>
+							  			<th>Brand</th>
+							  			<th>Category</th>
+							  			<th>Barcode</th>
+							  			<th>Note</th>
+							  			<th>Audit Result</th>
+							  		</tr>
+							  		</thead>
+							  		<tbody id="_tbody2">
+							  		
+							  		</tbody>
+							  	</table>
+							  
+						    </div>
+							
 						  </section>
+						  
+						  
+						  
 							
 			              
 			              <div class="table-responsive">
@@ -218,6 +289,9 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     </section>    
   </section>
   
+  
+  
+  
   <script src="../../js/jquery.min.js"></script>
   <!-- Bootstrap -->
   <script src="../../js/bootstrap.js"></script>
@@ -242,10 +316,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   
   
   <script>
+  
+  $('#_prt').hide();
+  
   var username = "${idusr}";
   jQuery(window).load(function() {
 		jQuery('#loading-image').hide();
 		loadTable(2);
+		$('#_auditTable').hide();
+		$('#_auditTable2').hide();
+		
 	});
 	  
 	function showLoader() {
@@ -345,8 +425,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    	    else {
 	    	    	$('td:eq(6)', nRow).html('<span class="label bg-danger">Close</span>');
 	    	    	$('td:eq(7)', nRow).html('<a href="audits-dett.htm?tipoForm=E&id='+aData["id"]+'" id="editItem" class="btn btn-default myEdit" data-toggle="ajaxModal" disabled><i class="fa fa-pencil"></i></a>');
-		    	    $('td:eq(8)', nRow).html('<a href="audit-items.htm?tipoForm=E&id='+aData["id"]+'" id="addAuditItems" class="btn btn-default" data-toggle="ajaxModal" disabled><i class="fa fa-tasks"></i></a>');
-		    	    $('td:eq(10)', nRow).html('<a href="audits-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal" disabled><i class="fa fa-times"></i></a>');
+		    	    $('td:eq(8)', nRow).html('<a href="audit-items.htm?tipoForm=E&id='+aData["id"]+'" id="addAuditItems" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-tasks"></i></a>');
+		    	    $('td:eq(10)', nRow).html('<a href="audits-dett.htm?tipoForm=D&id='+aData["id"]+'" id="deleteItem" class="btn btn-danger myDelete" data-toggle="ajaxModal"><i class="fa fa-times"></i></a>');
 		    	    $('td:eq(9)', nRow).html('<a href="audits-dett.htm?tipoForm=C&id='+aData["id"]+'" id="closeAudit" class="btn btn-default myClose" data-toggle="ajaxModal" disabled><i class="fa fa-lock" aria-hidden="true"></i></a>');
 		    	    
 	    	    }

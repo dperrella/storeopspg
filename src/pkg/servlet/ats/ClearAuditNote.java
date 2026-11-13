@@ -20,7 +20,6 @@ import java.io.File;
  
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import sun.misc.BASE64Decoder;
 
 /**
  * Servlet implementation class GetRegioni

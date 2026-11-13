@@ -2,6 +2,8 @@
 language="java"
 import="pkg.properties.ReadProperties"
 import="pkg.utility.Utility"
+import="java.util.*"
+import="java.util.Date"
 import="java.sql.*"
 contentType="text/html; charset=ISO-8859-1"
 pageEncoding="ISO-8859-1"
@@ -33,6 +35,9 @@ String table="";
 		conn = Utility.getConnData();
 		st=conn.createStatement();
 		
+		System.out.println(new Date().toString());
+		ArrayList<String> tab = new ArrayList<String>();
+		
 		String kpi = request.getParameter("kpi");
 		String dtda = request.getParameter("dtda");
 		String dtal = request.getParameter("dtal");
@@ -56,7 +61,9 @@ String table="";
 			hour = "false";
 		
 		
-		sql  =  "select a.*, s.store_name, d.door_description from raw_data_export( "+
+		sql  =  "select a.*, s.store_name "+
+				//", d.door_description "+
+				"from raw_data_export( "+
 				"	'"+account_code+"', "+
 				"	'"+kpi+"', "+
 				"	'"+dtda+"', "+
@@ -64,14 +71,14 @@ String table="";
 				"   "+idstore+" "+
 				") a " + 
 				"left join stores s on _account_id = account_id and a.store_id = s.store_id "+
-				"left join doors d on _account_id = d.account_id and a._doornumber = d.door_type_id ";
-
+				//"left join doors d on _account_id = d.account_id and a._doornumber::text = d.door_type_id::text ";
+				"";
 
 		
 		System.out.println("**** "+sql);
 		rs=st.executeQuery(sql);
 		
-		table+= "<table class=\"table table-striped\">"+
+		table= "<table class=\"table table-striped\">"+
 				"<thead>"+
 				"	<tr>"+
 				"		<th>Row</th>"+
@@ -79,12 +86,13 @@ String table="";
 				"		<th>StoreID</th>"+
 				"		<th>DoorID</th>"+
 				"		<th>Store</th>"+
-				"		<th>Door</th>"+
+				//"		<th>Door</th>"+
 				"		<th>Event</th>"+
 				"		<th>Event Time</th>"+
 				"	</tr>"+
 				"</thead>"+
 				"<tbody>";
+		tab.add(table);
 		
 		int $riga = 0;
 		String $storeid="";
@@ -103,29 +111,35 @@ String table="";
 			$store_name = rs.getString("store_name");
 			$eventtime = rs.getString("_event_time_stamp");
 			$eventid = rs.getString("_eventid");
-			$door = ""+rs.getString("door_description");
-			$door = Utility.noNull($door);
-			if($door.length()==0)
-				$door = "-";
+			//$door = ""+rs.getString("door_description");
+			//$door = Utility.noNull($door);
+			//if($door.length()==0)
+			//	$door = "-";
 			
-			table+="<tr>"+
+			table="<tr>"+
 				"<td>"+$riga+"</td>"+
 				"<td>"+$accountid+"</td>"+
 				"<td>"+$storeid+"</td>"+
 				"<td>"+$doorid+"</td>"+
 				"<td>"+$store_name+"</td>"+
-				"<td>"+$door+"</td>"+
+				//"<td>"+$door+"</td>"+
 				"<td>"+$eventid+"</td>"+
 				"<td>"+$eventtime+"</td>"+
 				"</tr>";	
+				
+			tab.add(table);
 		}
 		rs.close();
 		
-		table+=	"</tbody>"+
+		table=	"</tbody>"+
 				"</table>";
+				
+		tab.add(table);	
 		
+		
+		table = String.join(",", tab);
 			
-		if(table.length()>0) {
+		if(tab.size()>0) {
 %>
 			<div class="alert alert-success">
               <i class="icon-check"></i> <strong><%=propLang.get("msgSuccess") %></strong>.
@@ -149,6 +163,9 @@ String table="";
 			st.close();
 		if(conn!=null)
 			conn.close();
+		
+		System.out.println(new Date().toString());
+		
 	}
 %>
 	</div>

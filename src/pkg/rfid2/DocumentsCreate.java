@@ -75,12 +75,23 @@ public class DocumentsCreate extends AbstractController {
 				String docType = ""+req.getParameter("doc_type");
 				docType = Utility.noNull(docType);
 				
+				String filterType = ""+req.getParameter("filter_type");
+				filterType = Utility.noNull(filterType);
+				if(filterType.length()==0)
+					filterType="-1";
+				
 				d.setDocRef(docRef);
 				d.setIdStep(idstep);
 				d.setIdSite(idsite);
 				d.setIdSiteDest(idsiteDest);
 				d.setDocType(docType);
+				d.setFilterType(Integer.parseInt(filterType));
+				
+				
 				iddoc = d.insert(conn);
+				
+				
+				d.setOriginRef(conn, iddoc);
 				
 			}
 			

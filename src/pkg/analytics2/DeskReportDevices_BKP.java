@@ -876,7 +876,7 @@ public class DeskReportDevices_BKP extends AbstractController {
 			st.close();
 			
 			try {
-				double dMax = Collections.max(l);
+				double dMax = (double) Collections.max(l);
 				max = (int) Math.round(dMax);
 			}
 			catch(Exception e) {

@@ -147,7 +147,9 @@ public class NotificationList extends AbstractController {
 				count+=1;
 				
 				$idnota=rs.getString("idnota");
-				$link=rs.getString("link");
+				$link=Utility.noNull(rs.getString("link"));
+				if($link.length()==0)
+					$link = "#";
 				$img=rs.getString("img");
 				$titolo=rs.getString("titolo");
 				$nota=rs.getString("nota");

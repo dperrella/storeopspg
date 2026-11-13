@@ -1,5 +1,6 @@
 package pkg.controller;
 
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -42,6 +43,8 @@ public class UsersDett extends AbstractController {
 		DateFormat dateIta = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
 		String oggi = dateIta.format(date);
+		
+		
 		
 		// Pulisce la lista
 		fun.clear();
@@ -103,6 +106,9 @@ public class UsersDett extends AbstractController {
 			
 			// Relazioni
 			String $rel_user_customers="";
+			String $_chkwr="";
+			String $_chkdr="";
+			
 			String $rel_user_stores="";
 			String $rel_user_country="";
 			String $rel_user_country2="";
@@ -280,6 +286,14 @@ public class UsersDett extends AbstractController {
 						$rel_user_customers = req.getParameter("rel_user_customers");
 						String t1[] = $rel_user_customers.split(",");
 						
+						$_chkwr = ""+req.getParameter("_chkwr");
+						$_chkwr=Utility.noNull($_chkwr);
+						String tt1[] = $_chkwr.split(",");
+						$_chkdr = ""+req.getParameter("_chkdr");
+						$_chkdr=Utility.noNull($_chkdr);
+						
+						String tt2[] = $_chkdr.split(",");
+						
 						$rel_user_country = req.getParameter("rel_user_country");
 						String t2[] = $rel_user_country.split(",");
 						
@@ -329,13 +343,26 @@ public class UsersDett extends AbstractController {
 							for(int i=0;i<t1.length;i++) {
 								
 								sql   = "insert into rel_user_category "+
-										"(idusr, category1, category2, category3) "+
+										"(idusr, category1, category2, category3, weeklyreport, dailyreport) "+
 										"values "+
-										"('"+$idusr+"','"+t1[i]+"','*','*') ";
+										"('"+$idusr+"','"+t1[i]+"','*','*','"+tt1[i]+"','"+tt2[i]+"') ";
 								st.executeUpdate(sql);
 								
 							}
 						}
+						
+						///////
+						if($rel_user_customers.length()>0) {
+							for(int i=0;i<t1.length;i++) {
+								sql = "update rel_user_category set weeklyreport = '"+tt1[i]+"', dailyreport = '"+tt2[i]+"' "
+										+ "where idusr = '"+$idusr+"' and category1 = '"+t1[i]+"' ";
+								System.out.println(sql);
+								st.executeUpdate(sql);
+							}
+						}
+						///////
+						
+						
 						
 					}
 					else if($tipo.equals("5")) {
@@ -358,6 +385,11 @@ public class UsersDett extends AbstractController {
 						
 						$rel_user_customers = req.getParameter("rel_user_customers");
 						String t1[] = $rel_user_customers.split(",");
+						
+						$_chkwr = req.getParameter("_chkwr");
+						String tt1[] = $_chkwr.split(",");
+						$_chkdr = req.getParameter("_chkdr");
+						String tt2[] = $_chkdr.split(",");
 						
 						$rel_user_country = req.getParameter("rel_user_country");
 						String t2[] = $rel_user_country.split(",");
@@ -386,11 +418,22 @@ public class UsersDett extends AbstractController {
 								sql   = "insert into rel_user_category "+
 										"(idusr, category1, category2, category3) "+
 										"values "+
-										"('"+$idusr+"','"+t1[i]+"','*','*') ";
+										"('"+$idusr+"','"+t1[i]+"','*','*','"+tt1[i]+"','"+tt2[i]+"') ";
 								st.executeUpdate(sql);
 								
 							}
 						}
+						
+						///////
+						if($rel_user_customers.length()>0) {
+							for(int i=0;i<t1.length;i++) {
+								sql = "update rel_user_category set weeklyreport = '"+tt1[i]+"', dailyreport = '"+tt2[i]+"' "
+										+ "where idusr = '"+$idusr+"' and category1 = '"+t1[i]+"' ";
+								System.out.println(sql);
+								st.executeUpdate(sql);
+							}
+						}
+						///////
 					}
 					
 					
@@ -564,6 +607,7 @@ public class UsersDett extends AbstractController {
 					System.out.println(sql);
 					st.executeUpdate(sql);
 					
+					
 					if($tipo.equals("2")) {
 						// Non inserisco nulla
 					}
@@ -571,6 +615,11 @@ public class UsersDett extends AbstractController {
 						
 						$rel_user_customers = req.getParameter("rel_user_customers");
 						String t1[] = $rel_user_customers.split(",");
+						
+						$_chkwr = req.getParameter("_chkwr");
+						String tt1[] = $_chkwr.split(",");
+						$_chkdr = req.getParameter("_chkdr");
+						String tt2[] = $_chkdr.split(",");
 						
 						$rel_user_country = req.getParameter("rel_user_country");
 						String t2[] = $rel_user_country.split(",");
@@ -584,6 +633,8 @@ public class UsersDett extends AbstractController {
 						
 						if($rel_user_stores.length()>0) {
 							
+							System.out.println("$rel_user_stores");
+							
 							for(int i=0;i<t4.length;i++) {
 								
 								String fld[] = t4[i].split(";");
@@ -595,6 +646,7 @@ public class UsersDett extends AbstractController {
 										"(idusr, category1, category2, category3) "+
 										"values "+
 										"('"+$idusr+"','"+cus+"','"+naz+"','"+sto+"') ";
+								System.out.println(sql);
 								st.executeUpdate(sql);
 								
 								
@@ -602,6 +654,8 @@ public class UsersDett extends AbstractController {
 							
 						}
 						else if($rel_user_country.length()>0) {
+							
+							System.out.println("$rel_user_country");
 							
 							for(int i=0;i<t2.length;i++) {
 								
@@ -621,21 +675,36 @@ public class UsersDett extends AbstractController {
 						}
 						else if($rel_user_customers.length()>0) {
 							
+							System.out.println("$rel_user_customers");
+							
 							for(int i=0;i<t1.length;i++) {
 								
 								sql   = "insert into rel_user_category "+
-										"(idusr, category1, category2, category3) "+
+										"(idusr, category1, category2, category3, weeklyreport, dailyreport) "+
 										"values "+
-										"('"+$idusr+"','"+t1[i]+"','*','*') ";
+										"('"+$idusr+"','"+t1[i]+"','*','*','"+tt1[i]+"','"+tt2[i]+"') ";
+								System.out.println(sql);
 								st.executeUpdate(sql);
 								
 							}
 						}
 						
+						///////
+						if($rel_user_customers.length()>0) {
+							for(int i=0;i<t1.length;i++) {
+								sql = "update rel_user_category set weeklyreport = '"+tt1[i]+"', dailyreport = '"+tt2[i]+"' "
+										+ "where idusr = '"+$idusr+"' and category1 = '"+t1[i]+"' ";
+								System.out.println(sql);
+								st.executeUpdate(sql);
+							}
+						}
+						///////
+						
 					}
-					else if($tipo.equals("5")) {
+					else if($tipo.equals("5")||$tipo.equals("7")) {
 						
 						$rel_user_country2 = req.getParameter("rel_user_country2");
+						System.out.println($rel_user_country2);
 						String t3[] = $rel_user_country2.split(",");
 						
 						for(int i=0;i<t3.length;i++) {
@@ -644,6 +713,7 @@ public class UsersDett extends AbstractController {
 									"(idusr, category1, category2, category3) "+
 									"values "+
 									"('"+$idusr+"','*','"+t3[i]+"','*') ";
+							System.out.println(sql);
 							st.executeUpdate(sql);
 							
 						}
@@ -653,6 +723,11 @@ public class UsersDett extends AbstractController {
 						
 						$rel_user_customers = req.getParameter("rel_user_customers");
 						String t1[] = $rel_user_customers.split(",");
+						
+						$_chkwr = req.getParameter("_chkwr");
+						String tt1[] = $_chkwr.split(",");
+						$_chkdr = req.getParameter("_chkdr");
+						String tt2[] = $_chkdr.split(",");
 						
 						$rel_user_country = req.getParameter("rel_user_country");
 						String t2[] = $rel_user_country.split(",");
@@ -679,13 +754,24 @@ public class UsersDett extends AbstractController {
 							for(int i=0;i<t1.length;i++) {
 								
 								sql   = "insert into rel_user_category "+
-										"(idusr, category1, category2, category3) "+
+										"(idusr, category1, category2, category3, weeklyreport, dailyreport) "+
 										"values "+
-										"('"+$idusr+"','"+t1[i]+"','*','*') ";
+										"('"+$idusr+"','"+t1[i]+"','*','*','"+tt1[i]+"','"+tt2[i]+"') ";
 								st.executeUpdate(sql);
 								
 							}
 						}
+						
+						///////
+						if($rel_user_customers.length()>0) {
+							for(int i=0;i<t1.length;i++) {
+								sql = "update rel_user_category set weeklyreport = '"+tt1[i]+"', dailyreport = '"+tt2[i]+"' "
+										+ "where idusr = '"+$idusr+"' and category1 = '"+t1[i]+"' ";
+								System.out.println(sql);
+								st.executeUpdate(sql);
+							}
+						}
+						///////
 					}
 					
 					
@@ -807,28 +893,40 @@ public class UsersDett extends AbstractController {
 				
 				// *blank variabili
 				$rel_user_customers = "";
+				$_chkwr = "";
+				$_chkdr = "";
+				
 				$rel_user_country = "";
 				$rel_user_country2 = "";
 				
 				$rel_user_stores = "";
 				
-				sql   = "select category1 "+
-						"from rel_user_category where idusr = '"+$idusr.replaceAll("'", "''").toUpperCase()+"' group by category1 ";
+				sql   = "select category1, weeklyreport, dailyreport "+
+						"from rel_user_category where idusr = '"+$idusr.replaceAll("'", "''").toUpperCase()+"' group by category1, weeklyreport, dailyreport ";
 				rs = st.executeQuery(sql);
 				while(rs.next()) {
 					String cat1 = rs.getString("category1");
 					if(cat1.equals("*")) {
 						cat1 = "";
+						$_chkwr = "";
+						$_chkdr = "";
 					}
 					
 					if(cat1.length()>0) {
 						$rel_user_customers+=rs.getString("category1")+",";
+						$_chkwr+=rs.getString("weeklyreport")+",";
+						$_chkdr+=rs.getString("dailyreport")+",";
+						
 					}
 				}
 				rs.close();
 				
-				if($rel_user_customers.length()>0)
+				if($rel_user_customers.length()>0) 
 					$rel_user_customers=$rel_user_customers.substring(0,$rel_user_customers.length()-1);
+				if($_chkwr.length()>0) 
+					$_chkwr=$_chkwr.substring(0,$_chkwr.length()-1);
+				if($_chkdr.length()>0) 
+					$_chkdr=$_chkdr.substring(0,$_chkdr.length()-1);
 				
 				sql   = "select category1, category2 "+
 						"from rel_user_category where idusr = '"+$idusr.replaceAll("'", "''").toUpperCase()+"' "+
@@ -1058,6 +1156,9 @@ public class UsersDett extends AbstractController {
 			obj.put("tipo_hr", $tipo_hr.trim());
 			
 			obj.put("rel_user_customers", $rel_user_customers);
+			obj.put("_chkwr", $_chkwr);
+			obj.put("_chkdr", $_chkdr);
+			
 			obj.put("rel_user_country", $rel_user_country);
 			obj.put("rel_user_country2", $rel_user_country2);
 			obj.put("rel_user_stores", $rel_user_stores);

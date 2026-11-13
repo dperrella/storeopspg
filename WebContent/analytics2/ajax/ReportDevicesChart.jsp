@@ -401,6 +401,9 @@ option2 = {
          
     },
     toolbox: {
+    	show : true,
+        showTitle: false,
+        
         feature: {
             saveAsImage: {}
         }

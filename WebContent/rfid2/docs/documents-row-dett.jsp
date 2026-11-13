@@ -41,7 +41,7 @@ try {
 		cond = " where epc = '"+epc+"' "; 
 	}
 	
-	String sql = "select ts, sum(units), id_location, l.description locdesc, id_site, "+
+	String sql = "select ts, sum(units), case when d.units < 0 then '-' else '+' end sign2, id_location, l.description locdesc, id_site, "+
 		"s.description sitedesc , epc, barcode, id_document, id_reason, r.description readesc, y.id_doctype, y.description doctypedesc, x.id, x.doc_ref, r.sign "+
 		"from stockdiary d "+
 		"join sites s on d.id_site = s.id "+
@@ -50,10 +50,10 @@ try {
 		"left join documents x on x.id = d.id_document "+
 		"left join documents_type y on x.id_document_type = y.id_doctype "+
 		cond+
-		"group by ts, l.description, "+
+		"group by ts, d.id, d.units, l.description, "+
 		"id_location, l.description, id_site, s.description , "+
-		"epc, barcode, id_document, id_reason, r.description, y.id_doctype, y.description, x.id, x.doc_ref, r.sign order by ts ";	
-	
+		"epc, barcode, id_document, id_reason, r.description, y.id_doctype, y.description, x.id, x.doc_ref, r.sign order by ts, d.id ";	
+	System.out.println(sql);
 	conn = Utility.getConnRfid();
 	st = conn.createStatement();
 	rs = st.executeQuery(sql);
@@ -84,7 +84,7 @@ try {
 		doc_ref = Utility.noNull(doc_ref);
 		
 		
-		if(rs.getString("sign").equals("-")) {
+		if(rs.getString("sign2").equals("-")) {
 			sign = "fa fa-minus-circle time-icon bg-danger";
 		}
 		else {

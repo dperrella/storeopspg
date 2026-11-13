@@ -12,10 +12,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import pkg.beans.rfid.Document;
+import pkg.beans.rfid.DocumentToclose;
 import pkg.utility.Utility;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 /**
  * Servlet implementation class GetProductDetail
  */
@@ -56,18 +58,21 @@ public class RFIDCloseDoc extends HttpServlet {
 		try {
 			conn = Utility.getConnRfid();
 			
-			ArrayList<String> epc = new ArrayList();
+			List<DocumentToclose> epc = new ArrayList();
 			String[] values=request.getParameterValues("chkSku");
-			for(int i=0;i<values.length;i++)
-			{
-				// Select epc from sku
-				String epcs[] = Document.getDocEpcFromSku(conn, Integer.parseInt(iddoc), values[i]).split(",");
-				for(int e=0;e<epcs.length;e++) {
-					if(epcs[e].length()>=24)
-						epc.add(epcs[e]);
+			
+			if(values!=null) {
+				for(int i=0;i<values.length;i++)
+				{
+					// Select epc from sku
+					String epcs[] = Document.getDocEpcFromSku(conn, Integer.parseInt(iddoc), values[i]).split(",");
+					for(int e=0;e<epcs.length;e++) {
+						if(epcs[e].length()>=24)
+							epc.add(new DocumentToclose(Integer.parseInt(iddoc),epcs[e],values[i]));
+					}
 				}
 			}
-			Document.closeDoc(conn, Integer.parseInt(iddoc), epc, closeType);
+			Document.closeDoc(conn, Integer.parseInt(iddoc), epc);
 			
 		}
 		catch(Exception e) {

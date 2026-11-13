@@ -27,7 +27,7 @@ ReadProperties propt = new ReadProperties(session.getAttribute("language").toStr
                 </a>
               </li>
               <li>
-                <a href="../../app/main/docs.html"><%=propt.get("guida") %></a>
+                <a href="../../app/main/docs.jsp"><%=propt.get("guida") %></a>
               </li>
               <li class="divider"></li>
               <li>

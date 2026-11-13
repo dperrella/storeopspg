@@ -43,17 +43,18 @@ try
 	
 	if(tipoForm.equals("I")) {
 		if(role.equals("2"))
-			sql   = "select id, description, brandname, account_code, 0 as idcustomer from customers ";
+			sql   = "select id, description, brandname, account_code, 0 as idcustomer, false as wr, false as dr from customers ";
 		else 
-			sql   = "select id, description, brandname, account_code, 0 as idcustomer from customers "+
+			sql   = "select id, description, brandname, account_code, 0 as idcustomer, false as wr, false as dr from customers "+
 					"where id in("+arrayCus+")";
 	}
 	else {
-		sql   = "select a.id, a.description, a.brandname, account_code, category1 as idcustomer "+
+		sql   = "select a.id, a.description, a.brandname, account_code, category1 as idcustomer, "+
+				"weeklyreport as wr, dailyreport as dr "+
 				"from customers a "+
 				"left join rel_user_category b on a.account_code = b.category1 and b.idusr = '"+idusr+"' "+
 				"where id in("+arrayCus+")"+
-				"group by a.id, a.description, a.brandname, account_code, category1 ";
+				"group by a.id, a.description, a.brandname, account_code, category1, weeklyreport, dailyreport ";
 		
 	}
 	System.out.println(sql);
@@ -90,22 +91,47 @@ catch(Exception e) {
 			  <th><%=propLang.get("uc_id") %></th>
 			  <th><%=propLang.get("uc_description") %></th>
 			  <th><%=propLang.get("uc_brandname") %></th>
+			  <th>Weekly Report</th>
+			  <th>Dayly Report</th>
 			</tr>
 		  </thead>
 		  <tbody id="fbody">
 <%
 String chk = "";
+String chkwr = "";
+String chkdr = "";
+String diswr = "";
+String disdr = "";
+
 while (rs.next())
 {
 	if(rs.getString("account_code").equals(rs.getString("idcustomer"))) {
 		chk = "checked";
+		diswr = "";
+		disdr = "";
 	}
+	else {
+		diswr = "disabled";
+		disdr = "disabled";
+	}
+	
+	if(rs.getBoolean("wr"))
+		chkwr = "checked";
+	else
+		chkwr = "";
+	
+	if(rs.getBoolean("dr"))
+		chkdr = "checked";
+	else
+		chkdr = "false";
+	
+	
 %>
 			<tr>
 			  <td>
 				  <div class="checkbox i-checks">
 	                  <label>
-	                    <input name="chkCustomer" type="checkbox" value="<%=rs.getString("account_code") %>" <%=chk %>>
+	                    <input id="_<%=rs.getString("account_code") %>" name="chkCustomer" type="checkbox" onclick="_enable('<%=rs.getString("account_code") %>')" value="<%=rs.getString("account_code") %>" <%=chk %>>
 	                    <i></i>
 	                  </label>
 	              </div>
@@ -113,8 +139,26 @@ while (rs.next())
 			  <td><span class="label bg-light"><%=rs.getString("account_code") %></span></td>
 			  <td><%=rs.getString("description") %></td>
 			  <td><%=rs.getString("brandname") %></td>
+			  <td>
+			  	  <div class="checkbox i-checks">
+	                  <label>
+	                    <input name="chkwr" id="_<%=rs.getString("account_code") %>wr" type="checkbox" value="true" <%=chkwr %> <%=diswr %>>
+	                    <i></i>
+	                  </label>
+	              </div>
+			  </td>
+			  <td>
+			  	  <div class="checkbox i-checks">
+	                  <label>
+	                    <input name="chkdr" id="_<%=rs.getString("account_code") %>dr" type="checkbox" value="true" <%=chkdr %> <%=disdr %>>
+	                    <i></i>
+	                  </label>
+	              </div>
+			  </td>  
 <%
 	chk = "";
+	chkwr = "";
+	chkdr = "";
 }
 rs.close();
 %>

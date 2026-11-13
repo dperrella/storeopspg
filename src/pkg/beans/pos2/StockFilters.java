@@ -33,9 +33,12 @@ public class StockFilters {
 		ArrayList<StockFilters> locations = null;
 		try {
 			locations = new ArrayList<>();
-			sql = "select location from giacenze where idclient = ? group by location";
+			
+			String cond = "";
+			if(idClient.length()>0)
+				cond = "where idclient = '"+idClient+"' ";
+			sql = "select location from giacenze "+cond+" group by location";
 			st = conn.prepareStatement(sql);
-			st.setString(1, idClient);
 			rs = st.executeQuery();
 			while(rs.next()) {
 				locations.add(new StockFilters(rs.getString("location")));
@@ -62,9 +65,11 @@ public class StockFilters {
 		ArrayList<StockFilters> variants = null;
 		try {
 			variants = new ArrayList<>();
-			sql = "select variante from giacenze where idclient = ? group by variante";
+			String cond = "";
+			if(idClient.length()>0)
+				cond = "where idclient = '"+idClient+"' ";
+			sql = "select variante from giacenze "+cond+" group by variante";
 			st = conn.prepareStatement(sql);
-			st.setString(1, idClient);
 			rs = st.executeQuery();
 			while(rs.next()) {
 				variants.add(new StockFilters(rs.getString("variante")));
@@ -91,9 +96,11 @@ public class StockFilters {
 		ArrayList<StockFilters> suppliers = null;
 		try {
 			suppliers = new ArrayList<>();
-			sql = "select fornitore from giacenze where idclient = ? group by fornitore";
+			String cond = "";
+			if(idClient.length()>0)
+				cond = "where idclient = '"+idClient+"' ";
+			sql = "select fornitore from giacenze "+cond+" group by fornitore";
 			st = conn.prepareStatement(sql);
-			st.setString(1, idClient);
 			rs = st.executeQuery();
 			while(rs.next()) {
 				suppliers.add(new StockFilters(rs.getString("fornitore")));
@@ -120,9 +127,11 @@ public class StockFilters {
 		ArrayList<StockFilters> sizes = null;
 		try {
 			sizes = new ArrayList<>();
-			sql = "select taglia from giacenze where idclient = ? group by taglia";
+			String cond = "";
+			if(idClient.length()>0)
+				cond = "where idclient = '"+idClient+"' ";
+			sql = "select taglia from giacenze "+cond+" group by taglia";
 			st = conn.prepareStatement(sql);
-			st.setString(1, idClient);
 			rs = st.executeQuery();
 			while(rs.next()) {
 				sizes.add(new StockFilters(rs.getString("taglia")));

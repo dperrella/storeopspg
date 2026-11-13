@@ -255,6 +255,42 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    tickIcon: 'fa fa-check'
 	 });
   }
+  
+  function  copyLic() {
+	  var copyText = document.getElementById("_lic");
+	  copyText.select();
+	  copyText.setSelectionRange(0, 99999)
+	  document.execCommand("copy");
+	  alert("Copied the text: " + copyText.value);
+  }
+  
+  function getQrcode(qr) {
+	  
+	  $.ajax({
+          url:'../../'+qr, //be sure to check the right attribute
+          success: function () { //pass an anonymous callback function
+          	$('#_qrcode').html('<img src="../../'+qr+'" style="width:350px;height:350px"/>')
+          },
+          error: function (jqXHR, status, er) {
+              //only set the error on 404
+              if (jqXHR.status === 404) { 
+              	wait(1000);	
+              	getQrcode(qr)
+              }
+              //you could perform additional checking with different classes
+              //for other 400 and 500 level HTTP status codes.
+          }
+      });
+	  
+  }
+  
+  function wait(ms){
+	   var start = new Date().getTime();
+	   var end = start;
+	   while(end < start + ms) {
+	     end = new Date().getTime();
+	  }
+	}
   </script>
   
   <%@ include file="../../inc/autorized.jsp" %>

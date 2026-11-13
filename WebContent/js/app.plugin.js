@@ -390,6 +390,26 @@ function jqueryRic() {
          $(this).unbind('focus');
     }).css({"color":"#C0C0C0"});
 	
+	
+	
+	$("#searchInput2").keyup(function(){
+
+    	$("#fbody2").find("tr").hide();
+    	var data = this.value.split(" ");
+    	var jo = $("#fbody2").find("tr");
+    	$.each(data, function(i, v){
+
+       	//Use the new containsIgnoreCase function instead
+        	jo = jo.filter("*:containsIgnoreCase('"+v+"')");
+    	});
+       	jo.show();
+
+    }).focus(function(){
+         this.value="";
+         $(this).css({"color":"black"});
+         $(this).unbind('focus');
+    }).css({"color":"#C0C0C0"});
+	
 	return;
 }
 

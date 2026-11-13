@@ -25,6 +25,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <link rel="stylesheet" href="../../css/app.css?2" type="text/css" />  
   <link rel="stylesheet" href="../../js/datatables/datatables.css" type="text/css"/>
   <link rel="stylesheet" href="../../js/bootstrap-select/css/bootstrap-select.css?v=3" type="text/css" />
+  <link rel="stylesheet" href="../../js/datepicker/bootstrap-datepicker.css" type="text/css" />
     <!--[if lt IE 9]>
     <script src="../../js/ie/html5shiv.js"></script>
     <script src="../../js/ie/respond.min.js"></script>
@@ -115,18 +116,23 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						  <section class="panel wrapper">
 			              	<div class="subnav">
 								<ul class="nav nav-pills">
-								<%
-									if(session.getAttribute("tipoLogin").toString().trim().equals("2")||session.getAttribute("tipo").toString().trim().equals("9")) {
-								%>
+								
 									<li><a href="clients-list.htm?view=all"><%=propLang.get("all") %></a></li>
-								<%
-									}
-								%>
-									<li><a href="../../smartrfid.apk">Download SmartRFID Mobile</a></li>
-									<li><a href="../../scanwrite.apk">Download ScanWrite Mobile</a></li>
+									<c:choose>
+									
+									<c:when test="${contract eq false}">
+									<li><a href="clients-list.htm?showContract=Y">Only Active Contract</a></li>
+									</c:when>
+									<c:otherwise>
+									<li><a href="clients-list.htm?showContract=">Active/Inactive Contract</a></li>
+									</c:otherwise>
+									</c:choose>
+									<li><a href="../../smartrfidV2.11.apk">Download SmartRFID</a></li>
+									<li><a href="../../scanwrite.apk">Download ScanWrite </a></li>
+									<li><a href="../../swtc20_7.apk">Download ScanWrite TC20/TC33</a></li>
+									<li><a href="../../qc_1.6.apk">Download QC</a></li>
 									<li><a href="../../hidemu.rar">Download Hid Emulator</a></li>
 									<li><a href="../../scanprint.apk">Download ScanPrint</a></li>
-									<li><a href="../../SmartPrint.zip">Download SmartPrint</a></li>
 								</ul>
 							</div>
 						  </section>
@@ -141,17 +147,13 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 			                  <thead>
 								  <tr>
 							        <th width="10%"><%=propLang.get("rea_id") %></th>
-							        <th width="50%"><%=propLang.get("rea_descrizione") %></th>
+							        <th width="30%"><%=propLang.get("rea_descrizione") %></th>
 							        <th width="20%">MAC</th>
 							        <th width="10%"><%=propLang.get("rea_enabled") %></th>
-							        <%
-										if(session.getAttribute("tipoLogin").toString().trim().equals("2")||session.getAttribute("tipo").toString().trim().equals("9")) {
-									%>
+							        <th width="10%">Contract</th>
+							        <th width="10%">Contract Date</th>
 									<th></th>
-									<%
-										}
-									%>
-							        <th></th>
+									<th></th>
 							        <th></th>
 							      </tr>
 							  </thead>
@@ -172,9 +174,17 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									  </c:otherwise>
 								  </c:choose>
 								  </td>
-								  <%
-									if(session.getAttribute("tipoLogin").toString().trim().equals("2")||session.getAttribute("tipo").toString().trim().equals("9")) {
-								  %>
+								  <td>
+								  <c:choose>
+									  <c:when test="${clients.contract}">
+									    <i class="fa fa-check text-success"></i>
+									  </c:when>
+									  <c:otherwise>
+									    <i class="fa fa-times text-danger"></i>
+									  </c:otherwise>
+								  </c:choose>
+								  </td>
+								  <td>${clients.contractDate}</td>
 								  <c:choose>
 									  <c:when test="${clients.idCustomer==0}">
 									    <td><a href="clients-list.htm?tipoForm=C&azione=A&id=${clients.idClient}" class="btn btn-default"><i class="fa fa-user"></i></a></td>
@@ -183,10 +193,6 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									    <td>-</td>
 									  </c:otherwise>
 								  </c:choose>
-								  
-								  <%
-									}
-								  %>
 								  <td><a href="clients-dett.htm?tipoForm=M&id=${clients.idClient}" class="btn btn-default" data-toggle="ajaxModal"><i class="fa fa-edit"></i></a></td>
 								  <td><a href="clients-dett.htm?tipoForm=E&id=${clients.idClient}" class="btn btn-danger" data-toggle="ajaxModal"><i class="fa fa-times"></i></a></td>
 								</tr>
@@ -253,6 +259,8 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/jquery.min.js"></script>
   <!-- Bootstrap -->
   <script src="../../js/bootstrap.js"></script>
+  <!-- datepicker -->
+  <script src="../../js/datepicker/bootstrap-datepicker.js"></script>
   <!-- parsley -->
   <script src="../../js/parsley/parsley.min.js"></script>
   <script src="../../js/parsley/parsley.extend.js"></script>
@@ -306,6 +314,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    liveSearch: true,
 	    tickIcon: 'fa fa-check'
 	 });
+  }
+  
+  function calendar() {
+	  
+	$('.datepicker-input2').datepicker({
+	    format: 'yyyy-mm-dd',
+	    orientation: 'bottom',
+	    autoclose: true
+	});  
+	  
   }
   </script>
   

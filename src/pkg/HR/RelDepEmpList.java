@@ -110,7 +110,7 @@ public class RelDepEmpList extends AbstractController {
 				$department_code=rs.getString("department_code");
 				
 				dep.add(new Departments($id,$description,$parentid,$address,$locality,$province,$zipcode,
-						$state,$phone,$email,$department_code,"","","",0,0,0,"","","",""));
+						$state,$phone,$email,$department_code,"","","",0,0,0,false,"","","",""));
 				
 			}
 			rs.close();

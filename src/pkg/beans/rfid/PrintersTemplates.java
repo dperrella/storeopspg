@@ -10,14 +10,17 @@ public class PrintersTemplates implements CRUD {
 	private String name;
 	private String zpl;
 	private int idCustomer;
+	private boolean breakLabel;
 	
 	public PrintersTemplates() {	}
 
-	public PrintersTemplates(int id, String name, String zpl, int idCustomer) {
+	public PrintersTemplates(int id, String name, String zpl, int idCustomer, boolean breakLabel) {
 		this.id = id;
 		this.name = name;
 		this.zpl = zpl;
 		this.idCustomer = idCustomer;
+		this.breakLabel = breakLabel;
+		
 	}
 	
 	public int getId() {
@@ -48,6 +51,14 @@ public class PrintersTemplates implements CRUD {
 		this.idCustomer = idCustomer;
 	}
 	
+	public boolean isBreakLabel() {
+		return breakLabel;
+	}
+
+	public void setBreakLabel(boolean breakLabel) {
+		this.breakLabel = breakLabel;
+	}
+
 	public void selectRow(Connection conn) {
 		
 		PreparedStatement st = null;
@@ -63,6 +74,7 @@ public class PrintersTemplates implements CRUD {
 				setName(rs.getString("name"));
 				setZpl(rs.getString("zpl"));
 				setIdCustomer(rs.getInt("id_customer"));
+				setBreakLabel(rs.getBoolean("break_label"));
 			}
 			rs.close();
 			
@@ -94,7 +106,38 @@ public class PrintersTemplates implements CRUD {
 			rs = st.executeQuery();
 			while(rs.next()) {
 				readersList.add(new PrintersTemplates(rs.getInt("id"), rs.getString("name"),
-						rs.getString("zpl"), rs.getInt("id_customer")));
+						rs.getString("zpl"), rs.getInt("id_customer"), rs.getBoolean("break_label")));
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(st!=null)
+					st.close();
+			}
+			catch(Exception e) {}
+		}	
+		return readersList;
+	}
+	
+	public static ArrayList<PrintersTemplates> getTemplatesByIdCustomer(Connection conn, int idCustomer, Boolean type){
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		String sql = "";
+		ArrayList<PrintersTemplates> readersList = null;
+		try {
+			readersList = new ArrayList<>();
+			sql = "select * from printers_templates where id_customer = ? and break_label = ? ";
+			st = conn.prepareStatement(sql);
+			st.setInt(1, idCustomer);
+			st.setBoolean(2, type);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				readersList.add(new PrintersTemplates(rs.getInt("id"), rs.getString("name"),
+						rs.getString("zpl"), rs.getInt("id_customer"), rs.getBoolean("break_label")));
 			}
 			rs.close();
 		}
@@ -115,13 +158,15 @@ public class PrintersTemplates implements CRUD {
 	public void update(Connection conn) {
 		PreparedStatement st = null;
 		try{
-		  String sql = "update printers_templates set name = ?, zpl = ?, id_customer = ? where id = ?";
+		  String sql = "update printers_templates set name = ?, zpl = ?, id_customer = ?, break_Label = ? where id = ?";
 	      st = conn.prepareStatement(sql);
 	      st.setString(1, this.name);
 	      st.setString(2, this.zpl);
 	      st.setInt(3, this.idCustomer);
+	      st.setBoolean(4, this.breakLabel);
 	      
-	      st.setInt(4, this.id);
+	      
+	      st.setInt(5, this.id);
 	      // execute the java preparedstatement
 	      st.executeUpdate();
 		}
@@ -142,12 +187,13 @@ public class PrintersTemplates implements CRUD {
 	public void add(Connection conn) {
 		PreparedStatement st = null;
 		try{
-			String sql = " insert into printers_templates (name, zpl, id_customer)" + 
-					" values (?, ?, ?)";
+			String sql = " insert into printers_templates (name, zpl, id_customer, break_label)" + 
+					" values (?, ?, ?, ?)";
 			st = conn.prepareStatement(sql);
 			st.setString(1, this.name);
 			st.setString(2, this.zpl);
 		    st.setInt(3, idCustomer);
+		    st.setBoolean(4,  this.breakLabel);
 			// execute the java preparedstatement
 			st.executeUpdate();
 		}

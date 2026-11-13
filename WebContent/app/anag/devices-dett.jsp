@@ -39,6 +39,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		position: fixed;
 		z-index: 1;
 	}	
+	#loading-image2 {
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		z-index: 10000;
+	}
   </style>
 </head>
 <body>
@@ -51,6 +57,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				   height: 13px;
 				   margin-top: -8px;
 				   margin-left: -104px;" />
+  </div>
+  <div id="loading-image2" style="display:none">
+		<img src="../../images/spinner.gif" alt="Loading..." 
+			style="position: absolute;
+				   top: 50%;
+				   left: 50%;
+				   width: 200px;
+				   height: 200px;
+				   margin-top: -100px;
+				   margin-left: -100px;" />
   </div>
   <section class="vbox">
     <header class="bg-white-only header header-md navbar navbar-fixed-top-xs">
@@ -122,6 +138,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 									<li><a href="stores-dett.htm?tipoForm=M&id=${Ids}"><%=propLang.get("torna") %></a></li>
 									<c:if test = "${openLink == 'Y'}">
 									<li><a href="#" onclick="openModal();">Lines Config</a></li>
+									</c:if>
+									<c:if test = "${device_type == '13'}">
+									<c:if test = "${tipoForm == 'M'}">
+									<li><a href="http://${ip}:${port}" target="_blank">Device HTTP Config</a></li>
+									</c:if>
 									</c:if>
 								</ul>
 							</div>
@@ -332,7 +353,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          <select id="timezone" name="timezone" class="form-control" ${readonly}>
 						          	<option value="">-</option>
 						          	<c:forEach items="${tmz}" var="tmz" varStatus="status">
-						          	<option value="${tmz.xcdel}">${tmz.cmp1} - ${tmz.xcdel} - ${tmz.xdtab}</option>
+						          	<option value="${tmz.xcdel}">${tmz.cmp1} - ${tmz.xdtab}</option>
 						         	</c:forEach>
 						          </select>  
 						        </div>
@@ -379,8 +400,24 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 						          	${readonly}>${notes}</textarea>  
 						        </div>
 						    </div>
+						    
+						    <div class="line line-dashed b-b line-lg pull-in"></div>
+						    
+						    <div class="panel-footer bg-light">
+		                      <div class="padder">
+	                            <span class="h4 block">Device Gallery</span>
+	                          </div>
+		                    </div>
+					        <br/>
+					        
+					        <div id="gallery">
+						        
+						    </div>
+						  
 						  	
 						  </div>
+						  
+						    
 						  
 						  <footer class="panel-footer text-right bg-light lter">
 					      	<button type="submit" id="submit" class="btn btn-success btn-lg" onclick="return Controlla();" ${btnActive}><%=propLang.get("btnConferma") %></button>
@@ -508,6 +545,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	function hideLoader() {
 	  jQuery('#loading-image').hide();
 	}
+	function showLoader2() {
+		  jQuery('#loading-image2').show();
+		}
+		function hideLoader2() {
+		  jQuery('#loading-image2').hide();
+		}
 	
 	$('.datepicker-input2').datepicker({
 	    format: 'dd-mm-yyyy',
@@ -541,10 +584,12 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   		$( 'div.modal-backdrop').remove();
 		$( '.modal' ).remove();
 		
-		var href = "../../app/popup/device-lines.htm?id_device=${id_device}&id_customer=${id_customer}&account_id=${id_account}&linNum=${linNum}&device_type=${device_type}";
+		var href = "../../app/popup/device-lines.htm?id_device=${id_device}&id_customer=${id_customer}&account_id=${id_account}&linNum=${linNum}&device_type=${device_type}&ids=${Ids}";
 		
 		$.get(href, function(data) {
 			$('<div class="modal" >' + data + '</div>').modal();
+			
+			
 		});
   	}
   	
@@ -743,7 +788,7 @@ function SelDeviceType(obj){
 			document.getElementById("minute_not_update").value = "180";
 			document.getElementById("port").value = "8081";
 			/**//**/
-			
+			 
 			/**/
 	        break;
 	    case "3":
@@ -2273,6 +2318,85 @@ function hideLastFourRows(){
 	hideFifthRow();
 	hideSixthRow(0);
 	//hideSeventhRow();
+}
+
+
+function loadGallery() {
+	
+	$('#gallery').html('');
+	
+	$.ajax({
+		url : "../ajax/deviceImages.jsp?iddevice=${id_device}&deviceName=${accountid}-${storeid}-${doorid}&deviceCode=&ids=${Ids}",
+		success : function(response) {
+			$('#gallery').html(response);
+		}
+	});	 
+}
+
+loadGallery();
+
+
+function tryToDownload(f, id) {
+	
+	$.ajax({
+        url:f, //be sure to check the right attribute
+        success: function () { //pass an anonymous callback function
+        	
+        	$("#loader_"+id).attr("src",f);
+        	
+        	
+        },
+        error: function (jqXHR, status, er) {
+            //only set the error on 404
+            if (jqXHR.status === 404) { 
+            	wait(1000);	
+            	tryToDownload(f, id)
+            }
+        }
+    });
+	
+}
+function wait(ms){
+	   var start = new Date().getTime();
+	   var end = start;
+	   while(end < start + ms) {
+	     end = new Date().getTime();
+	  }
+	}
+
+function update(iddevice, url, note) {
+	
+	showLoader2();
+	$.ajax({
+		url : "../ajax/updateDeviceImage.jsp",
+		method: "POST",
+		data: "iddevice="+iddevice+"&url="+url+"&note="+note,
+		success : function(response) {
+			hideLoader2();
+			$('.modal').remove(); $('div.modal-backdrop').remove();
+		}
+	});	 
+	
+	//alert(idstore+' '+url+' '+note);
+}
+
+function confirmDelete(iddevice, url) {
+	
+	if(confirm('Confirm Delete Image?')) {
+		
+		showLoader2();
+		
+		$.ajax({
+    		url : "../ajax/deleteDeviceImage.jsp?iddevice="+iddevice+"&url="+url,
+    		success : function(response) {
+    			hideLoader2();
+    			$('.modal').remove(); $('div.modal-backdrop').remove();
+    			loadGallery();
+    		}
+    	});	 
+	}
+	
+	
 }
 
 </script>

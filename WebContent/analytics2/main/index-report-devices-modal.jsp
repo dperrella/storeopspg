@@ -368,6 +368,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 				        height: '70%',
 				        y: '10%'
 				    },
+				    toolbox: {
+				    	show : true,
+				        showTitle: false,
+				        
+				        feature: {
+				            saveAsImage: {}
+				        }
+				    },
 				    xAxis: {
 				        type: 'category',
 				        axisLabel: { rotate: 60, },

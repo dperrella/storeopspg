@@ -128,6 +128,8 @@ public class TemplateList extends AbstractController {
 					
 					int cusOld = 0;
 					
+					System.out.println(id_customer);
+					
 							
 						sql  = "insert into optempl "
 								+ "(id_customer, description, shortdescr) "

@@ -18,7 +18,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	<div class="modal-content">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">&times;</a>
-			<h3 class="font-thin">${employee}</h3>
+			<h3 class="font-thin">${employee} - Banca Ore Residue: <span class="text-info"><b>${bancaore}</b></span></h3>
 		</div>
 		<div class="modal-body">
 		

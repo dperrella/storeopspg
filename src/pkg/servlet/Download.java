@@ -42,7 +42,7 @@ public class Download extends HttpServlet {
 		String fileName = request.getParameter("fileName");
 		
 		response.setContentType("text/plain");
-		response.setHeader("Content-disposition","attachment; filename=planner.pdf"); // Used to name the download file and its format
+		response.setHeader("Content-disposition","attachment; filename="+fileName); // Used to name the download file and its format
 
         File my_file = new File(fileName); // We are downloading .txt file, in the format of doc with name check - check.doc
         

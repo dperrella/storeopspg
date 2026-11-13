@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import pkg.beans.ats.Barcode;
 import pkg.beans.ats.Item;
+import pkg.beans.ats.Photo;
 import pkg.beans.ats.RelItemCustomer;
 
 public class ItemsImport {
@@ -54,6 +55,13 @@ public class ItemsImport {
 						bc.setIdItem(idItem);
 						bc.setBarcode(temp[b]);
 						bc.add(conn);
+						
+						
+						Photo ph = new Photo();
+						ph.setIdItem(idItem);
+						ph.setUrl("http://pc.smart-control.it/SmartSuiteNew2/source/images/"+temp[b]+" ("+(b+1)+").JPG");
+						ph.add(conn);
+						
 						
 					}
 				}

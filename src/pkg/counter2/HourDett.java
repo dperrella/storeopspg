@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import pkg.beans.Tables;
 import pkg.properties.ReadProperties;
+import pkg.occupancy.model2.firebase.FirebaseSettings;
 import pkg.utility.Utility;
 
 public class HourDett extends AbstractController {
@@ -113,6 +114,19 @@ public class HourDett extends AbstractController {
 				stControl = connControl.prepareStatement(sql);
 				stControl.executeUpdate();
 				
+				
+				// Call Firebase (Solo OCC)
+				if(whereIAm.equals("OCC")) {
+					try {
+						new Thread(new FirebaseSettings(Integer.parseInt(id_store))).start();
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+				
+				
 				msg="<div class=\"wrapper\"><div class=\"alert alert-success\"><strong>"+propLang.get("msgSuccess")+"</strong></div>"+
 						"<div class=\"line line-dashed b-b line-lg pull-in\"></div></div>";
 					
@@ -121,7 +135,7 @@ public class HourDett extends AbstractController {
 			
 			// sql da eseguire
 			sql   = "select * from dailyoperation_stores "
-					+ "where id_stores = '"+id_store+"' ";
+					+ "where id_stores = '"+id_store+"' order by days ";
 			System.out.println(sql);
 			// Prepara il cursore
 			stControl = connControl.prepareStatement(sql);

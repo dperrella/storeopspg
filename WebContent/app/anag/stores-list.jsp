@@ -123,7 +123,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 							</div>
 						  </section>
 							
-						  <section class="panel wrapper" style="margin-top:-16px">
+						  <section class="wrapper" style="margin-top:-16px">
 			                <label><%=propLang.get("cus_dsfun") %></label>
 					        <select id="idcus" name="idcus" data-required="true" 
 					          	onchange="reloadList()" class="form-control parsley-validated chosen-select">
@@ -133,12 +133,14 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		                          </c:forEach>
                         	</select>   
                         	  
-                        	<div id="msg">${msg}</div>
-                       		
+                        	
                         	  
 			            
 						  </section>
 			              
+			              
+			              <c:if test="${search}">
+			              <hr/>
 			              <div class="table-responsive">
 			                <table class="table table-striped m-b-none" id="example" data-ride="datatables">
 			                  <thead>
@@ -197,10 +199,22 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 		  					</table>
 		  					
 		  				  </div>
-		  				
+		  				  </c:if>
+		  				  
+		  				  	
 		  				</section>
-		  				
+		  				<c:if test="${not search}">
+		  				  	<div class="row row-sm">
+								<div class="col-xs-12">
+			                    	<div class="text-center m-b-lg">
+										<h1 class="fontBig text-white animated"><%=propLang.get("sel_cust") %></h1>
+									</div>
+								</div>
+							</div>
+			            </c:if>
+			            
 		  				</div>
+		  				  
 		  				  
 			        </section> 
 	              </section>

@@ -16,6 +16,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 <html lang="it" class="app">
 <head>  
   <meta charset="utf-8" />
+  
   <title>Desk | Smart Suite</title>
   <meta name="description" content="Desk Smart Suite" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -1691,7 +1692,13 @@ function cambiaSettimana(anno) {
 					        trigger: 'axis'
 					    },
 					    legend: {
-					        data:legend
+					        data:legend,
+					        orient: 'horizontal',
+					        x: 'center',
+					        y: 'top',
+					        right: '5%',
+					        left: '6%',
+					        type: 'scroll'
 					    },
 					    grid: {
 					        left: '3%',

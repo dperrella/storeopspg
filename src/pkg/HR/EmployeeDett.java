@@ -821,7 +821,7 @@ public class EmployeeDett extends AbstractController {
 				$description=rs.getString("description");
 				
 				dep.add(new Departments($id_dep,$description,"","","","","",
-						"","","","","","","",0,0,0,"","","",""));
+						"","","","","","","",0,0,0,false,"","","",""));
 				
 			}
 			rs.close();
@@ -945,9 +945,10 @@ public class EmployeeDett extends AbstractController {
 				String $id_relempbadge = "";
 				sql  =  "select a.id, a.id_employ, b.name, b.surname, a.id_badge, a.date_end, To_timestamp(a.date_end) dtend, number "+
 						"from rel_emp_badge a, hr_employee b, hr_badge c "+
-						"where a.id_employ = '"+$id+"' and (a.date_end is null or date_end <= "+date.getTime()/1000+") "+
+						"where a.id_employ = '"+$id+"' and (a.date_end is null or date_end >= "+date.getTime()/1000+") "+
 						"and b.id = a.id_employ "+
 						"and c.id = a.id_badge ";
+				System.out.println(sql);
 				rs=st.executeQuery(sql);
 				if(rs.next()) {
 					$id_relempbadge = rs.getString("id");

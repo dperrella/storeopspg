@@ -49,6 +49,8 @@ public class TemplatesDett extends AbstractController {
 				obj.put("id", id);
 				obj.put("name", templates.getName());
 				obj.put("zpl", templates.getZpl());
+				obj.put("breakLabel", templates.isBreakLabel());
+				
 				
 			}
 			

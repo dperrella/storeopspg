@@ -307,7 +307,7 @@ public class PlannerListTab2Day extends AbstractController {
 						heatmap=heatmap.substring(0,heatmap.length()-1);
 					
 					try {
-						max = Collections.max(l);
+						max = (int)Collections.max(l);
 					}
 					catch(Exception e) {
 						max = 0;

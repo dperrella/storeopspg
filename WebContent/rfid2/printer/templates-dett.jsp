@@ -50,6 +50,23 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	        </div>
 	    </div>
 	    
+	    <div class="line line-dashed b-b line-lg pull-in"></div>
+	    
+	    <div class="form-group pull-in clearfix">
+	        <div class="col-sm-12">
+	          <div class="checkbox i-checks">
+                <label>
+                  <input id="breakLabel" name="breakLabel" type="checkbox" ><i></i> Breakpoint Label
+                </label>
+              </div>
+              <script>
+              if('${breakLabel}'=='true') {
+              	$('#breakLabel').prop('checked', true);
+              }
+              </script>
+	        </div>
+	    </div>
+	    
 	</div>
 	<div class="modal-footer">
 		<img src="../../images/spacer.gif" onload="parsleyForm();selpick()"/>

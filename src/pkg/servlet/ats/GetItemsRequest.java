@@ -46,6 +46,8 @@ public class GetItemsRequest extends HttpServlet {
 		idusr = Utility.noNull(idusr);
 		String role = ""+request.getParameter("role");
 		role = Utility.noNull(role);
+		String idwishlist = ""+request.getParameter("idwishlist");
+		idwishlist = Utility.noNull(idwishlist);
 		
 		List<Item> item = new ArrayList<Item>();
 		item.clear();
@@ -59,7 +61,7 @@ public class GetItemsRequest extends HttpServlet {
 			if(idusr.length()==0)
 				item = Item.getItems(conn, 0);
 			else
-				item = Item.getUserRoleItems(conn, 0, idusr, role);
+				item = Item.getUserRoleItemsWish(conn, 0, idusr, role, idwishlist);
 			
 			for(int i=0;i<item.size();i++) {
 				JSONObject jsonObj = new JSONObject();
@@ -79,6 +81,22 @@ public class GetItemsRequest extends HttpServlet {
 				jsonObj.put("categoryname", item.get(i).getCategoryName());
 				jsonObj.put("countryname", item.get(i).getCountryName());
 				jsonObj.put("idusr", item.get(i).getIdusr());
+				jsonObj.put("wish", item.get(i).getWishlistName());
+				jsonObj.put("photos", item.get(i).getPhotos().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", ""));
+				
+				
+				boolean inErr = false;
+			    if(item.get(i).getRetailers().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    if(item.get(i).getBarcodes().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    if(item.get(i).getPhotos().replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "").length()==0) {
+			      inErr=true;
+			    }
+			    
+			    jsonObj.put("inErr",inErr);
 				
 				jsonArray.add(jsonObj);
 			}

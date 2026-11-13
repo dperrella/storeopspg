@@ -87,7 +87,7 @@ try
 	}
 	System.out.println(sql);
 	rs=st.executeQuery(sql);
-%>
+%>		
 
 <div class="modal-dialog">
   <div class="modal-content">
@@ -138,7 +138,7 @@ while (rs.next())
 	                  </label>
 	              </div>
 			  </td>
-			  <td><span class="label bg-light"><%=rs.getString("id") %></span></td>
+			  <td><span class="label bg-light"><%=rs.getString("store_code") %></span></td>
 			  <td><%=rs.getString("description") %></td>
 			  <td><%=rs.getString("brandname") %></td>
 <%

@@ -133,14 +133,27 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 			                      <span class="text-muted m-r-sm"><i class="fa fa-desktop"></i></span>
 			                      <span class="hidden-sm">Clients</span>
 			                      
+			                      
 			                    </header>
 			                    <section class="panel wrapper">
 					              	<div class="subnav">
 										<ul class="nav nav-pills">
 											<li><a href="customer_configuration_list.jsp">Customer Rules</a></li>
 											<li><a href="client-dett.jsp" data-toggle="ajaxModal">New Client</a></li>
+											
 										</ul>
 									</div>
+									
+									<div class="line line-dashed b-b line-lg pull-in"></div>
+									 
+									<label>Select Server</label>
+									<select id="_server" class="form-control input-sm ss" onchange="selServer(this.value)">
+			                           <option value="https://vpn-eu-01.smart-control.it" selected>Europe Server</option>
+			                           <option value="https://vpn-au-01.smart-control.it">Australia Server</option>
+			                           <option value="https://vpn-us-01.smart-control.it">US Server</option>
+			                           <option value="https://vpn-cn-01.smart-control.it">Cina Server</option>
+			                        </select>
+									
 								</section>
 								
 			                    <div class="table-responsive">
@@ -154,14 +167,16 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		                                    <th>IP Address</th>
 		                                    <th>Connected</th>
 									        <th></th>
-									        <th></th>								        
+									        <th></th>	
+									        <th></th>	
+									        							        
 									      </tr>
 									  </thead>
 			      					  <tbody id="clients_list">
 			      					  </tbody>
 			      					  <tfoot>
 			      					  	  <tr>
-			      					  	  	<td colspan="8"><div id="clients_total" style="margin-left:5px"></div></td>
+			      					  	  	<td colspan="9"><div id="clients_total" style="margin-left:5px"></div></td>
 			      					  	  </tr>
 			      					  </tfoot>
 			      					</table>
@@ -188,6 +203,7 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
     </section>    
   </section>
   
+  
   <script src="../../js/jquery.min.js"></script>
   
   <!-- Bootstrap -->
@@ -207,6 +223,8 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
   <script src="../../js/datatables/jquery.dataTables.min.js"></script>
   <script src="../../js/datatables/jquery.csv-0.71.min.js"></script>
   
+  <script src="../../js/bootstrap-modal.js"></script>
+  
   <!-- Echarts -->
   <script src="../../js/echarts/echarts.min.js?v=2"></script>
   
@@ -215,11 +233,36 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
      jQuery(window).load(function() {
 		jQuery('#loading-image').hide();
         
-		showLoader2();
-        authenticate();
-	
+		var server = $('#_server').val();
+        selServer(server);
+        
+		//showLoader2();
+        //authenticate();
+        selpick();
+        
+        
 	});
+     
+   //MODAL
+ 	$('.getModal').click(function(e) {
+ 		
+ 		showLoader();
+ 		
+ 		e.preventDefault();
+ 		var href = $(e.target).attr('href');
+ 		
+ 		if (href.indexOf('#') == 0) {
+ 			$(href).modal('open');
+ 		} else {
+ 			$.get(href, function(data) {
+ 				$('<div class="modal" >' + data + '</div>').modal();
+ 				hideLoader();
+ 			});
+ 		}
+ 	});
+ 	
 	  
+     
 	function showLoader() {
 	  jQuery('#loading-image').show();
 	}
@@ -234,7 +277,7 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	}
     
 	function parsleyForm() {
-		//$('#actionForm').parsley();
+		$('#actionForm').parsley();
 	}
 	function selpick() {
 		$('.ss').selectpicker({
@@ -242,11 +285,33 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		    tickIcon: 'fa fa-check'
 		 });
 	  }
+	
+	
 	  
     //var service = 'https://51.136.12.25:5001';
-    var service = 'https://vpn-api.smart-control.it'
+    var service = ' https://vpn-eu-01.smart-control.it/'
     var accessToken = '';
     
+    function selServer(val) {
+    	
+    	//$('#clients_total').html('');
+    	clients = [];
+    	
+    	try {
+    		loadTable();
+    	}
+    	catch(error) {}
+    	
+    	$('#clients_data_table tbody').remove();
+		$('#clients_data_table').append("<tbody id=\"clients_list\"></tbody>");
+    	
+    	
+    	showLoader2();
+    	
+    	service = val;
+    	authenticate();
+    	
+    }
     var ids_to_devices = {
     	0: "Router",
 		1: "Checkpoint Device",
@@ -259,6 +324,7 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
     var clients = [];
     
     var ips = [];
+    var _stores = [];
     
     
     function reverseObj(o) {
@@ -285,9 +351,15 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
             data: JSON.stringify(obj),
             error: function (jqXHR, textStatus, errorThrown) {                
                 console.log(errorThrown);
+                
+                alert(textStatus+' '+errorThrown);
+                hideLoader2();
             },
             success: function (result) {
                 accessToken = result.tokenString;
+                
+                console.log(JSON.stringify(result));		
+                
                 //$('#available_buttons').show();
                 
                 getClients();
@@ -308,18 +380,20 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
                 xhr.setRequestHeader('Authorization', 'bearer ' + accessToken);
             },
             success: function (data) {
+            	
+            	console.log(JSON.stringify(data));
+            	
                 clients = data;
                 fillClientsTable(data);
                 
                 $.each(data, function (i, obj) {
                 	
-                	
-                	
-                    ips.push(obj.ipAddress);
+                    ips.push(obj.vpnipAddress);
+                    _stores.push(obj.device.store.customer.code+"_"+obj.device.store.code+"_"+obj.device.code);
                     
                 });
 
-                console.log(JSON.stringify(ips));
+                //console.log(JSON.stringify(ips));
                 
                 //console.log(JSON.stringify(clients));
                 
@@ -327,10 +401,10 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
                     table = $('#clients_data_table').DataTable({ 
                     	"language": {
                             "lengthMenu": "_MENU_ &nbsp;&nbsp;<%=propLang.get("dt_nrRecord") %>",
-                            "zeroRecords": "<%=propLang.get("dt_nessun record") %>",
+                            "zeroRecords": "<%=propLang.get("dt_nessunrecord") %>",
                             "info": "<%=propLang.get("dt_pagina") %> _PAGE_ <%=propLang.get("dt_di") %> _PAGES_",
                             "infoEmpty": "<%=propLang.get("dt_nessunrecord2") %>",
-                            "infoFiltered": "(Filtrati da _MAX_ records totali)",
+                            "infoFiltered": "(Filtered from _MAX_ total records)",
                             "decimal": ",",
                             "thousands": ".",
                             search: "<%=propLang.get("dt_cerca") %>:&nbsp;&nbsp; "
@@ -365,15 +439,36 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
         $('#clients_list > tr').remove();
         $.each(data, function (i, obj) {
         	
+        	
+        	//console.log(i);
+        	
+        	var connected  = obj.connected;
+        	var ico;
+        	
+        	if(connected)
+        		ico = '<span style="font-size:1px;color:transparent">T</span><i class="fa fa-check text-success"> </i>';
+        	else
+        		ico = '<span style="font-size:1px;color:transparent">F</span><i class="fa fa-times text-danger"> </i>';
+        	
+        	/*
+        	if(connected)
+        		ico = 'Connected';
+        	else
+        		ico = 'Not Connected';
+        	*/
+        	
             const tr = $("<tr></tr>")
                 .append($("<td></td>").html("<span class='label bg-light'>"+obj.device.store.customer.name + "[" + obj.device.store.customer.code + "]</span>"))
                 .append($("<td></td>").text(obj.device.store.name + "[" + obj.device.store.code + "]"))
                 .append($("<td></td>").text(obj.device.name + "[" + obj.device.code + "]"))
                 //.append($("<td></td>").text(getDeviceType(obj.device.deviceType)))
                 .append($("<td></td>").text(ids_to_devices[obj.device.deviceType]))
-                .append($("<td></td>").text(obj.ipAddress))
-                .append($("<td></td>").text(obj.connected))
+                .append($("<td></td>").text(obj.vpnipAddress))
+                //.append($("<td></td>").text(obj.connected))
+                .append($("<td align=\"center\">"+ico+"</td>"))
+                
                 .append($("<td><a href='#' class='btn btn-default' onclick='downloadCert(" + i.toString() + ");'><i class='fa fa-download'></i></a></td>"))
+                .append($("<td><a href='#' class='btn btn-default' onclick='edit(" + i.toString() + ");'><i class='fa fa-edit'></i></a></td>"))
                 .append($("<td><a href='#' class='btn btn-danger' onclick='deleteClient(" + i.toString() + ");'><i class='fa fa-times'></i></a></td>"));
                 
                 
@@ -395,7 +490,12 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
     	var certificate = "";
     	var privatekey = "";
     	var configuration = "";
+    	var id = "";
     	
+   		try {
+       		id = clients[index].id;
+       	}
+       	catch(err) {}
     	try {
     		ca_bundle = clients[index].rsaCaCertificate;
     	}
@@ -413,14 +513,150 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
     	}
     	catch(err) {}
     	
-    	ddd('ca_bundle.crt', ca_bundle);
-    	ddd('certificate.crt', certificate);
-    	ddd('privatekey.key', privatekey);
-    	ddd('configuration.txt', configuration);
+    	console.log("...");
     	
+    	console.log(ca_bundle);
+    	console.log(certificate);
+    	console.log(privatekey);
+    	console.log(configuration);
+    	console.log("...");
+    	
+    	//ddd('ca_bundle.crt', ca_bundle);
+    	//ddd('certificate.crt', certificate);
+    	//ddd('privatekey.key', privatekey);
+    	//ddd('configuration.txt', configuration);
+    	
+    	
+    	
+    	downloadCert2(ca_bundle, certificate, privatekey, configuration, id);
     	
     }
     
+    function downloadCert2(ca_bundle, certificate, privatekey, configuration, id) {
+    	
+    	var d = {ca_bundle: ca_bundle, certificate: certificate, privatekey: privatekey, configuration: configuration, id: id};
+    	
+    	$.ajax({
+            type: "POST",
+            accepts: "application/json",
+            url: 'downloadCert.jsp',
+            async: false,
+            //data: 'ca_bundle='+ca_bundle+'&certificate='+certificate+'&privatekey='+privatekey+'&configuration='+configuration+'&id='+id,
+            data: d,
+            error: function (jqXHR, textStatus, errorThrown) {                
+                console.log(errorThrown);
+            },
+            success: function (result) {
+            	
+            	
+            	showLoader2();
+            	var f = $.trim(result);
+            	console.log(f);
+            	
+            	
+            	tryToDownload(f);
+            	
+                
+            }
+        });  
+    	
+    }
+    
+    function tryToDownload(f) {
+    	
+    	$.ajax({
+            url:'../../'+f, //be sure to check the right attribute
+            success: function () { //pass an anonymous callback function
+            	
+            	hideLoader2();
+            	openModal(f);
+            },
+            error: function (jqXHR, status, er) {
+                //only set the error on 404
+                if (jqXHR.status === 404) { 
+                	wait(1000);	
+                	tryToDownload(f)
+                }
+            }
+        });
+    	
+    }
+    
+    function openModal(file) {
+  		$( 'div.modal-backdrop').remove();
+		$( '.modal' ).remove();
+		
+		var href = "ddd.jsp?file="+file;
+		
+		$.get(href, function(data) {
+			$('<div class="modal" >' + data + '</div>').modal();
+		});
+  	}
+    
+    function edit(id) {
+  		$( 'div.modal-backdrop').remove();
+		$( '.modal' ).remove();
+		
+		var href = "edit.jsp?rid="+id;
+		
+		$.get(href, function(data) {
+			$('<div class="modal" >' + data + '</div>').modal();
+		});
+  	}
+    
+    function editAction() {
+    	
+    	var rid = $('#rid').val();
+    	var name = $('#name').val();
+    	
+    	
+    	$( 'div.modal-backdrop').remove();
+		$( '.modal' ).remove();
+		
+		
+		
+		//console.log(clients);
+		//console.log(clients[rid]);
+		
+		var client_obj = clients[rid];
+		
+		client_obj.device.name = name;
+		
+		console.log(JSON.stringify(client_obj));
+		
+		
+		showLoader2();
+		$.ajax({
+            type: "POST",
+            accepts: "application/json",
+            url: service + '/api/openvpn/clients/edit',
+            contentType: "application/json",
+            cache: false,
+            data: JSON.stringify(client_obj),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'bearer ' + accessToken);
+            },
+            success: function (data) {
+                console.log('successfully added!');
+                
+                $('.modal').remove(); $('div.modal-backdrop').remove();
+                loadTable();
+                
+                getClients();
+                hideLoader2();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {  
+            	
+            	console.log(jqXHR);
+            	console.log(textStatus);
+                console.log(errorThrown);
+                
+                hideLoader2();
+            }
+        });
+		
+    }
+     
     function ddd(filename, text) {
    	  var element = document.createElement('a');
    	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -433,6 +669,13 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 
    	  document.body.removeChild(element);
    	}
+    
+    function ddd2(id) {
+     	 
+    	window.location.href = '../../cert_'+id+'.zip';
+    	
+     }
+      
     
     function deleteClient(index) {        
     	
@@ -457,19 +700,8 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	            },
 	            success: function (result) {
 	            	
-	            	//clients.splice(index, 1);
-	                //fillClientsTable(clients);
-	                //$('#clients_data_table').DataTable();
-	                
-	                //$('#clients_data_table').DataTable();
-	                //$('#clients_data_table').DataTable({
-	                //	"iDisplayLength": 10
-	                //});
-	                
 	                loadTable();
-	                
-	                //$('#clients_total').html('<b>Total Clients: '+clients.length+'</b>')
-	                
+	               
 	                console.log('successfully deleted!');
 	                
 	                getClients();
@@ -480,54 +712,46 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	        });    
     	}
     }
-    
   
-    /*
-    function getDeviceType(index) {
-            var type = "";
-            
-            switch (index) {
-                case 0:
-                    type = "Router";
-                    break;
-                case 1:
-                    type = "Checkpoint Device";
-                    break;
-                case 2: 
-                    type = "Router NAT";
-                    break;
-                case 3:
-                    type = "User";
-                    break;
-                default:
-                    type = "ERROR";
-                    break;
-            }
-
-            return type;
-    }
-    */
-    
     function getCustomers() {
     	
     	var username = '<%=username%>';
+    	var devType = $('#devType').val();
+    	var endpoint = "";
+    	if(devType==1) {
+    		endpoint = "../../ats/GetCustomers?username="+username;
+    	}
+    	else {
+    		endpoint = "../../servlet/ws/GetCustomerConfiguration?username="+username;
+    	}
     	
+    	console.log(endpoint);
     	showLoader2();
     	
     	$.ajax({
             type: "GET",
             accepts: "application/json",
-            //url: "../../ats/GetCustomers?username="+username,
-            url: "../../servlet/ws/GetCustomerConfiguration?username="+username,
+            url: endpoint,
             contentType: "application/json",
             cache: false,
             success: function (data) {
                 
+            	
+            	$('#customerId')
+			    .find('option')
+			    .remove()
+			    .end()
+			    .append('<option value="">-</option>')
+			    .val('');
+            	
             	//alert(JSON.stringify(data));
-            	
-            	customers = data.listings;
-            	
-            	 $.each(data.listings, function (i, obj) {
+            	if(devType==1) {
+            		customers = data.customers;
+            	}
+            	else {
+            		customers = data.listings;
+            	}
+            	 $.each(customers, function (i, obj) {
             		 
             		
             		 $('#customerId').append('<option value="'+obj.id+'">'+obj.accountid+' - '+obj.description+'</option>'); 
@@ -563,13 +787,40 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
     	var username = '<%=username%>';
     	var idx = parseInt($("#customerId").prop('selectedIndex'))-1;
     	
+    	var devType = $('#devType').val();
+    	var server = $('#__server').val();
+    	
     	console.log(idx);
+    	console.log(devType);
+    	console.log(server);
     	
     	console.log(JSON.stringify(customers[idx]));
 		
-    	var range_from = customers[idx].range_from;
-    	var range_to = customers[idx].range_to;
+    	var range_from;
+    	var range_to;
     	
+    	if(devType==1) {
+    		if(server=='EU') {
+    			range_from = '10.91.1.1';
+    			range_to = '10.91.255.254';
+    		}
+    		else if(server=='AU') {
+    			range_from = '11.3.1.1';
+    			range_to = '11.3.255.254';
+    		}
+			else if(server=='US') {
+				range_from = '7.3.1.1';
+    			range_to = '7.3.255.254';
+    		}
+			else if(server=='CN') {
+				range_from = '6.3.1.1';
+    			range_to = '6.3.255.254';
+    		}
+    	}
+    	else {
+    		range_from = customers[idx].range_from;
+    		range_to = customers[idx].range_to;
+    	}
     	console.log(range_from);
     	console.log(range_to);
 		
@@ -615,6 +866,16 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		
 		$('#actionForm').parsley('destroy');
 		
+		
+		$('#iP1st')
+		    .find('option')
+		    .remove()
+		    .end();
+		    
+		for(i=min1;i<=max1;i++) {
+			$('#iP1st').append('<option value="'+i+'">'+i+'</option>'); 
+		}
+		$('#iP1st').selectpicker('refresh');
 		
 		$('#iP2nd')
 		    .find('option')
@@ -715,30 +976,51 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	    var _customerName = _customerText.split(' - ')[1];
 	    
 	    var _storeId = $('#storeId').val();
-	    var _storeCode = _storeId.split(' - ')[0];
-	    var _storeName = _storeId.split(' - ')[1]+' '+_storeId.split(' - ')[2]!='Undefined' ? _storeId.split(' - ')[2] : ""; 
 	    
+	    console.log(_storeId);
+	    
+	    var _storeCode = _storeId.split(' - ')[0];
+	    //var _storeName = _storeId.split(' - ')[1]+' '+_storeId.split(' - ')[2]!='Undefined' ? _storeId.split(' - ')[2] : ""; 
+	    var _storeName = _storeId.split(' - ')[1]; 
+	    
+	    console.log(_storeName);
+	    
+	    var _ip1st = $('#iP1st').val();
 	    var _ip2nd = $('#iP2nd').val();
 	    var _ip3rd = $('#iP3rd').val();
 	    var _ip4th = $('#iP4th').val();
 	    
-	    if(_devType==1) {
-	    	min1 = '10';
-	    	_ip2nd = '91';
-	    }
+	    var _networkIp = $('#networkIp').val();
+	    
+	    
 	    	
 	    
-	    var _ip  = min1+"."+_ip2nd+"."+_ip3rd+"."+_ip4th;
+	    var _ip  = _ip1st+"."+_ip2nd+"."+_ip3rd+"."+_ip4th;
+	    
+	    var pad = "00000"
+	    var __customerCode = pad.substring(0, pad.length - _customerCode.length) + _customerCode;
+	    var __storeCode = pad.substring(0, pad.length - _storeCode.length) + _storeCode;
+	    var __code = pad.substring(0, pad.length - _code.length) + _code;
+	    var _store = __customerCode+"_"+__storeCode+"_"+__code;
 	    
 	    console.log(_ip);
+	    console.log(_networkIp);
+	    
+	    
+	    //alert(_store);
 	    
 	    if (ips.indexOf(_ip) >= 0) {
 	    	alert('Ip error.\nIp '+_ip+' already in use.');
 	    	hideLoader2();
 	    	return false;
 	    }
+	    if (_stores.indexOf(_store) >= 0) {
+	    	alert('Store error\nStore '+_store+' already has VPN Client');
+	    	hideLoader2();
+	    	return false;
+	    }
 	    
-	    
+	    /*
 	    if(parseInt(_devType)!=0) {
 		    if(parseInt(_ip4th)<1||parseInt(_ip4th)>254) {
 		    	
@@ -751,7 +1033,7 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 		    	return false;
 		    }
 	    }
-	    
+	    */
 	    //var _ip2nd = 20;
 	    //var _ip3rd = 30;
 	    //var _ip4th = 0;
@@ -761,25 +1043,28 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
             device: {
                 store: {
                     customer: {
-                        id: parseInt(_customerCode),
+                        id: parseInt(zeroFill(parseInt(_customerCode), 5)),
                         name: _customerName,
-                        code: _customerCode,
-                        iP2nd: parseInt(_ip2nd)
+                        code: _customerCode
+                        
                     },
-                    id: parseInt(_storeCode),
+                    id: parseInt(zeroFill(parseInt(_customerCode), 5)+''+zeroFill(parseInt(_storeCode), 5)),
                     name: _storeName,
-                    code: _storeCode,
-                    iP3rd: parseInt(_ip3rd)
+                    code: _storeCode
                 },
                 id: 0,
                 name: _name,
                 code: _code,
-                deviceType: parseInt(_devType),
-                iP4th: parseInt(_ip4th)     
-            }
+                deviceType: parseInt(_devType)
+                
+            },
+            id: 0,
+            vpnipAddress: _ip,
+            networkIPClass: _networkIp,
+            disabled: false
         };
         
-	    console.log(JSON.stringify(client_obj));
+	    console.log("\n\n"+JSON.stringify(client_obj)+"\n\n");
 	    
 	    $.ajax({
             type: "POST",
@@ -846,58 +1131,84 @@ String username = (String) session.getAttribute("username").toString().toUpperCa
 	
 	function checkIP4(devType) {
 		
-		if(devType==0) {
-			
-			$('#ips').show();
-			
-			$('#actionForm').parsley('destroy');
+		if(devType==3) {
 			
 			$('#iP4th')
 			    .find('option')
 			    .remove()
 			    .end();
 			    
-			$('#iP4th').append('<option value="0">0</option>'); 
-			
-			
-			$('#actionForm').parsley();
+			for(i=min4;i<=max4;i+=4) {
+				var dis = "";
+				$('#iP4th').append('<option value="'+i+'" '+dis+'>'+i+'</option>'); 
+			}
+			$('#iP4th').selectpicker('refresh');
 			
 		}
 		else {
-				
-			
-			if(devType==1) {
-				
-				$('#ips').hide();
-				
+			$('#iP4th')
+			    .find('option')
+			    .remove()
+			    .end();
+			    
+			for(i=min4;i<=max4;i++) {
+				var dis = "";
+				$('#iP4th').append('<option value="'+i+'" '+dis+'>'+i+'</option>'); 
 			}
-			else {
-				
-				$('#ips').show();
-				
-				$('#actionForm').parsley('destroy');
-				
-				$('#iP4th')
-				    .find('option')
-				    .remove()
-				    .end();
-				    
-				for(i=min4;i<=max4;i++) {
-					$('#iP4th').append('<option value="'+i+'">'+i+'</option>'); 
-				}
-				
-				$('#actionForm').parsley();
-			}
-				
-			//////////////
-			
-			
-			
+			$('#iP4th').selectpicker('refresh');
 		}
-		$('#iP4th').selectpicker('refresh');
+		
+		if(devType==1||devType==3) {
+			$('#networkIp').val('0.0.0.0');
+			$('#networkIpdiv').hide();
+		}
+		else {
+			$('#networkIp').val('');
+			$('#networkIpdiv').show();
+		}
+		
     	
 	}
 	
+	function getDsServer() {
+		var server = $('#_server').val();
+		if(server=='https://vpn-eu-01.smart-control.it') {
+			server = 'EUROPE SERVER';
+			$('#__server').val('EU');
+			
+		}
+		else if(server=='https://vpn-au-01.smart-control.it') {
+			server = 'AUSTRALIA SERVER';
+			$('#__server').val('AU');
+		}
+		else if(server=='https://vpn-us-01.smart-control.it') {
+			server = 'US SERVER';
+			$('#__server').val('US');
+		}
+		else if(server=='https://vpn-cn-01.smart-control.it') {
+			server = 'CINA SERVER';
+			$('#__server').val('CN');
+		}
+		$('#_dsServer').html('<b>'+server+'</b>');
+	}
+	
+	function zeroFill( number, width )
+	{
+	  width -= number.toString().length;
+	  if ( width > 0 )
+	  {
+	    return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+	  }
+	  return number + ""; // always return a string
+	}
+	
+	function wait(ms){
+	   var start = new Date().getTime();
+	   var end = start;
+	   while(end < start + ms) {
+	     end = new Date().getTime();
+	  }
+	}
 </script>
 
 <%@ include file="../../inc/autorized.jsp" %>

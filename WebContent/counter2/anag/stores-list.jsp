@@ -203,6 +203,11 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
   <script src="../../js/app.plugin.js"></script>
   <script src="../../js/bootstrap-modal.js"></script>
   
+  <!-- parsley -->
+  <script src="../../js/parsley/parsley.min.js"></script>
+  <script src="../../js/parsley/parsley.extend.js"></script>
+  
+  
   <script src="../../js/datatables/jquery.dataTables.min.js"></script>
   <script src="../../js/datatables/jquery.csv-0.71.min.js"></script>
   
@@ -218,20 +223,10 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	  jQuery('#loading-image').hide();
 	}
 	
-	//MODAL
-	$('.getModal').click(function(e) {
+	function parsleyForm() {
+		  $('#actionForm').parsley();
+	}
 	
-		e.preventDefault();
-		var href = $(e.target).attr('href');
-		
-		if (href.indexOf('#') == 0) {
-			$(href).modal('open');
-		} else {
-			$.get(href, function(data) {
-				$('<div class="modal" >' + data + '</div>').modal();
-			});
-		}
-	});
 	
 	
   $('#example').dataTable( {
@@ -250,23 +245,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
       "iDisplayLength": 50
   } );
   
-  function setDoors() {
-	  
-	  
-  }
   
-  
-  function selectCustomer(id) {
-		
-		var idcus = $('#'+id).val();
-		$('#idcus_frm').val(idcus);
-			
-		$('#chgUser').submit();
-	  }
-		
-	  function setSelectPicker() {
-		$('.selectpicker').selectpicker();
-	  }
   </script>
   
   <%@ include file="../../inc/autorized.jsp" %>

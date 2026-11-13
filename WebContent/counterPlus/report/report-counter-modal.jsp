@@ -182,7 +182,8 @@ else if(tipo.equals("W")) {
 		          <option value="2017">2017</option>
 		          <option value="2018">2018</option>
 		          <option value="2019">2019</option>
-		          <option value="2020" selected>2020</option>
+		          <option value="2020">2020</option>
+		          <option value="2021" selected>2021</option>
 		       </select>   
 	        </div>
 	        
@@ -258,7 +259,8 @@ else if(tipo.equals("M")) {
 		          <option value="2017">2017</option>
 		          <option value="2018">2018</option>
 		          <option value="2019">2019</option>
-		          <option value="2020" selected>2020</option>
+		          <option value="2020">2020</option>
+		          <option value="2021" selected>2021</option>
 		       </select>   
 	        </div>
 	        
@@ -297,11 +299,16 @@ else if(tipo.equals("P")) {
 		<%	
 		if(idstores.length()>0) {
 		%>
-		<img src="../../images/spacer.gif" onload="selAll()"/>
+		<img src="../../images/spacer.gif" onload="selStore()"/>
 		<%
 		}
 		%>		
-		
+		<script>
+			$('.ss').selectpicker({
+	  		    liveSearch: true,
+	  		    tickIcon: 'fa fa-check'
+	  		 });
+		</script>
 		<img src="../../images/spacer.gif" onload="setCal();selpick()"/>
 		<a class="btn btn-default" data-dismiss="modal" onclick="$('.modal').remove(); $('div.modal-backdrop').remove();"><%=propLang.get("pop_us_chiudi") %></a>
 		<input type="submit" value="<%=propLang.get("btn_esegui_report") %>" class="btn btn-success btn-lg"/>

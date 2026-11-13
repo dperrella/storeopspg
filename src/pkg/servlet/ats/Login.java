@@ -142,7 +142,8 @@ public class Login extends HttpServlet {
 						+ "where "
 						+ "id in(select idcustomer from rel_user_customers "
 						+ "where idusr = '"+username.toUpperCase()+"') "
-						+ "and id in(select idcustomer from ats.rel_item_customer) ";
+						+ "and id in(select idcustomer from ats.rel_item_customer) "
+						+ "order by description ";
 				
 				
 				
@@ -172,7 +173,8 @@ public class Login extends HttpServlet {
 						+ "is null then 0 else 1 end checked "
 						+ "from customers where "
 						+ "id in(select idcustomer from rel_user_customers "
-						+ "where idusr = '"+username.toUpperCase()+"') ";
+						+ "where idusr = '"+username.toUpperCase()+"') "
+						+ "order by description ";
 				System.out.println(sql);
 				
 				
@@ -210,7 +212,8 @@ public class Login extends HttpServlet {
 						+ "id in(select idcustomer from rel_user_customers "
 						+ "where idusr = '"+username.toUpperCase()+"') "
 						+ "and id in (select idcustomer " 
-						+ "from pref_user_customers where idusr = '"+username.toUpperCase()+"' and idcustomer = id) ";
+						+ "from pref_user_customers where idusr = '"+username.toUpperCase()+"' and idcustomer = id) "
+						+ "order by description ";
 				System.out.println(sql);			
 				rs=st.executeQuery(sql);
 				

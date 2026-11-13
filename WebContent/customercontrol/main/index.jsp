@@ -718,6 +718,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     	  var desc = '';
     	  
     	  var hasControl = ${hasControl};
+    	  var deviceLink = <%=session.getAttribute("deviceLink") %>;
     	  
     	  $.getJSON('../../servlet/ws/GetDevices?idStore='+id, function (data) {
     		    
@@ -799,7 +800,7 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
     		 		else if(lista.color=='1-YELLOW') {
     		 			ko+=1;
     		 			count1+=1;
-    		 			css = "text-yellow";
+    		 			css = "text-warning";
     		 		}
 					else if(lista.color=='2-GREY') {
 						ok+=1;
@@ -828,9 +829,16 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    		 		msg+='<li class="list-group-item"><a href="../../customercontrol/popup/slaves.jsp?iddevice='+lista.idDevice+'&name='+lista.deviceName+'" data-toggle="ajaxModal">'
 	    		 		+'<span class="pull-left thumb-xs m-t-xs  m-l-xs m-r-sm" style="width:40px;height:40px;">'
 	                    +'<img src="img/'+lista.deviceType+'.png?v3"  alt="'+lista.devTypeDescription+'">'
-	                   	+'</span>'
-	    		 		+'<span class="pull-left '+css+'">'+lista.accountId+'-'+lista.storeId+'-'+lista.doorId+'</span>'
-	    		 		+'<span class="pull-right '+css+'"><b>'+lista.status+'</b></span>';
+	                   	+'</span>';
+	                   	
+	    		 		msg+='<span class="pull-left '+css+'">'+lista.accountId+'-'+lista.storeId+'-'+lista.doorId;
+	    		 		if(deviceLink) {
+	    		 			if($.trim(lista.ip.length>0))
+	    		 				msg+='&nbsp;&nbsp;&nbsp;&nbsp;['+lista.ip+':'+lista.port+']';
+	    		 		}
+	    		 		msg+="</span>";
+	    		 		
+	    		 		msg+='<span class="pull-right '+css+'"><b>'+lista.status+'</b></span>';
 	    		 		
 	    		 		
 	    		 		
@@ -844,16 +852,27 @@ ReadProperties propLang = new ReadProperties(session.getAttribute("language").to
 	    		 			msg+='<span class="pull-right"><a href="../../app/anag/devices-dett.htm?tipoForm=M&id='+lista.idDevice+'" target="_blank" class="btn btn-default btn-xs"><i class="fa fa-gear"></i></a></span>';
 	    		 		}
 		           		
+		           		if(deviceLink&&lista.deviceType==13) {
+		           			
+	    		 			msg+='<span class="pull-right"><a href="http://'+lista.ip+':'+lista.port+'" target="_blank" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="" data-original-title="'+lista.ip+':'+lista.port+'"><i class="icon-link"></i></a></span>';
+	    		 		}
+		           		
 		           		msg+='</li>';
 		           		
     		 		}
+    		 		
 
     			});
     		 	
     		 	msg+="</ul>";
     		 	
     		 	$('#detail').append(msg);
+				
     		 	
+    		 	
+    		 	
+		 		$("[data-toggle=tooltip]").tooltip();
+
     		 	/*
     		 	var myChart2 = echarts.init(document.getElementById('bar'));
     		 	

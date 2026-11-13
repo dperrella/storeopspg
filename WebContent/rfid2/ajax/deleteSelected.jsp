@@ -38,7 +38,7 @@ try {
 	System.out.println(sql);
 	st.executeUpdate(sql);
 	
-	sql = "select cpunt(*) num from documents_detail where iddoc = "+iddoc+" ";
+	sql = "select count(*) num from documents_detail where iddoc = "+iddoc+" ";
 	rs=st.executeQuery(sql);
 	int num = 0;
 	if(rs.next()) {

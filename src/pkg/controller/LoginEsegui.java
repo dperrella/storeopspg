@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 	
 public class LoginEsegui extends AbstractController {
 	
+	private static final String API_PASSWORD = "Checkpt$3"; 
+	
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Map<String, Object> obj = new HashMap<String, Object>();

@@ -43,8 +43,20 @@ public class GetComuni extends HttpServlet {
 		
 		String id_pro = ""+request.getParameter("id_pro");
 		id_pro = Utility.noNull(id_pro);
+		
+		String id_reg = ""+request.getParameter("id_reg");
+		id_reg = Utility.noNull(id_reg);
+		
+		
 		if(id_pro.length()==0)
-			id_pro = "0";
+			sql = "select c.* from comuni c \n" + 
+				"join province p on c.id_pro = p.id_pro\n" + 
+				"join regioni r on r.id_reg = p.id_reg "+
+				"where r.id_reg = "+id_reg;
+		
+		else
+			sql = "select * from comuni where id_pro = "+id_pro;
+		
 		
 		try {
 			conn=Utility.getConnAdmin();
@@ -53,7 +65,6 @@ public class GetComuni extends HttpServlet {
 			JSONObject responseJson = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			
-			sql   = "select * from comuni where id_pro = "+id_pro;
 			rs=st.executeQuery(sql);
 			
 			String cap = "";
@@ -61,6 +72,7 @@ public class GetComuni extends HttpServlet {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("id", rs.getInt("id_com"));
 				jsonObj.put("name", rs.getString("comune"));
+				jsonObj.put("idpro", rs.getString("id_pro"));
 				// cap
 				cap = "00000"+rs.getString("cap");
 				cap = cap.substring(cap.length()-5,cap.length());
